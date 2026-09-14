@@ -13,7 +13,9 @@ export default function ConfigBanner() {
     fetch("/api/config")
       .then((r) => r.json())
       .then((d) => {
-        const list: Status[] = (d.statuses ?? []).filter((s: Status) => !s.ok);
+        const list: Status[] = (d.statuses ?? []).filter(
+          (s: Status) => !s.ok && s.required,
+        );
         setWarnings(list);
       })
       .catch(() => {});

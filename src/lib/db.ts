@@ -1,6 +1,6 @@
 import "server-only";
 
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 const URI = process.env.MONGODB_URI;
 
@@ -34,8 +34,11 @@ export type RewardDoc = {
   bookingKind?: string;
   orderId?: string;
   txHash?: string;
+  recipient?: string;
+  error?: string;
   status: "pending" | "sent" | "failed";
   createdAt: Date;
+  updatedAt?: Date;
 };
 
 export async function getUser(key: string): Promise<UserDoc | null> {
@@ -126,7 +129,7 @@ export async function redeemPoints({
 }: {
   userKey: string;
   amount: number;
-}): Promise<{ ok: boolean; txHash?: string; error?: string }> {
+}): Promise<{ ok: boolean; recordId?: string; error?: string }> {
   const db = await getDb();
   const user = await getUser(userKey);
   if (!user || user.points.available < amount) {
@@ -146,7 +149,22 @@ export async function redeemPoints({
     status: "pending",
     createdAt: new Date(),
   });
-  return { ok: true, txHash: inserted.insertedId.toHexString() };
+  return { ok: true, recordId: inserted.insertedId.toHexString() };
+}
+
+export async function updateRewardStatus(
+  recordId: string,
+  patch: {
+    status: "pending" | "sent" | "failed";
+    txHash?: string;
+    error?: string;
+    recipient?: string;
+  },
+): Promise<void> {
+  const db = await getDb();
+  await db
+    .collection<RewardDoc>("rewards")
+    .updateOne({ _id: new ObjectId(recordId) }, { $set: { ...patch, updatedAt: new Date() } });
 }
 
 export async function getPoints(userKey: string) {
