@@ -28,6 +28,7 @@ import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import ImageCarousel from "@/components/ui/image-carousel";
 import DateRangePicker, { formatDateLabel } from "@/components/ui/date-range-picker";
+import PlacesCombobox, { type PlaceSelection } from "@/components/ui/places-combobox";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { getStoredIdentity } from "@/lib/identity";
@@ -69,6 +70,7 @@ export function CarSearch() {
   const [error, setError] = useState("");
   const [testMode, setTestMode] = useState(false);
   const [pickupLocation, setPickupLocation] = useState("London Heathrow (LHR)");
+  const [pickupPlace, setPickupPlace] = useState<PlaceSelection | null>(null);
   const [range, setRange] = useState({ start: "2026-10-24", end: "2026-10-29" });
   const [dateOpen, setDateOpen] = useState(false);
   const [pickupTime, setPickupTime] = useState("10:30");
@@ -81,6 +83,8 @@ export function CarSearch() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         pickupLocation,
+        latitude: pickupPlace?.latitude,
+        longitude: pickupPlace?.longitude,
         pickupDate: range.start,
         pickupTime,
         dropoffDate: range.end,
@@ -125,11 +129,13 @@ export function CarSearch() {
             <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-[18px]">
 <h2 className="text-[18px] font-extrabold text-foreground">Rent a Car</h2>
               <SearchField icon={<MapPin size={20} className="text-accent-2" />} label="Pickup Location">
-                <input
+                <PlacesCombobox
                   value={pickupLocation}
-                  onChange={(e) => setPickupLocation(e.target.value)}
-                  placeholder="e.g. London Heathrow (LHR)"
-                  className="bg-transparent text-[14px] font-semibold text-foreground outline-none placeholder:font-normal placeholder:text-muted"
+                  onChange={setPickupLocation}
+                  onSelect={(p) => {
+                    setPickupLocation(p.name);
+                    setPickupPlace(p);
+                  }}
                 />
               </SearchField>
               <button
@@ -446,12 +452,22 @@ writeFlow({ carBooking: d.booking as CarBooking });
 
             <div className="flex flex-col gap-2">
               <h3 className="text-[14px] font-bold text-foreground">Pickup Location</h3>
-              <GoogleMap
+<GoogleMap
                 center={{
                   lat: car.pickupLatitude || 51.47,
                   lng: car.pickupLongitude || -0.4543,
                 }}
                 query={car.pickup}
+                markers={[
+                  {
+                    lat: car.pickupLatitude || 51.47,
+                    lng: car.pickupLongitude || -0.4543,
+                  },
+                  {
+                    lat: car.dropoffLatitude || car.pickupLatitude || 51.47,
+                    lng: car.dropoffLongitude || car.pickupLongitude || -0.4543,
+                  },
+                ]}
               />
             </div>
 

@@ -144,7 +144,7 @@ const [stays, setStays] = useState<StayOffer[]>([]);
   const [guestCount, setGuestCount] = useState({ Adults: 2, Children: 0 });
   const [rooms, setRooms] = useState(1);
   const [grOpen, setGrOpen] = useState(false);
-  const [suggestion, setSuggestion] = useState<StaySuggestion | null>(null);
+  const [place, setPlace] = useState<PlaceSelection | null>(null);
 
   const runSearch = (dest: string, r = range, test = testMode) => {
     fetch("/api/stays/search", {
@@ -157,8 +157,8 @@ const [stays, setStays] = useState<StayOffer[]>([]);
         guests: guestCount.Adults + guestCount.Children,
         rooms,
         test,
-        latitude: suggestion?.latitude,
-        longitude: suggestion?.longitude,
+        latitude: place?.latitude,
+        longitude: place?.longitude,
       }),
     })
       .then((res) => res.json())
@@ -199,10 +199,13 @@ const [stays, setStays] = useState<StayOffer[]>([]);
                 Book Accommodations
               </h2>
 <SearchField icon={<MapPin size={20} className="text-accent-2" />} label="Destination">
-                <SuggestionsCombobox
+                <PlacesCombobox
                   value={destination}
                   onChange={setDestination}
-                  onSelect={setSuggestion}
+                  onSelect={(p) => {
+                    setDestination(p.name);
+                    setPlace(p);
+                  }}
                 />
               </SearchField>
               <button
