@@ -34,7 +34,7 @@ import SuggestionsCombobox, {
 } from "@/components/ui/suggestions-combobox";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
-import { usePoints } from "@/lib/points";
+import { getStoredIdentity } from "@/lib/identity";
 import { share } from "@/lib/share";
 import { haptic } from "@/lib/haptics";
 import type { StayOffer, StayBooking } from "@/lib/types";
@@ -454,7 +454,7 @@ const [stay, setStay] = useState<StayOffer | null>(() => readFlow().stay ?? null
     setBooking(true);
     setError("");
     try {
-      const res = await fetch("/api/stays/book", {
+const res = await fetch("/api/stays/book", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -465,6 +465,7 @@ const [stay, setStay] = useState<StayOffer | null>(() => readFlow().stay ?? null
             email: passenger.email,
             phone_number: `+234${passenger.phone}`,
           },
+          ...getStoredIdentity(),
         }),
       });
 const d = await res.json();

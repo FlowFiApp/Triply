@@ -4,6 +4,7 @@ import { Gift } from "lucide-react";
 import { Sheet } from "@/components/ui";
 import { NimiqIcon } from "@/components/ui/Nimiq";
 import { usePoints } from "@/lib/points";
+import { useWalletState } from "@/lib/wallet-state";
 import { useToast } from "@/lib/toast";
 import { haptic } from "@/lib/haptics";
 
@@ -14,16 +15,23 @@ export default function RedeemSheet({
   open: boolean;
   onClose: () => void;
 }) {
-  const { earned, available, redeemPoints } = usePoints();
+  const { earned, available, redeem } = usePoints();
+  const { state } = useWalletState();
   const { toast } = useToast();
 
-  const redeem = () => {
+  const onRedeem = async () => {
     haptic();
-    if (redeemPoints(available)) {
-      toast("success", `Redeemed ${available} NIM from your points.`);
+    const result = await redeem(available, state.nimiqAddress);
+    if (result.ok) {
+      toast(
+        "success",
+        state.nimiqAddress
+          ? `Redeemed ${available} NIM — sending to your wallet.`
+          : `Redeemed ${available} NIM. Connect Nimiq Pay to receive the payout.`,
+      );
       onClose();
     } else {
-      toast("error", "No points available to redeem.");
+      toast("error", result.message ?? "Redeem failed.");
     }
   };
 
@@ -38,7 +46,7 @@ export default function RedeemSheet({
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-[13px] font-semibold text-foreground">
             <Gift size={16} className="text-accent-2" />
-            Points available
+            NIM available
           </span>
           <span className="flex items-center gap-1 text-[18px] font-extrabold text-foreground">
             {available.toLocaleString()}
@@ -52,13 +60,15 @@ export default function RedeemSheet({
           </span>
         </div>
         <p className="text-[11px] leading-4 text-muted">
-          Redeeming moves your available NIM to your wallet.
+          {state.nimiqAddress
+            ? `Payout is sent to ${state.nimiqAddress.slice(0, 8)}…`
+            : "Open Triply inside Nimiq Pay to receive the payout to your wallet."}
         </p>
       </div>
 
       <div className="px-5 pb-4 pt-4">
         <button
-          onClick={redeem}
+          onClick={onRedeem}
           disabled={available <= 0}
           className="tap flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
         >

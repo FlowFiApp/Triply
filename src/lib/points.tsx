@@ -4,78 +4,78 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
   type ReactNode,
 } from "react";
-
-export type Points = { earned: number; available: number };
+import { identityKey } from "@/lib/identity";
 
 type PointsContextValue = {
   earned: number;
   available: number;
-  addPoints: (n: number) => void;
-  redeemPoints: (n: number) => boolean;
+  refresh: () => Promise<void>;
+  redeem: (amount: number, recipient?: string) => Promise<{ ok: boolean; message?: string }>;
 };
 
 const PointsContext = createContext<PointsContextValue>({
   earned: 0,
   available: 0,
-  addPoints: () => {},
-  redeemPoints: () => false,
+  refresh: async () => {},
+  redeem: async () => ({ ok: false }),
 });
 
 export function usePoints() {
   return useContext(PointsContext);
 }
 
-const KEY = "triply-points";
-
-function load(): Points {
-  if (typeof window === "undefined") return { earned: 0, available: 0 };
-  try {
-    const raw = JSON.parse(localStorage.getItem(KEY) ?? "null");
-    if (raw && typeof raw.earned === "number" && typeof raw.available === "number") {
-      return { earned: raw.earned, available: raw.available };
-    }
-  } catch {}
-  return { earned: 0, available: 0 };
-}
-
 export function PointsProvider({ children }: { children: ReactNode }) {
-  const [points, setPoints] = useState<Points>(() => load());
+  const [earned, setEarned] = useState(0);
+  const [available, setAvailable] = useState(0);
 
-  const persist = useCallback((p: Points) => {
-    setPoints(p);
-    if (typeof window !== "undefined") localStorage.setItem(KEY, JSON.stringify(p));
+  const refresh = useCallback(async () => {
+    const key = identityKey();
+    if (!key) return;
+    try {
+      const res = await fetch(`/api/points?key=${encodeURIComponent(key)}`);
+      if (res.ok) {
+        const d = await res.json();
+        setEarned(d.earned ?? 0);
+        setAvailable(d.available ?? 0);
+      }
+    } catch {
+      // keep current values
+    }
   }, []);
 
-  const addPoints = useCallback(
-    (n: number) => {
-      const amount = Math.max(0, Math.round(n));
-      persist({ earned: points.earned + amount, available: points.available + amount });
-    },
-    [points, persist],
-  );
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
-  const redeemPoints = useCallback(
-    (n: number): boolean => {
-      const amount = Math.min(Math.max(0, Math.round(n)), points.available);
-      if (amount <= 0) return false;
-      persist({ ...points, available: points.available - amount });
-      return true;
+  const redeem = useCallback(
+    async (amount: number, recipient?: string) => {
+      const key = identityKey();
+      if (!key) return { ok: false, message: "Identity unavailable." };
+      try {
+        const res = await fetch("/api/points/redeem", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key, amount, recipient }),
+        });
+        const d = await res.json();
+        if (!res.ok || !d.ok) {
+          return { ok: false, message: d.error ?? "Redeem failed." };
+        }
+        await refresh();
+        return { ok: true };
+      } catch {
+        return { ok: false, message: "Redeem failed." };
+      }
     },
-    [points, persist],
+    [refresh],
   );
 
   return (
-    <PointsContext.Provider
-      value={{
-        earned: points.earned,
-        available: points.available,
-        addPoints,
-        redeemPoints,
-      }}
-    >
+    <PointsContext.Provider value={{ earned, available, refresh, redeem }}>
       {children}
     </PointsContext.Provider>
   );

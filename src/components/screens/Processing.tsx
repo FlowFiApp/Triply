@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Check, Copy, ExternalLink } from "lucide-react";
@@ -8,8 +8,9 @@ import { MobileShell } from "@/components/shell";
 import { useQueryParam } from "@/lib/query";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
-import { usePoints } from "@/lib/points";
-import { CHAINS, type ChainId } from "@/lib/wallet";
+import { useWalletState } from "@/lib/wallet-state";
+import { getStoredIdentity } from "@/lib/identity";
+import { CHAINS } from "@/lib/wallet";
 import type { OrderRecord } from "@/lib/types";
 
 type Step = "verify" | "settle" | "issue";
@@ -17,78 +18,93 @@ type Step = "verify" | "settle" | "issue";
 export default function Processing() {
   const router = useRouter();
   const amount = Number(useQueryParam("amount", "0"));
-  const chainId = useQueryParam("chain", "base") as ChainId;
+  const chainId = useQueryParam("chain", "polygon");
   const tx = useQueryParam("tx", "");
-  const chain = CHAINS[chainId] ?? CHAINS.base;
+  const chain = CHAINS.polygon;
+  const { state } = useWalletState();
 
   const [current, setCurrent] = useState<Step>("verify");
   const [sub, setSub] = useState("In Progress...");
   const [error, setError] = useState("");
-const [booking, setBooking] = useState(false);
+  const [booking, setBooking] = useState(false);
+  const ran = useRef(false);
   const { toast } = useToast();
-  const { addPoints } = usePoints();
 
   useEffect(() => {
+    if (ran.current) return;
+    ran.current = true;
+
     const flow = readFlow();
     const offerId = flow.offer?.id ?? "";
+    const payer = state.evmAddress ?? "";
 
-    const timers = [
-      setTimeout(() => {
-        setCurrent("settle");
-        setSub("Routing funds to Airline liquidity pool...");
-      }, 3200),
-      setTimeout(() => {
-        setCurrent("issue");
-        setSub("Generating on-chain E-ticket");
-      }, 6000),
-    ];
+    const verifyPayment = async () => {
+      // Confirm the USDT transfer on-chain before creating any order.
+      const verifyRes = await fetch("/api/payments/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tx, amount, chain: chain.id }),
+      });
+      const verify = await verifyRes.json();
+      if (!verifyRes.ok || !verify.verified) {
+        throw new Error(verify?.error ?? "Payment not verified on-chain.");
+      }
+    };
 
-    // Create the Duffel order once the on-chain settlement is confirmed.
-    const bookingTimer = setTimeout(async () => {
+    const createOrder = async () => {
       setBooking(true);
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          offerId,
+          amount,
+          txHash: tx,
+          chain: chain.id,
+          from: payer,
+          nimiqAddress: state.nimiqAddress,
+          deviceId: getStoredIdentity().deviceId,
+          passengers: [
+            {
+              given_name: flow.passenger?.first ?? "",
+              family_name: flow.passenger?.last ?? "",
+              born_on: flow.passenger?.dob ?? "",
+              email: flow.passenger?.email ?? "",
+              phone_number: `+234${flow.passenger?.phone ?? ""}`,
+              gender: flow.passenger?.gender?.toLowerCase() ?? "female",
+            },
+          ],
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        throw new Error(data.error ?? "Order creation failed");
+      }
+      if (!data.live) {
+        throw new Error(data.error ?? "Duffel is not configured");
+      }
+      writeFlow({ order: data.order as OrderRecord, txHash: tx, chain: chain.id });
+      toast("success", `Booking confirmed · ${data.order.bookingRef}`);
+      router.push("/ticket");
+    };
+
+    const run = async () => {
       try {
-        const res = await fetch("/api/orders", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            offerId,
-            amount,
-            txHash: tx,
-            chain: chain.id,
-            passengers: [
-              {
-                given_name: flow.passenger?.first ?? "",
-                family_name: flow.passenger?.last ?? "",
-                born_on: flow.passenger?.dob ?? "",
-                email: flow.passenger?.email ?? "",
-                phone_number: `+234${flow.passenger?.phone ?? ""}`,
-                gender: flow.passenger?.gender?.toLowerCase() ?? "female",
-              },
-            ],
-          }),
-        });
-        const data = await res.json();
-        if (!res.ok || data.error) {
-          throw new Error(data.error ?? "Order creation failed");
-        }
-        if (!data.live) {
-          throw new Error(data.error ?? "Duffel is not configured");
-        }
-writeFlow({ order: data.order as OrderRecord, txHash: tx, chain: chain.id });
-        addPoints(Math.round(amount));
-        toast("success", `Booking confirmed · ${data.order.bookingRef}`);
-        router.push("/ticket");
+        setCurrent("verify");
+        setSub("Verifying on-chain payment…");
+        await verifyPayment();
+        setCurrent("settle");
+        setSub("Settlement confirmed — issuing booking…");
+        await createOrder();
       } catch (err) {
         setBooking(false);
-        setError(err instanceof Error ? err.message : "Order creation failed");
+        setError(err instanceof Error ? err.message : "Booking could not be issued.");
       }
-    }, 8000);
-
-    return () => {
-      [...timers, bookingTimer].forEach(clearTimeout);
     };
+
+    run();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router, amount, tx, chain.id, toast]);
+  }, []);
 
   const stepIndex = ["verify", "settle", "issue"].indexOf(current);
   const steps = [
@@ -100,7 +116,7 @@ writeFlow({ order: data.order as OrderRecord, txHash: tx, chain: chain.id });
   return (
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
-<div className="w-full">
+        <div className="w-full">
           <div className="sticky top-0 z-30 flex h-[60px] items-center bg-background px-5">
             <h1 className="text-[18px] font-extrabold leading-6 text-foreground">
               Processing Booking
@@ -198,7 +214,7 @@ writeFlow({ order: data.order as OrderRecord, txHash: tx, chain: chain.id });
                 </span>
                 <div className="flex items-center justify-between">
                   <Link
-                    href={chain.explorer ? `${chain.explorer}/tx/${tx}` : "#"}
+                    href={`${chain.explorer}/tx/${tx}`}
                     target="_blank"
                     className="flex items-center gap-1 text-[14px] font-semibold text-accent-2"
                   >

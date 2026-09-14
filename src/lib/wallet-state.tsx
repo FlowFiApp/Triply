@@ -13,16 +13,17 @@ import type { PaymentResult } from "@/lib/wallet";
 
 export type WalletState = {
   connected: boolean;
-  address?: string;
+  nimiqAddress?: string;
+  evmAddress?: string;
   source?: string;
   chain?: ChainId;
 };
 
 type WalletContextValue = {
   state: WalletState;
-  connect: (chain?: ChainId) => Promise<WalletState>;
+  connect: () => Promise<WalletState>;
   disconnect: () => void;
-  pay: (amount: number, chain?: ChainId) => Promise<PaymentResult>;
+  pay: (amount: number) => Promise<PaymentResult>;
 };
 
 const WalletContext = createContext<WalletContextValue | null>(null);
@@ -54,9 +55,15 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state]);
 
-  const connect = useCallback(async (chain?: ChainId) => {
-    const { address, source } = await connectWallet();
-    const next: WalletState = { connected: true, address, source, chain: chain ?? "base" };
+  const connect = useCallback(async () => {
+    const { nimiqAddress, evmAddress, source } = await connectWallet();
+    const next: WalletState = {
+      connected: true,
+      nimiqAddress,
+      evmAddress,
+      source,
+      chain: "polygon",
+    };
     setState(next);
     return next;
   }, []);
@@ -66,14 +73,17 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const pay = useCallback(
-    async (amount: number, chain?: ChainId) => {
-      const c = CHAINS[chain ?? state.chain ?? "base"];
-      if (!state.address) throw new Error("No wallet connected");
-      const result = await payUsdt({ chain: c, amount, wallet: state.address });
+    async (amount: number) => {
+      if (!state.evmAddress) {
+        throw new Error(
+          "No Ethereum account connected. Connect a wallet that supports Polygon.",
+        );
+      }
+      const result = await payUsdt({ from: state.evmAddress, amount });
       setState((s) => ({ ...s, chain: result.chain }));
       return result;
     },
-    [state.address, state.chain],
+    [state.evmAddress],
   );
 
   return (

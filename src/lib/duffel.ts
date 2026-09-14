@@ -225,7 +225,7 @@ export async function createFlightOrder({
     selected_offers: [offerId],
     ...(customerUserId ? { users: [customerUserId] } : {}),
     passengers: passengers.map((p) => ({
-      id: Math.random().toString(36).slice(2, 12),
+      id: crypto.randomUUID(),
       ...(customerUserId ? { user_id: customerUserId } : {}),
       given_name: p.given_name,
       family_name: p.family_name,
@@ -658,33 +658,3 @@ export function duffelErrorMessage(
   return fallback;
 }
 
-export async function getFiatUsdtRate(
-  fiat: string,
-): Promise<{ fiat: string; rate: number; asOf: string }> {
-  try {
-    const res = await fetch(
-      `https://api.binance.com/api/v3/ticker/price?symbol=USDT${fiat.toUpperCase()}`,
-      { next: { revalidate: 120 } },
-    );
-    if (res.ok) {
-      const json = (await res.json()) as { price: string };
-      const rate = Number(json.price);
-      if (rate > 0) {
-        return { fiat, rate, asOf: new Date().toISOString() };
-      }
-    }
-  } catch {
-    // fall through to cached default
-  }
-  const defaults: Record<string, number> = {
-    USD: 1,
-    NGN: 1650,
-    EUR: 0.92,
-    GBP: 0.78,
-  };
-  return {
-    fiat,
-    rate: defaults[fiat.toUpperCase()] ?? 1,
-    asOf: new Date().toISOString(),
-  };
-}

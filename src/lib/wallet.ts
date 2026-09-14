@@ -1,6 +1,8 @@
 "use client";
 
-export type ChainId = "base" | "polygon" | "arbitrum" | "solana";
+import { treasuryAddress } from "@/lib/config";
+
+export type ChainId = "polygon";
 
 export type ChainConfig = {
   id: ChainId;
@@ -15,20 +17,8 @@ export type ChainConfig = {
   nativeCurrency?: { name: string; symbol: string; decimals: number };
 };
 
-// USDT contracts (mainnet). USDT uses 6 decimals on EVM chains.
+// USDT on Polygon mainnet. This is the only payment network the app supports.
 export const CHAINS: Record<ChainId, ChainConfig> = {
-  base: {
-    id: "base",
-    name: "Base Network",
-    label: "Base",
-    evm: true,
-    chainIdHex: "0x2105",
-    usdt: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-    decimals: 6,
-    explorer: "https://basescan.org",
-    rpc: "https://mainnet.base.org",
-    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-  },
   polygon: {
     id: "polygon",
     name: "Polygon Network",
@@ -38,49 +28,13 @@ export const CHAINS: Record<ChainId, ChainConfig> = {
     usdt: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
     decimals: 6,
     explorer: "https://polygonscan.com",
-    rpc: "https://polygon-rpc.com",
-    nativeCurrency: { name: "MATIC", symbol: "POL", decimals: 18 },
-  },
-  arbitrum: {
-    id: "arbitrum",
-    name: "Arbitrum Network",
-    label: "Arbitrum",
-    evm: true,
-    chainIdHex: "0xa4b1",
-    usdt: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
-    decimals: 6,
-    explorer: "https://arbiscan.io",
-    rpc: "https://arb1.arbitrum.io/rpc",
-    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-  },
-  solana: {
-    id: "solana",
-    name: "Solana Network",
-    label: "Solana",
-    evm: false,
-    usdt: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
-    decimals: 6,
-    explorer: "https://solscan.io",
+    rpc: "https://polygon-bor-rpc.publicnode.com",
+    nativeCurrency: { name: "POL", symbol: "POL", decimals: 18 },
   },
 };
 
-// Default merchant settlement addresses per chain. In production the treasury
-// address comes from NEXT_PUBLIC_TREASURY_WALLET_ADDRESS.
-const TREASURY_DEFAULT: Record<ChainId, string> = {
-  base: "0x9A8f4C2B7d3E1f0A5c6B8d9E2f3A4b5C6d7E8f90",
-  polygon: "0x9A8f4C2B7d3E1f0A5c6B8d9E2f3A4b5C6d7E8f90",
-  arbitrum: "0x9A8f4C2B7d3E1f0A5c6B8d9E2f3A4b5C6d7E8f90",
-  solana: "Tr1pLyTreasury9xKq2mZ8sV4nB6cD1eF3gH5jL7pQ",
-};
-
-export function treasuryFor(chain: ChainId): string {
-  const envAddr = process.env.NEXT_PUBLIC_TREASURY_WALLET_ADDRESS;
-  return envAddr ?? TREASURY_DEFAULT[chain];
-}
-
-type Eip1193 = {
+export type Eip1193 = {
   request: (args: { method: string; params?: unknown[] | object }) => Promise<unknown>;
-  on?: (event: string, cb: (...args: unknown[]) => void) => void;
 };
 
 declare global {
@@ -94,16 +48,40 @@ export function getEvmProvider(): Eip1193 | null {
   return window.ethereum ?? null;
 }
 
+// keccak256("transfer(address,uint256)")
+const TRANSFER_SELECTOR = "0xa9059cbb";
+// keccak256("Transfer(address,address,uint256)")
+const TRANSFER_TOPIC =
+  "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+// keccak256("balanceOf(address)")
+const BALANCE_SELECTOR = "0x70a08231";
+
 export function encodeUsdtTransfer(to: string, amount: number, decimals = 6) {
   const value = BigInt(Math.round(amount * 10 ** decimals));
   const addr = to.toLowerCase().replace(/^0x/, "").padStart(64, "0");
   const amt = value.toString(16).padStart(64, "0");
-  // keccak256("transfer(address,uint256)") selector
-  return `0xa9059cbb${addr}${amt}`;
+  return `${TRANSFER_SELECTOR}${addr}${amt}`;
 }
 
-async function switchChain(provider: Eip1193, chain: ChainConfig) {
-  if (!chain.chainIdHex) return;
+export function encodeBalanceOf(address: string) {
+  const addr = address.toLowerCase().replace(/^0x/, "").padStart(64, "0");
+  return `${BALANCE_SELECTOR}${addr}`;
+}
+
+function parseHexAmount(hex: string): bigint {
+  try {
+    return BigInt(hex);
+  } catch {
+    return 0n;
+  }
+}
+
+function padded(address: string): string {
+  return "0x" + address.toLowerCase().replace(/^0x/, "").padStart(64, "0");
+}
+
+async function switchToChain(provider: Eip1193, chain: ChainConfig) {
+  if (!chain.chainIdHex) throw new Error("Chain not configured");
   try {
     await provider.request({
       method: "wallet_switchEthereumChain",
@@ -130,8 +108,14 @@ async function switchChain(provider: Eip1193, chain: ChainConfig) {
   }
 }
 
-export async function connectWallet(): Promise<{ address: string; source: string }> {
-  // Prefer the Nimiq Pay mini app provider when available.
+export type ConnectedWallet = {
+  nimiqAddress?: string;
+  evmAddress?: string;
+  source: string;
+};
+
+export async function connectWallet(): Promise<ConnectedWallet> {
+  let nimiqAddress: string | undefined;
   try {
     const mod = await import("@nimiq/mini-app-sdk");
     const nimiq = await Promise.race([
@@ -140,25 +124,35 @@ export async function connectWallet(): Promise<{ address: string; source: string
         setTimeout(() => reject(new Error("nimiq-timeout")), 4500),
       ),
     ]);
-    const accounts = await nimiq.listAccounts();
+    const accounts = (await nimiq.listAccounts()) as string[];
     if (Array.isArray(accounts) && accounts.length) {
-      return { address: String(accounts[0]), source: "Nimiq Pay" };
+      nimiqAddress = accounts[0];
     }
   } catch {
-    // Not running inside Nimiq Pay — fall through to injected EVM provider.
+    // Not running inside Nimiq Pay — the Nimiq identity is unavailable.
   }
 
   const provider = getEvmProvider();
+  let evmAddress: string | undefined;
   if (provider) {
-    const accounts = (await provider.request({
-      method: "eth_requestAccounts",
-    })) as string[];
-    if (accounts?.length) {
-      return { address: accounts[0], source: "Injected Wallet" };
+    try {
+      const accounts = (await provider.request({
+        method: "eth_requestAccounts",
+      })) as string[];
+      if (Array.isArray(accounts) && accounts.length) evmAddress = accounts[0];
+    } catch {
+      // user denied or no EVM accounts
     }
   }
 
-  throw new Error("No wallet available. Open Triply inside Nimiq Pay.");
+  if (!nimiqAddress && !evmAddress) {
+    throw new Error("No wallet available. Open Triply inside Nimiq Pay.");
+  }
+  return {
+    nimiqAddress,
+    evmAddress,
+    source: nimiqAddress ? "Nimiq Pay" : "Injected Wallet",
+  };
 }
 
 export type PaymentResult = {
@@ -168,42 +162,72 @@ export type PaymentResult = {
 };
 
 export async function payUsdt({
-  chain,
+  from,
   amount,
-  wallet,
 }: {
-  chain: ChainConfig;
+  from: string;
   amount: number;
-  wallet: string;
 }): Promise<PaymentResult> {
+  const chain = CHAINS.polygon;
   const provider = getEvmProvider();
+  if (!provider) throw new Error("No Ethereum provider available.");
+  if (!chain.usdt || !chain.decimals) throw new Error("USDT not configured.");
 
-  if (chain.evm && provider && chain.usdt && chain.decimals) {
-    await switchChain(provider, chain);
-    const data = encodeUsdtTransfer(treasuryFor(chain.id), amount, chain.decimals);
-    const hash = (await provider.request({
-      method: "eth_sendTransaction",
-      params: [
-        {
-          from: wallet,
-          to: chain.usdt,
-          data,
-          value: "0x0",
-        },
-      ],
-    })) as string;
-    return {
-      hash,
-      explorerUrl: `${chain.explorer}/tx/${hash}`,
-      chain: chain.id,
-    };
+  const treasury = treasuryAddress();
+  await switchToChain(provider, chain);
+
+  // Confirm we are on Polygon.
+  const chainId = (await provider.request({ method: "eth_chainId" })) as string;
+  if (chainId.toLowerCase() !== chain.chainIdHex!.toLowerCase()) {
+    throw new Error(`Wrong network: expected ${chain.name}.`);
   }
 
-  // Non-EVM (e.g. Solana) or no injected provider: the payment proxy
-  // returns a settlement reference. Simulated for local development.
-  const hash = `0x${crypto.randomUUID().replace(/-/g, "")}${Date.now()
-    .toString(16)
-    .slice(-6)}`;
+  // Check the user has enough USDT.
+  const balance = (await provider.request({
+    method: "eth_call",
+    params: [{ to: chain.usdt, data: encodeBalanceOf(from) }, "latest"],
+  })) as string;
+  const balanceBig = parseHexAmount(balance);
+  const needed = BigInt(Math.round(amount * 10 ** chain.decimals));
+  if (balanceBig < needed) {
+    throw new Error(`Insufficient USDT balance on ${chain.name}.`);
+  }
+
+  const data = encodeUsdtTransfer(treasury, amount, chain.decimals);
+  const gas = (await provider.request({
+    method: "eth_estimateGas",
+    params: [{ from, to: chain.usdt, data, value: "0x0" }],
+  })) as string;
+
+  const hash = (await provider.request({
+    method: "eth_sendTransaction",
+    params: [{ from, to: chain.usdt, data, value: "0x0", gas }],
+  })) as string;
+
+  // Wait for the receipt and confirm the Transfer hit the treasury.
+  let receipt: { status?: string; logs?: Array<{ address: string; topics: string[] }> } | null = null;
+  for (let i = 0; i < 40; i++) {
+    await new Promise((r) => setTimeout(r, 3000));
+    const r = (await provider.request({
+      method: "eth_getTransactionReceipt",
+      params: [hash],
+    })) as typeof receipt | null;
+    if (r) {
+      receipt = r;
+      break;
+    }
+  }
+  if (!receipt) throw new Error("Transaction not confirmed in time.");
+  if (receipt.status !== "0x1") throw new Error("Transaction failed on-chain.");
+
+  const hitTreasury = (receipt.logs ?? []).some(
+    (log) =>
+      log.address?.toLowerCase() === chain.usdt!.toLowerCase() &&
+      log.topics?.[0]?.toLowerCase() === TRANSFER_TOPIC &&
+      log.topics?.[2]?.toLowerCase() === padded(treasury),
+  );
+  if (!hitTreasury) throw new Error("Payment did not reach the treasury.");
+
   return {
     hash,
     explorerUrl: `${chain.explorer}/tx/${hash}`,

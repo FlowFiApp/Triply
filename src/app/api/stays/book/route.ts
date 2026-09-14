@@ -24,6 +24,23 @@ export async function POST(request: Request) {
         error: "Duffel is not configured. Set DUFFEL_ACCESS_TOKEN to book stays.",
       });
     }
+    // 2 NIM per 1 USDT, credited once per booking.
+    try {
+      const { getOrCreateUser, earnPoints } = await import("@/lib/db");
+      const user = await getOrCreateUser({
+        nimiqAddress: body.nimiqAddress,
+        deviceId: body.deviceId,
+      });
+      await earnPoints({
+        userKey: user.key,
+        amountUsd: Number(booking.total_amount ?? 0),
+        bookingRef: booking.reference ?? booking.id,
+        bookingKind: "stay",
+        orderId: booking.id,
+      });
+    } catch {
+      // ledger failure must not block the booking
+    }
     const result: StayBooking = {
       id: booking.id,
       reference: booking.reference ?? booking.id,

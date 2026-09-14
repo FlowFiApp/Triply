@@ -30,7 +30,7 @@ import ImageCarousel from "@/components/ui/image-carousel";
 import DateRangePicker, { formatDateLabel } from "@/components/ui/date-range-picker";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
-import { usePoints } from "@/lib/points";
+import { getStoredIdentity } from "@/lib/identity";
 import { share } from "@/lib/share";
 import { haptic } from "@/lib/haptics";
 import type { CarOffer, CarBooking } from "@/lib/types";
@@ -310,7 +310,6 @@ export function CarDetails() {
   const [car] = useState<CarOffer | null>(() => readFlow().car ?? null);
   const [booking, setBooking] = useState(false);
   const [error, setError] = useState("");
-  const { addPoints } = usePoints();
 
   if (!car) {
     return (
@@ -339,7 +338,7 @@ export function CarDetails() {
     setBooking(true);
     setError("");
     try {
-      const res = await fetch("/api/cars/book", {
+const res = await fetch("/api/cars/book", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -351,6 +350,7 @@ export function CarDetails() {
             phone_number: `+234${passenger.phone}`,
             date_of_birth: passenger.dob,
           },
+          ...getStoredIdentity(),
         }),
       });
       const d = await res.json();

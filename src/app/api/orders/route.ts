@@ -53,6 +53,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { createFlightOrder, ensureCustomerUser } = await import("@/lib/duffel");
+    const { getOrCreateUser, updateUser, earnPoints } = await import("@/lib/db");
     const p = body.passengers?.[0];
     const customerUserId = p?.email
       ? await ensureCustomerUser({
@@ -62,6 +63,27 @@ export async function POST(request: Request) {
           phone_number: p.phone_number,
         })
       : undefined;
+
+    const identity = {
+      nimiqAddress: body.nimiqAddress,
+      evmAddress: body.from,
+      deviceId: body.deviceId,
+    };
+    let userKey: string | undefined;
+    if (identity.nimiqAddress || identity.deviceId) {
+      try {
+        const user = await getOrCreateUser(identity);
+        userKey = user.key;
+        await updateUser(user.key, {
+          ...(customerUserId ? { customerUserId } : {}),
+          ...(p?.email ? { email: p.email } : {}),
+          ...(p ? { name: `${p.given_name ?? ""} ${p.family_name ?? ""}`.trim() } : {}),
+        });
+      } catch {
+        // points persistence is optional; booking still proceeds
+      }
+    }
+
     const order = await createFlightOrder({
       offerId: body.offerId,
       passengers: body.passengers,
@@ -77,6 +99,22 @@ export async function POST(request: Request) {
         error: "Duffel is not configured. Set DUFFEL_ACCESS_TOKEN to create orders.",
       });
     }
+
+    // 2 NIM per 1 USDT, credited once per booking.
+    if (userKey && order.booking_ref) {
+      try {
+        await earnPoints({
+          userKey,
+          amountUsd: body.amount ?? 0,
+          bookingRef: order.booking_ref,
+          bookingKind: "flight",
+          orderId: order.id,
+        });
+      } catch {
+        // ledger write failure must not block the booking
+      }
+    }
+
     return Response.json({ live: true, order: normalizeOrder(order) });
   } catch (err) {
     return Response.json(
