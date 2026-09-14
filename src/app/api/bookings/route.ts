@@ -8,6 +8,7 @@ function normalizeOrder(o: any) {
     kind: "flight" as const,
     id: o.id,
     reference: o.booking_ref ?? "",
+    email: p.email ?? "",
     title: seg.marketing_carrier?.name ?? "Flight",
     subtitle: `${seg.marketing_carrier_flight_number ?? ""} • ${p.cabin_class_marketing ?? "Economy"}`,
     status: o.state ?? "confirmed",
@@ -25,6 +26,7 @@ function normalizeStay(b: any) {
     kind: "stay" as const,
     id: b.id,
     reference: b.reference ?? b.id,
+    email: b.guest?.email ?? b.email ?? "",
     title: acc.name ?? "Stay",
     subtitle: `${b.check_in_date ?? ""} → ${b.check_out_date ?? ""}`,
     status: b.status ?? "confirmed",
@@ -36,7 +38,8 @@ function normalizeStay(b: any) {
   };
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const email = new URL(request.url).searchParams.get("email")?.toLowerCase() ?? "";
   try {
     const [ordersRes, stayRes] = await Promise.allSettled([
       listOrders(),
@@ -44,10 +47,14 @@ export async function GET() {
     ]);
     const orders = ordersRes.status === "fulfilled" ? ordersRes.value : [];
     const stays = stayRes.status === "fulfilled" ? stayRes.value : [];
-    const bookings = [
+    const all = [
       ...(orders ?? []).map(normalizeOrder),
       ...(stays ?? []).map(normalizeStay),
     ];
+    // Scope to the signed-in customer's own bookings when an email is provided.
+    const bookings = email
+      ? all.filter((b) => b.email?.toLowerCase() === email)
+      : all;
     return Response.json({ bookings, live: true });
   } catch (err) {
     return Response.json(

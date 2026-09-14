@@ -43,8 +43,9 @@ export default function Profile() {
   const { state, connect, disconnect } = useWalletState();
   const { earned, available } = usePoints();
   const [redeemOpen, setRedeemOpen] = useState(false);
-  const short = state.address
-    ? `${state.address.slice(0, 6)}…${state.address.slice(-4)}`
+  const walletAddr = state.nimiqAddress ?? state.evmAddress;
+  const short = walletAddr
+    ? `${walletAddr.slice(0, 6)}…${walletAddr.slice(-4)}`
     : null;
 
   return (
@@ -57,7 +58,7 @@ export default function Profile() {
               Triply Traveler
             </h1>
             <p className="text-[12px] text-muted">
-              {short ? `${short} · ${CHAINS[state.chain ?? "base"].name}` : "No wallet connected"}
+              {short ? `${short} · ${CHAINS.polygon.name}` : "No wallet connected"}
             </p>
           </div>
 

@@ -5,27 +5,13 @@ import Link from "next/link";
 import { Check, Download, Share2, Wallet } from "lucide-react";
 import { BottomTabBar, MobileShell } from "@/components/shell";
 import { UsdtAmount } from "@/components/ui/Usdt";
+import BookingQR from "@/components/ui/booking-qr";
 import { useQueryParam } from "@/lib/query";
 import { readFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { share } from "@/lib/share";
-import { CHAINS, type ChainId } from "@/lib/wallet";
+import { CHAINS } from "@/lib/wallet";
 import type { OrderRecord } from "@/lib/types";
-
-function QRPlaceholder() {
-  return (
-    <div className="grid h-[120px] w-[120px] grid-cols-11 gap-[3px] rounded-lg bg-white p-2">
-      {Array.from({ length: 121 }).map((_, i) => (
-        <span
-          key={i}
-          className={`rounded-[1px] ${
-            (i * 7 + (i % 5) * 3) % 4 ? "bg-[#0f172a]" : "bg-transparent"
-          }`}
-        />
-      ))}
-    </div>
-  );
-}
 
 function Cell({ label, value }: { label: string; value: string }) {
   return (
@@ -46,7 +32,7 @@ export default function ETicket() {
   const { toast } = useToast();
   const flow = readFlow();
   const txHash = flow.txHash ?? "";
-  const chain = flow.chain ? (CHAINS[flow.chain as ChainId] ?? CHAINS.base) : null;
+  const chain = CHAINS.polygon;
 
   const handleShare = async () => {
     const result = await share({
@@ -212,7 +198,7 @@ export default function ETicket() {
                 <span className="text-[22px] font-extrabold leading-[29px] text-foreground">
                   {order.bookingRef}
                 </span>
-                <QRPlaceholder />
+                <BookingQR value={`TRIPLY:${order.bookingRef}:${order.id}`} />
               </div>
             </div>
 

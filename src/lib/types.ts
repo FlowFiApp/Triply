@@ -6,6 +6,19 @@ export type OfferService = {
   currency: string;
 };
 
+export type OfferConditions = {
+  refund_before_departure?: {
+    allowed: boolean;
+    penalty_amount?: string;
+    penalty_currency?: string;
+  };
+  change_before_departure?: {
+    allowed: boolean;
+    penalty_amount?: string;
+    penalty_currency?: string;
+  };
+};
+
 export type FlightOffer = {
   id: string;
   airline: string;
@@ -25,6 +38,7 @@ export type FlightOffer = {
   stops: string;
   direct: boolean;
   services: OfferService[];
+  conditions?: OfferConditions;
 };
 
 export type PassengerInfo = {

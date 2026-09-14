@@ -51,7 +51,7 @@ function normalizeOffer(raw: any): FlightOffer {
     duration: formatDuration(slice.duration),
     stops: stops === 0 ? "Direct" : `${stops} Stop${stops > 1 ? "s" : ""}`,
     direct: stops === 0,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     services: (raw.available_services ?? []).map((s: any) => ({
       id: s.id,
       name: s.name,
@@ -59,6 +59,7 @@ function normalizeOffer(raw: any): FlightOffer {
       totalAmount: Number(s.total_amount ?? 0),
       currency: s.total_currency ?? "USD",
     })),
+    conditions: raw.conditions ?? undefined,
   };
 }
 
@@ -362,7 +363,11 @@ return (
         </div>
       </div>
 
-<FareRulesSheet open={rulesOpen} onClose={() => setRulesOpen(false)} />
+<FareRulesSheet
+        open={rulesOpen}
+        onClose={() => setRulesOpen(false)}
+        conditions={offer.conditions}
+      />
 
       <SeatMapSheet
         key={seatOpen ? "open" : "closed"}

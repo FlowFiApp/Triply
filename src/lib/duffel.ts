@@ -143,6 +143,7 @@ export async function searchFlights(
         totalAmount: Number(s.total_amount ?? 0),
         currency: s.total_currency ?? "USD",
       })),
+      conditions: offer.conditions ?? undefined,
     };
   });
 }

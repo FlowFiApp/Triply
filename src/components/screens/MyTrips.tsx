@@ -155,8 +155,11 @@ export default function MyTrips() {
 
   useEffect(() => {
     let ignore = false;
+    const email = readFlow().passenger?.email ?? "";
     Promise.all([
-      fetch("/api/bookings").then((r) => r.json()),
+      fetch(
+        `/api/bookings${email ? `?email=${encodeURIComponent(email)}` : ""}`,
+      ).then((r) => r.json()),
       Promise.resolve(
         (() => {
           const flow = readFlow();

@@ -6,7 +6,6 @@ import {
   Check,
   ChevronRight,
   Clock,
-  Luggage,
   Minus,
   Plus,
   ShieldCheck,
@@ -320,36 +319,43 @@ export function WalletConnectSheet({
 export function FareRulesSheet({
   open,
   onClose,
+  conditions,
 }: {
   open: boolean;
   onClose: () => void;
+  conditions?: import("@/lib/types").OfferConditions;
 }) {
-  const rules = [
-    {
+  const rules: Array<{ icon: typeof ShieldCheck; label: string; value: string; color: string }> = [];
+  const refund = conditions?.refund_before_departure;
+  const change = conditions?.change_before_departure;
+  if (refund) {
+    rules.push({
       icon: ShieldCheck,
-      label: "Refundable Status",
-      value: "Fully Refundable",
-      color: "#22c55e",
-    },
-    {
-      icon: Clock,
-      label: "Cancellation Window",
-      value: "Free cancellation within 24 hours",
-      color: "#22c55e",
-    },
-    {
+      label: "Refund before departure",
+      value: refund.allowed
+        ? `Refundable · ${refund.penalty_currency ?? ""} ${refund.penalty_amount ?? "0"} penalty`
+        : "Non-refundable",
+      color: refund.allowed ? "#22c55e" : "#ef4444",
+    });
+  }
+  if (change) {
+    rules.push({
       icon: Ticket,
-      label: "Change Fee Breakdown",
-      value: "100 USDT change fee before departure",
-      color: "#ef4444",
-    },
-    {
-      icon: Luggage,
-      label: "Baggage Inclusion",
-      value: "1x 23kg checked bag, 1x 7kg cabin",
-      color: "#22c55e",
-    },
-  ];
+      label: "Change before departure",
+      value: change.allowed
+        ? `Changeable · ${change.penalty_currency ?? ""} ${change.penalty_amount ?? "0"} penalty`
+        : "Non-changeable",
+      color: change.allowed ? "#22c55e" : "#ef4444",
+    });
+  }
+  if (!rules.length) {
+    rules.push({
+      icon: Clock,
+      label: "Fare conditions",
+      value: "Conditions not provided by the airline. Contact support for details.",
+      color: "#64748b",
+    });
+  }
   return (
     <Sheet open={open} onClose={onClose}>
       <SheetTitle>Fare Rules &amp; Refund Policy</SheetTitle>

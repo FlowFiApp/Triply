@@ -49,7 +49,7 @@ export default function PlacesCombobox({
       .catch(() => {});
     return () => {
       cancelled = true;
-      google.maps.event?.clearInstanceListeners(autocomplete);
+      if (autocomplete) google.maps.event?.clearInstanceListeners(autocomplete);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);

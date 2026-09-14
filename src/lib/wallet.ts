@@ -205,15 +205,19 @@ export async function payUsdt({
   })) as string;
 
   // Wait for the receipt and confirm the Transfer hit the treasury.
-  let receipt: { status?: string; logs?: Array<{ address: string; topics: string[] }> } | null = null;
+  type Receipt = {
+    status?: string;
+    logs?: Array<{ address: string; topics: string[] }>;
+  };
+  let receipt: Receipt | null = null;
   for (let i = 0; i < 40; i++) {
     await new Promise((r) => setTimeout(r, 3000));
-    const r = (await provider.request({
+    const res = (await provider.request({
       method: "eth_getTransactionReceipt",
       params: [hash],
-    })) as typeof receipt | null;
-    if (r) {
-      receipt = r;
+    })) as Receipt | null;
+    if (res) {
+      receipt = res;
       break;
     }
   }
