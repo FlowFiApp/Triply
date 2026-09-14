@@ -6,6 +6,7 @@ import {
   BedDouble,
   Car,
   ChevronRight,
+  Copy,
   Moon,
   Plane,
   Sun,
@@ -19,9 +20,11 @@ import {
 import { useTheme } from "@/lib/theme";
 import { useWalletState } from "@/lib/wallet-state";
 import { usePoints } from "@/lib/points";
+import { useToast } from "@/lib/toast";
 import { NimiqAmount } from "@/components/ui/Nimiq";
 import RedeemSheet from "@/components/screens/RedeemSheet";
 import { CHAINS } from "@/lib/wallet";
+import { copyNimiqAddress, copyText } from "@/lib/nimiq";
 
 function Row({
   label,
@@ -42,11 +45,20 @@ export default function Profile() {
   const { theme, setTheme } = useTheme();
   const { state, connect, disconnect } = useWalletState();
   const { earned, available } = usePoints();
+  const { toast } = useToast();
   const [redeemOpen, setRedeemOpen] = useState(false);
   const walletAddr = state.nimiqAddress ?? state.evmAddress;
   const short = walletAddr
     ? `${walletAddr.slice(0, 6)}…${walletAddr.slice(-4)}`
     : null;
+
+  const copyAddress = () => {
+    if (!walletAddr) return;
+    const ok = state.nimiqAddress
+      ? copyNimiqAddress(state.nimiqAddress)
+      : copyText(walletAddr);
+    toast(ok ? "success" : "error", ok ? "Address copied." : "Copy failed.");
+  };
 
   return (
     <MobileShell>
@@ -58,7 +70,14 @@ export default function Profile() {
               Triply Traveler
             </h1>
             <p className="text-[12px] text-muted">
-              {short ? `${short} · ${CHAINS.polygon.name}` : "No wallet connected"}
+              {short ? (
+                <button onClick={copyAddress} className="tap inline-flex items-center gap-1 font-semibold text-foreground">
+                  {short} · {CHAINS.polygon.name}
+                  <Copy size={12} className="text-muted" />
+                </button>
+              ) : (
+                "No wallet connected"
+              )}
             </p>
           </div>
 
@@ -97,17 +116,28 @@ export default function Profile() {
               Wallet
             </h2>
             <Row label={short ?? "Connect wallet"}>
-              <button
-                onClick={() => (state.connected ? disconnect() : connect())}
-                className={`flex h-8 items-center gap-1.5 rounded-full px-3 text-[12px] font-bold ${
-                  state.connected
-                    ? "border border-border bg-card-2 text-foreground"
-                    : "bg-accent text-accent-2"
-                }`}
-              >
-                <Wallet size={13} />
-                {state.connected ? "Disconnect" : "Connect"}
-              </button>
+              <div className="flex items-center gap-2">
+                {state.connected ? (
+                  <button
+                    onClick={copyAddress}
+                    aria-label="Copy address"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card-2 text-foreground"
+                  >
+                    <Copy size={13} />
+                  </button>
+                ) : null}
+                <button
+                  onClick={() => (state.connected ? disconnect() : connect())}
+                  className={`flex h-8 items-center gap-1.5 rounded-full px-3 text-[12px] font-bold ${
+                    state.connected
+                      ? "border border-border bg-card-2 text-foreground"
+                      : "bg-accent text-accent-2"
+                  }`}
+                >
+                  <Wallet size={13} />
+                  {state.connected ? "Disconnect" : "Connect"}
+                </button>
+              </div>
             </Row>
           </div>
 

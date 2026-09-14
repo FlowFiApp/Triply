@@ -1,12 +1,23 @@
 import { redeemPoints } from "@/lib/db";
 import { sendNimReward } from "@/lib/nimiq-payout";
+import { ValidationUtils } from "@nimiq/utils/validation-utils";
+
+function cleanRecipient(raw: string): string {
+  if (!raw) return "";
+  try {
+    if (!ValidationUtils.isValidAddress(raw)) return "";
+    return ValidationUtils.normalizeAddress(raw);
+  } catch {
+    return "";
+  }
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const key = String(body.key ?? "");
     const amount = Math.round(Number(body.amount ?? 0));
-    const recipient = String(body.recipient ?? ""); // user's Nimiq address
+    const recipient = cleanRecipient(String(body.recipient ?? "")); // user's Nimiq address
 
     if (!key) return Response.json({ ok: false, error: "Missing identity." }, { status: 400 });
     if (amount <= 0) return Response.json({ ok: false, error: "Invalid amount." }, { status: 400 });

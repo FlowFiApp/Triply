@@ -33,7 +33,7 @@ export function NimiqAmount({
 }) {
   return (
     <span className={`inline-flex items-center gap-1 ${className}`}>
-      {Math.round(value).toLocaleString()}
+      {formatAmount(value, 0)}
       <NimiqIcon size={iconSize} />
     </span>
   );

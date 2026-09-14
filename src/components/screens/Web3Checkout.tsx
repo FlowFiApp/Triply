@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Clock, RadioReceiver, Wallet } from "lucide-react";
+import { Clock, Copy, RadioReceiver, Wallet } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { WalletConnectSheet } from "@/components/screens/sheets";
 import { Price } from "@/components/ui/feedback";
@@ -14,6 +14,7 @@ import { useToast } from "@/lib/toast";
 import { useWalletState } from "@/lib/wallet-state";
 import { CHAINS } from "@/lib/wallet";
 import { clientConfig } from "@/lib/config";
+import { copyNimiqAddress, copyText } from "@/lib/nimiq";
 
 function BreakdownRow({
   label,
@@ -57,14 +58,23 @@ function WalletStatusBar({
   evmAddress?: string;
   onDisconnect: () => void;
 }) {
+  const { toast } = useToast();
   const show = evmAddress ?? nimiqAddress ?? "";
   const short = show ? `${show.slice(0, 6)}…${show.slice(-4)}` : "";
+
+  const copy = () => {
+    if (!show) return;
+    const ok = nimiqAddress ? copyNimiqAddress(nimiqAddress) : copyText(show);
+    toast(ok ? "success" : "error", ok ? "Address copied." : "Copy failed.");
+  };
+
   return (
     <div className="flex items-center justify-between rounded-xl border border-accent-2 bg-card px-3 py-2.5">
-      <span className="flex items-center gap-2 text-[12px] font-semibold text-foreground">
+      <button onClick={copy} className="tap flex items-center gap-2 text-[12px] font-semibold text-foreground">
         <span className="h-2 w-2 rounded-full bg-accent-2" />
         {short} · {CHAINS.polygon.name}
-      </span>
+        <Copy size={12} className="text-muted" />
+      </button>
       <button
         onClick={onDisconnect}
         className="text-[11px] font-bold text-muted"
