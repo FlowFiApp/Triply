@@ -16,6 +16,9 @@ export type Flow = {
   passenger?: PassengerInfo;
   offer?: FlightOffer;
   offers?: FlightOffer[];
+  passengers?: number;
+  selectedServiceIds?: string[];
+  seat?: string;
   amount?: number;
   order?: OrderRecord;
   orderId?: string;

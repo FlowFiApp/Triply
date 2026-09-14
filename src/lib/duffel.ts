@@ -3,6 +3,7 @@ import "server-only";
 
 import { Duffel } from "@duffel/api";
 import { formatDuration, format24 } from "@/lib/format";
+import { realPrice, testPrice } from "@/lib/pricing";
 
 const TOKEN = process.env.DUFFEL_ACCESS_TOKEN;
 
@@ -115,8 +116,8 @@ export async function searchFlights(
   return (data.offers ?? []).slice(0, 50).map((offer: any) => {
     const slice = offer.slices?.[0] ?? {};
     const seg = slice.segments?.[0] ?? {};
-    const tax = Number(offer.tax_amount ?? offer.taxes?.[0]?.amount ?? 0);
-    const total = Number(offer.total_amount ?? 0);
+    const tax = testPrice(Number(offer.tax_amount ?? offer.taxes?.[0]?.amount ?? 0));
+    const total = testPrice(Number(offer.total_amount ?? 0));
     const stopsCount = (slice.segments?.length ?? 1) - 1;
     return {
       id: offer.id,
@@ -140,7 +141,7 @@ export async function searchFlights(
         id: s.id,
         name: s.name,
         type: s.type,
-        totalAmount: Number(s.total_amount ?? 0),
+        totalAmount: testPrice(Number(s.total_amount ?? 0)),
         currency: s.total_currency ?? "USD",
       })),
       conditions: offer.conditions ?? undefined,
@@ -220,7 +221,13 @@ export async function createFlightOrder({
   const cardId = process.env.DUFFEL_CARD_ID;
   const payments: any[] = cardId
     ? [{ type: "card", card_id: cardId }]
-    : [{ type: "balance", currency, amount: String(Math.round(amount * 100)) }];
+    : [
+        {
+          type: "balance",
+          currency,
+          amount: String(Math.round(realPrice(amount) * 100)),
+        },
+      ];
   const { data } = await duffel.orders.create({
     type: "instant",
     selected_offers: [offerId],

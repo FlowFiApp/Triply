@@ -7,11 +7,13 @@ import { Luggage, MonitorPlay } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { FareRulesSheet } from "@/components/screens/sheets";
 import SeatMapSheet from "@/components/screens/SeatMapSheet";
+import Identicon from "@/components/ui/identicon";
 import { Price, SkeletonRows } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import { useQueryParam } from "@/lib/query";
 import { readFlow, writeFlow } from "@/lib/store";
 import { formatDuration } from "@/lib/format";
+import { testPrice } from "@/lib/pricing";
 import type { FlightOffer, OfferService } from "@/lib/types";
 
 const SERVICE_ICON: Record<string, ElementType> = {
@@ -23,8 +25,8 @@ const SERVICE_ICON: Record<string, ElementType> = {
 function normalizeOffer(raw: any): FlightOffer {
   const slice = raw.slices?.[0] ?? {};
   const seg = slice.segments?.[0] ?? {};
-  const tax = Number(raw.tax_amount ?? 0);
-  const total = Number(raw.total_amount ?? 0);
+  const tax = testPrice(Number(raw.tax_amount ?? 0));
+  const total = testPrice(Number(raw.total_amount ?? 0));
   const fmt = (iso: string) => {
     if (!iso) return "--:--";
     const d = new Date(iso);
@@ -51,12 +53,12 @@ function normalizeOffer(raw: any): FlightOffer {
     duration: formatDuration(slice.duration),
     stops: stops === 0 ? "Direct" : `${stops} Stop${stops > 1 ? "s" : ""}`,
     direct: stops === 0,
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     services: (raw.available_services ?? []).map((s: any) => ({
       id: s.id,
       name: s.name,
       type: s.type,
-      totalAmount: Number(s.total_amount ?? 0),
+      totalAmount: testPrice(Number(s.total_amount ?? 0)),
       currency: s.total_currency ?? "USD",
     })),
     conditions: raw.conditions ?? undefined,
@@ -71,7 +73,9 @@ function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
         on ? "justify-end bg-accent-2" : "justify-start bg-card-2"
       }`}
     >
-      <span className={`h-5 w-5 rounded-full ${on ? "bg-accent" : "bg-muted"}`} />
+      <span
+        className={`h-5 w-5 rounded-full ${on ? "bg-accent" : "bg-muted"}`}
+      />
     </button>
   );
 }
@@ -79,7 +83,9 @@ function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
 export default function FlightDetails() {
   const router = useRouter();
   const offerId = useQueryParam("offer", "");
-  const [rulesOpen, setRulesOpen] = useState(useQueryParam("sheet", "") === "rules");
+  const [rulesOpen, setRulesOpen] = useState(
+    useQueryParam("sheet", "") === "rules",
+  );
   const [offer, setOffer] = useState<FlightOffer | null>(
     () => readFlow().offer ?? null,
   );
@@ -87,9 +93,14 @@ export default function FlightDetails() {
   const [error, setError] = useState(
     offerId ? "" : "No offer selected. Search for a flight first.",
   );
-const [selected, setSelected] = useState<Record<string, boolean>>({});
+  const [selected, setSelected] = useState<Record<string, boolean>>(() => {
+    const ids = readFlow().selectedServiceIds ?? [];
+    return Object.fromEntries(ids.map((id) => [id, true]));
+  });
   const [seatOpen, setSeatOpen] = useState(false);
-  const [chosenSeat, setChosenSeat] = useState<string | null>(null);
+  const [chosenSeat, setChosenSeat] = useState<string | null>(
+    () => readFlow().seat ?? null,
+  );
   const similar = (readFlow().offers ?? [])
     .filter((o) => o.id !== offer?.id)
     .slice(0, 6);
@@ -141,7 +152,9 @@ const [selected, setSelected] = useState<Record<string, boolean>>({});
     return (
       <MobileShell>
         <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-10 text-center">
-          <p className="text-[16px] font-bold text-foreground">Flight Details</p>
+          <p className="text-[16px] font-bold text-foreground">
+            Flight Details
+          </p>
           <p className="text-[13px] text-muted">{error}</p>
           <button
             onClick={() => router.push("/search")}
@@ -160,9 +173,14 @@ const [selected, setSelected] = useState<Record<string, boolean>>({});
   const selectedServices: OfferService[] = addons.filter((a) => selected[a.id]);
   const total =
     offer.price + selectedServices.reduce((sum, s) => sum + s.totalAmount, 0);
+  const passengerCount = readFlow().passengers ?? 1;
 
   const proceed = () => {
-    writeFlow({ offer: { ...offer, services: addons }, amount: total });
+    writeFlow({
+      offer: { ...offer, services: addons },
+      amount: total,
+      passengers: passengerCount,
+    });
     router.push("/passengers");
   };
 
@@ -170,7 +188,7 @@ const [selected, setSelected] = useState<Record<string, boolean>>({});
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-<div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-5 py-3">
+          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-5 py-3">
             <button
               onClick={() => router.push("/search")}
               className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground"
@@ -203,14 +221,17 @@ const [selected, setSelected] = useState<Record<string, boolean>>({});
                   <span className="text-[14px] font-bold text-foreground">
                     {offer.depTime}
                   </span>
-                  <span className="text-[11px] text-muted">{offer.depDate}</span>
+                  <span className="text-[11px] text-muted">
+                    {offer.depDate}
+                  </span>
                 </div>
                 <div className="flex w-4 flex-col items-center">
                   <span className="h-2 w-2 rounded-full border border-accent-2 bg-accent-2" />
                   <span className="w-px flex-1 bg-border" />
                 </div>
                 <div className="flex flex-1 flex-col gap-1">
-                  <span className="text-[14px] font-bold text-foreground">
+                  <span className="flex items-center gap-2 text-[14px] font-bold text-foreground">
+                    <Identicon seed={`${offer.airlineCode}${offer.flightNumber}`} size={18} />
                     {offer.airline} ({offer.origin})
                   </span>
                   <span className="text-[12px] text-muted">
@@ -239,7 +260,7 @@ const [selected, setSelected] = useState<Record<string, boolean>>({});
                           {offer.stops}
                         </span>
                       </div>
-<div className="flex flex-col gap-0.5">
+                      <div className="flex flex-col gap-0.5">
                         <span className="text-[10px] text-muted">Fare</span>
                         <span className="text-[12px] font-semibold text-accent-2">
                           <UsdtAmount value={offer.price} />
@@ -255,7 +276,9 @@ const [selected, setSelected] = useState<Record<string, boolean>>({});
                   <span className="text-[14px] font-bold text-foreground">
                     {offer.arrTime}
                   </span>
-                  <span className="text-[11px] text-muted">{offer.arrDate}</span>
+                  <span className="text-[11px] text-muted">
+                    {offer.arrDate}
+                  </span>
                 </div>
                 <div className="flex w-4 flex-col items-center">
                   <span className="h-2 w-2 rounded-full border border-accent-2 bg-accent" />
@@ -277,9 +300,11 @@ const [selected, setSelected] = useState<Record<string, boolean>>({});
               <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4">
                 {addons.map((a, i) => {
                   const Icon = SERVICE_ICON[a.type] ?? MonitorPlay;
-return (
+                  return (
                     <div key={a.id}>
-                      {i > 0 ? <div className="mb-4 h-px w-full bg-border" /> : null}
+                      {i > 0 ? (
+                        <div className="mb-4 h-px w-full bg-border" />
+                      ) : null}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <Icon size={20} className="text-accent-2" />
@@ -325,20 +350,21 @@ return (
                 Similar Flights
               </h2>
               <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
-{similar.map((s, i) => (
+                {similar.map((s, i) => (
                   <button
                     key={s.id}
                     onClick={() => selectSimilar(s)}
                     className="animate-fade-up flex w-[150px] shrink-0 flex-col gap-1 rounded-xl border border-border bg-card p-3 text-left"
                     style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}
                   >
-                    <span className="text-[12px] font-bold text-foreground">
+                    <span className="flex items-center gap-2 text-[12px] font-bold text-foreground">
+                      <Identicon seed={`${s.airlineCode}${s.flightNumber}`} size={18} />
                       {s.airline} · {s.flightNumber}
                     </span>
                     <span className="text-[11px] text-muted">
                       {s.depTime} → {s.arrTime} · {s.duration}
                     </span>
-<span className="text-[14px] font-bold text-accent-2">
+                    <span className="text-[14px] font-bold text-accent-2">
                       <UsdtAmount value={s.price} />
                     </span>
                   </button>
@@ -348,11 +374,18 @@ return (
           ) : null}
         </div>
 
-<div aria-hidden className="h-[84px] w-full shrink-0" />
-      <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[390px] -translate-x-1/2 border-t border-border bg-card px-5 pb-4 pt-3 pb-safe">
+        <div aria-hidden className="h-[84px] w-full shrink-0" />
+        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-4 pt-3 pb-safe">
           <div className="flex flex-col items-center gap-1">
-            <span className="text-[12px] text-muted">Total (1 Passenger)</span>
-            <Price usd={total} showUsdt={false} className="text-[20px] leading-6 text-foreground" bold />
+            <span className="text-[12px] text-muted">
+              Total ({passengerCount} Passenger{passengerCount > 1 ? "s" : ""})
+            </span>
+            <Price
+              usd={total}
+              showUsdt={false}
+              className="text-[20px] leading-6 text-foreground"
+              bold
+            />
           </div>
           <button
             onClick={proceed}
@@ -363,7 +396,7 @@ return (
         </div>
       </div>
 
-<FareRulesSheet
+      <FareRulesSheet
         open={rulesOpen}
         onClose={() => setRulesOpen(false)}
         conditions={offer.conditions}
@@ -384,4 +417,3 @@ return (
     </MobileShell>
   );
 }
-

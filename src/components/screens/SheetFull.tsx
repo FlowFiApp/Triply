@@ -18,17 +18,11 @@ import { MobileShell } from "@/components/shell";
 
 export type SheetKind = "class" | "filter" | "wallet" | "rules";
 
-function ActionBar({
-  label,
-  onApply,
-}: {
-  label: string;
-  onApply: () => void;
-}) {
-return (
+function ActionBar({ label, onApply }: { label: string; onApply: () => void }) {
+  return (
     <>
       <div aria-hidden className="h-[84px] w-full shrink-0" />
-      <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[390px] -translate-x-1/2 border-t border-border bg-card px-5 pb-2 pt-5">
+      <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-2 pt-5">
         <button
           onClick={onApply}
           className="flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"
@@ -103,29 +97,31 @@ function ClassContent() {
       <div className="flex flex-col gap-3 px-5 py-5">
         <span className="text-[14px] font-bold text-muted">Cabin Class</span>
         <div className="flex flex-col gap-2">
-          {["Economy", "Premium Economy", "Business", "First Class"].map((c) => {
-            const selected = cabin === c;
-            return (
-              <button
-                key={c}
-                onClick={() => setCabin(c)}
-                className={`flex h-[43px] items-center justify-between rounded-[10px] border bg-card px-3 text-[14px] font-semibold text-foreground ${
-                  selected ? "border-accent-2" : "border-border"
-                }`}
-              >
-                {c}
-                <span
-                  className={`flex h-[18px] w-[18px] items-center justify-center rounded-full border ${
+          {["Economy", "Premium Economy", "Business", "First Class"].map(
+            (c) => {
+              const selected = cabin === c;
+              return (
+                <button
+                  key={c}
+                  onClick={() => setCabin(c)}
+                  className={`flex h-[43px] items-center justify-between rounded-[10px] border bg-card px-3 text-[14px] font-semibold text-foreground ${
                     selected ? "border-accent-2" : "border-border"
                   }`}
                 >
-                  {selected ? (
-                    <span className="h-2 w-2 rounded-full bg-accent-2" />
-                  ) : null}
-                </span>
-              </button>
-            );
-          })}
+                  {c}
+                  <span
+                    className={`flex h-[18px] w-[18px] items-center justify-center rounded-full border ${
+                      selected ? "border-accent-2" : "border-border"
+                    }`}
+                  >
+                    {selected ? (
+                      <span className="h-2 w-2 rounded-full bg-accent-2" />
+                    ) : null}
+                  </span>
+                </button>
+              );
+            },
+          )}
         </div>
       </div>
     </>
@@ -134,7 +130,10 @@ function ClassContent() {
 
 function FilterContent() {
   const [stops, setStops] = useState("Non-stop");
-  const [airlines, setAirlines] = useState(["British Airways", "Qatar Airways"]);
+  const [airlines, setAirlines] = useState([
+    "British Airways",
+    "Qatar Airways",
+  ]);
   return (
     <>
       <Title>Filter &amp; Sort</Title>
@@ -173,35 +172,38 @@ function FilterContent() {
       <div className="flex flex-col gap-3 px-5 py-5">
         <span className="text-[14px] font-bold text-muted">Airlines</span>
         <div className="flex flex-col gap-2">
-          {["British Airways", "Qatar Airways", "Emirates", "Turkish Airlines"].map(
-            (a) => {
-              const checked = airlines.includes(a);
-              return (
-                <button
-                  key={a}
-                  onClick={() =>
-                    setAirlines((prev) =>
-                      prev.includes(a)
-                        ? prev.filter((x) => x !== a)
-                        : [...prev, a],
-                    )
-                  }
-                  className="flex h-[39px] items-center justify-between rounded-lg border border-border bg-card px-2.5 text-[14px] text-foreground"
+          {[
+            "British Airways",
+            "Qatar Airways",
+            "Emirates",
+            "Turkish Airlines",
+          ].map((a) => {
+            const checked = airlines.includes(a);
+            return (
+              <button
+                key={a}
+                onClick={() =>
+                  setAirlines((prev) =>
+                    prev.includes(a)
+                      ? prev.filter((x) => x !== a)
+                      : [...prev, a],
+                  )
+                }
+                className="flex h-[39px] items-center justify-between rounded-lg border border-border bg-card px-2.5 text-[14px] text-foreground"
+              >
+                {a}
+                <span
+                  className={`flex h-[18px] w-[18px] items-center justify-center rounded ${
+                    checked ? "bg-accent-2" : "border border-border bg-card"
+                  }`}
                 >
-                  {a}
-                  <span
-                    className={`flex h-[18px] w-[18px] items-center justify-center rounded ${
-                      checked ? "bg-accent-2" : "border border-border bg-card"
-                    }`}
-                  >
-                    {checked ? (
-                      <Check size={10} className="text-accent" strokeWidth={3} />
-                    ) : null}
-                  </span>
-                </button>
-              );
-            },
-          )}
+                  {checked ? (
+                    <Check size={10} className="text-accent" strokeWidth={3} />
+                  ) : null}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </>
@@ -239,10 +241,30 @@ function WalletContent() {
 
 function RulesContent() {
   const rules = [
-    { icon: ShieldCheck, label: "Refundable Status", value: "Fully Refundable", color: "#22c55e" },
-    { icon: Clock, label: "Cancellation Window", value: "Free cancellation within 24 hours", color: "#22c55e" },
-    { icon: Ticket, label: "Change Fee Breakdown", value: "100 USDT change fee before departure", color: "#ef4444" },
-    { icon: Luggage, label: "Baggage Inclusion", value: "1x 23kg checked bag, 1x 7kg cabin", color: "#22c55e" },
+    {
+      icon: ShieldCheck,
+      label: "Refundable Status",
+      value: "Fully Refundable",
+      color: "#22c55e",
+    },
+    {
+      icon: Clock,
+      label: "Cancellation Window",
+      value: "Free cancellation within 24 hours",
+      color: "#22c55e",
+    },
+    {
+      icon: Ticket,
+      label: "Change Fee Breakdown",
+      value: "100 USDT change fee before departure",
+      color: "#ef4444",
+    },
+    {
+      icon: Luggage,
+      label: "Baggage Inclusion",
+      value: "1x 23kg checked bag, 1x 7kg cabin",
+      color: "#22c55e",
+    },
   ];
   return (
     <>
@@ -281,10 +303,22 @@ const CONFIG: Record<
   SheetKind,
   { label: string; back: string; content: ReactNode }
 > = {
-  class: { label: "Apply Selection", back: "/passengers", content: <ClassContent /> },
-  filter: { label: "Apply Filters", back: "/search", content: <FilterContent /> },
+  class: {
+    label: "Apply Selection",
+    back: "/passengers",
+    content: <ClassContent />,
+  },
+  filter: {
+    label: "Apply Filters",
+    back: "/search",
+    content: <FilterContent />,
+  },
   wallet: { label: "Continue", back: "/checkout", content: <WalletContent /> },
-  rules: { label: "Got It, Dismiss", back: "/flight", content: <RulesContent /> },
+  rules: {
+    label: "Got It, Dismiss",
+    back: "/flight",
+    content: <RulesContent />,
+  },
 };
 
 export default function SheetFull({ kind }: { kind: SheetKind }) {
@@ -306,5 +340,3 @@ export default function SheetFull({ kind }: { kind: SheetKind }) {
     </MobileShell>
   );
 }
-
-

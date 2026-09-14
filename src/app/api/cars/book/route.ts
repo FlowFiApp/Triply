@@ -1,5 +1,6 @@
 import { createCarBooking, duffelErrorMessage, ensureCustomerUser } from "@/lib/duffel";
 import type { CarBooking } from "@/lib/types";
+import { testPrice } from "@/lib/pricing";
 
 export async function POST(request: Request) {
   try {
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
       });
       await earnPoints({
         userKey: user.key,
-        amountUsd: Number(booking.total_amount ?? 0),
+        amountUsd: testPrice(Number(booking.total_amount ?? 0)),
         bookingRef: booking.reference ?? booking.id,
         bookingKind: "car",
         orderId: booking.id,
@@ -49,7 +50,7 @@ export async function POST(request: Request) {
       pickupDate: booking.pickup_date ?? "",
       dropoffDate: booking.dropoff_date ?? "",
       pickupLocation: booking.pickup_location?.name ?? "",
-      totalAmount: Number(booking.total_amount ?? 0),
+      totalAmount: testPrice(Number(booking.total_amount ?? 0)),
       currency: booking.total_currency ?? "USD",
     };
     return Response.json({ live: true, booking: result });

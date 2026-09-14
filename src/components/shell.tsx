@@ -10,7 +10,10 @@ import {
   Bookmark,
   User,
 } from "lucide-react";
+import Identicon from "@/components/ui/identicon";
 import { useI18n } from "@/lib/i18n";
+import { useWalletState } from "@/lib/wallet-state";
+import { ensureDeviceId } from "@/lib/identity";
 
 export function MobileShell({ children }: { children: ReactNode }) {
   return (
@@ -25,25 +28,17 @@ export function MobileShell({ children }: { children: ReactNode }) {
 export function Avatar({
   size = 34,
   href = "/profile",
+  seed,
 }: {
   size?: number;
   href?: string;
+  seed?: string;
 }) {
+  const { state } = useWalletState();
+  const seedValue = seed ?? state.nimiqAddress ?? (ensureDeviceId() || "triply");
   return (
     <Link href={href} aria-label="Profile">
-      <span
-        className="block overflow-hidden rounded-full border border-accent-2"
-        style={{ width: size, height: size }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://i.pravatar.cc/100?img=11"
-          alt="Avatar"
-          width={size}
-          height={size}
-          className="h-full w-full object-cover"
-        />
-      </span>
+      <Identicon seed={seedValue} size={size} />
     </Link>
   );
 }
@@ -116,7 +111,7 @@ export function BottomTabBar({ active = "Home" }: { active?: string }) {
   return (
     <>
       <div aria-hidden className="h-[84px] w-full shrink-0" />
-      <div className="fixed bottom-0 left-1/2 z-40 w-full max-w-[390px] -translate-x-1/2 border-t border-border bg-card pb-safe">
+      <div className="fixed bottom-0 left-1/2 z-40 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card pb-safe">
         <div className="flex h-16 w-full items-center justify-between px-6">
           {TABS.map((tab) => {
             const label = t(tab.key);

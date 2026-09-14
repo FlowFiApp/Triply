@@ -331,7 +331,7 @@ export default function MyTrips() {
                 onChange={(e) => setRef(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && lookup()}
                 placeholder="Find by booking reference"
-                className="h-11 flex-1 bg-transparent text-[13px] text-foreground outline-none placeholder:text-muted"
+                className="h-11 flex-1 bg-transparent text-[16px] text-foreground outline-none placeholder:text-muted"
               />
               <button onClick={lookup} className="text-[12px] font-bold text-accent-2">
                 Find
@@ -430,7 +430,7 @@ export default function MyTrips() {
                   type="date"
                   value={changeDate}
                   onChange={(e) => setChangeDate(e.target.value)}
-                  className="h-[43px] rounded-[10px] border border-border bg-card px-3 text-[14px] font-semibold text-foreground outline-none"
+                  className="h-[43px] rounded-[10px] border border-border bg-card px-3 text-[16px] font-semibold text-foreground outline-none"
                 />
               </label>
               <button

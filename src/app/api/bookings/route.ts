@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { duffelErrorMessage, listOrders, listStayBookings } from "@/lib/duffel";
+import { testPrice } from "@/lib/pricing";
 
 function normalizeOrder(o: any) {
   const seg = o.slices?.[0]?.segments?.[0] ?? {};
@@ -16,7 +17,7 @@ function normalizeOrder(o: any) {
     arrTime: seg.arriving_at ?? "",
     dep: seg.origin?.iata_code ?? "",
     arr: seg.destination?.iata_code ?? "",
-    amount: Number(o.total_amount ?? 0),
+    amount: testPrice(Number(o.total_amount ?? 0)),
   };
 }
 
@@ -34,7 +35,7 @@ function normalizeStay(b: any) {
     arrTime: b.check_out_date ?? "",
     dep: "Check-in",
     arr: "Check-out",
-    amount: Number(b.total_amount ?? 0),
+    amount: testPrice(Number(b.total_amount ?? 0)),
   };
 }
 

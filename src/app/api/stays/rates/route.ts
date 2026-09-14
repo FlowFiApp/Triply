@@ -1,5 +1,6 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { duffelErrorMessage, getStayRates } from "@/lib/duffel";
+import { testPrice } from "@/lib/pricing";
 
 export async function GET(request: Request) {
   const resultId = new URL(request.url).searchParams.get("resultId");
@@ -11,7 +12,7 @@ export async function GET(request: Request) {
     return Response.json({
       rates: rates.map((r: any) => ({
         id: r.id,
-        amount: Number(r.total_amount ?? 0),
+        amount: testPrice(Number(r.total_amount ?? 0)),
         currency: r.total_currency ?? "USD",
         name: r.name ?? r.board_type ?? "Room",
         description: r.description ?? "",

@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { ChevronDown, ShieldCheck } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { PassengerClassSheet } from "@/components/screens/sheets";
+import PhoneInput from "@/components/ui/phone-input";
 import { useQueryParam } from "@/lib/query";
 import { writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
@@ -51,7 +52,9 @@ function Field({
       </div>
       <div
         className={`flex h-[43px] items-center justify-between rounded-[10px] border bg-card px-3 transition-colors ${
-          invalid ? "border-red-500" : "border-border focus-within:border-accent-2"
+          invalid
+            ? "border-red-500"
+            : "border-border focus-within:border-accent-2"
         }`}
       >
         <input
@@ -76,6 +79,7 @@ const empty: PassengerInfo = {
   gender: "",
   email: "",
   phone: "",
+  dialCode: "+234",
   passport: "",
 };
 
@@ -94,7 +98,7 @@ export default function PassengerDetails() {
     setInvalid((prev) => ({ ...prev, [k]: false }));
   };
 
-const continueTo = () => {
+  const continueTo = () => {
     const required: (keyof PassengerInfo)[] = [
       "first",
       "last",
@@ -103,7 +107,7 @@ const continueTo = () => {
       "email",
       "phone",
     ];
-    const missing = required.filter((k) => !form[k].trim());
+    const missing = required.filter((k) => !form[k]?.trim());
     if (missing.length) {
       setInvalid(Object.fromEntries(missing.map((k) => [k, true])));
       toast("error", "Please fill in all required fields before continuing.");
@@ -163,7 +167,7 @@ const continueTo = () => {
           </div>
 
           <div className="flex flex-col gap-4 px-5 pb-6 pt-3">
-<div className="flex gap-3">
+            <div className="flex gap-3">
               <Field
                 className="flex-1"
                 label="First Name"
@@ -232,31 +236,19 @@ const continueTo = () => {
               placeholder="you@email.com"
               autoComplete="email"
             />
-<div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1.5">
               <span className="text-[11px] font-semibold text-muted">
                 Phone Number<span className="text-accent-2"> *</span>
               </span>
-              <div
-                className={`flex h-[43px] items-center gap-2 rounded-[10px] border bg-card px-3 transition-colors ${
-                  invalid.phone
-                    ? "border-red-500"
-                    : "border-border focus-within:border-accent-2"
-                }`}
-              >
-                <span className="text-[14px] font-semibold text-accent-2">
-                  +234
-                </span>
-                <span className="h-4 w-px bg-border" />
-                <input
-                  value={form.phone}
-                  onChange={(e) => set("phone")(e.target.value)}
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel-national"
-                  placeholder="801 234 5678"
-                  className="w-full bg-transparent text-[14px] text-foreground outline-none placeholder:text-muted"
-                />
-              </div>
+              <PhoneInput
+                value={form.phone}
+                dialCode={form.dialCode ?? "+234"}
+                onChange={(dialCode, national) => {
+                  setForm((f) => ({ ...f, dialCode, phone: national }));
+                  setInvalid((p) => ({ ...p, phone: false }));
+                }}
+                invalid={invalid.phone}
+              />
             </div>
             <Field
               label="Passport Number"
@@ -269,8 +261,8 @@ const continueTo = () => {
           </div>
         </div>
 
-<div aria-hidden className="h-[84px] w-full shrink-0" />
-      <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[390px] -translate-x-1/2 border-t border-border bg-card px-5 pb-4 pt-3 pb-safe">
+        <div aria-hidden className="h-[84px] w-full shrink-0" />
+        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-4 pt-3 pb-safe">
           <button
             onClick={continueTo}
             className="tap flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"
@@ -280,8 +272,10 @@ const continueTo = () => {
         </div>
       </div>
 
-      <PassengerClassSheet open={classOpen} onClose={() => setClassOpen(false)} />
+      <PassengerClassSheet
+        open={classOpen}
+        onClose={() => setClassOpen(false)}
+      />
     </MobileShell>
   );
 }
-

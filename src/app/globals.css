@@ -126,6 +126,23 @@ html {
   outline-offset: 2px;
 }
 
+/* Plain text inputs and selects: no focus ring, and never smaller than 16px
+   (prevents iOS auto-zoom when focusing). */
+input:focus,
+input:focus-visible,
+select:focus,
+select:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border-color: var(--border);
+}
+
+input,
+select,
+textarea {
+  font-size: 16px !important;
+}
+
 @keyframes shimmer {
   0% {
     background-position: -200% 0;

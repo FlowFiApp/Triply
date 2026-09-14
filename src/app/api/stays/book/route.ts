@@ -1,5 +1,6 @@
 import { createStayBooking, duffelErrorMessage, ensureCustomerUser } from "@/lib/duffel";
 import type { StayBooking } from "@/lib/types";
+import { testPrice } from "@/lib/pricing";
 
 export async function POST(request: Request) {
   try {
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
       });
       await earnPoints({
         userKey: user.key,
-        amountUsd: Number(booking.total_amount ?? 0),
+        amountUsd: testPrice(Number(booking.total_amount ?? 0)),
         bookingRef: booking.reference ?? booking.id,
         bookingKind: "stay",
         orderId: booking.id,
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
       checkIn: booking.check_in_date ?? "",
       checkOut: booking.check_out_date ?? "",
       accommodationName: booking.accommodation?.name ?? "",
-      totalAmount: Number(booking.total_amount ?? 0),
+      totalAmount: testPrice(Number(booking.total_amount ?? 0)),
       currency: booking.total_currency ?? "USD",
       address: booking.accommodation?.address
         ? `${booking.accommodation.address?.line_one ?? ""}, ${booking.accommodation.address?.city_name ?? ""}`

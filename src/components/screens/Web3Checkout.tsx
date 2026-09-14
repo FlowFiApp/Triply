@@ -70,7 +70,10 @@ function WalletStatusBar({
 
   return (
     <div className="flex items-center justify-between rounded-xl border border-accent-2 bg-card px-3 py-2.5">
-      <button onClick={copy} className="tap flex items-center gap-2 text-[12px] font-semibold text-foreground">
+      <button
+        onClick={copy}
+        className="tap flex items-center gap-2 text-[12px] font-semibold text-foreground"
+      >
         <span className="h-2 w-2 rounded-full bg-accent-2" />
         {short} · {CHAINS.polygon.name}
         <Copy size={12} className="text-muted" />
@@ -125,7 +128,9 @@ export default function Web3Checkout() {
     } catch (err) {
       toast(
         "error",
-        err instanceof Error ? err.message : "Payment failed. Please try again.",
+        err instanceof Error
+          ? err.message
+          : "Payment failed. Please try again.",
       );
     } finally {
       setConnecting(false);
@@ -251,7 +256,7 @@ export default function Web3Checkout() {
         </div>
 
         <div aria-hidden className="h-[84px] w-full shrink-0" />
-        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[390px] -translate-x-1/2 border-t border-border bg-card px-5 pb-4 pt-3 pb-safe">
+        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-4 pt-3 pb-safe">
           <div className="mb-3 flex flex-col items-center gap-0.5">
             <span className="text-[12px] text-muted">Total</span>
             <Price usd={amount} className="text-[18px] text-foreground" bold />

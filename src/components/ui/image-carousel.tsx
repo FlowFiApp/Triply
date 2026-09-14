@@ -27,7 +27,7 @@ export default function ImageCarousel({
         alt={alt}
         fill
         priority
-        sizes="390px"
+        sizes="768px"
         className="object-cover"
       />
       {count > 1 ? (

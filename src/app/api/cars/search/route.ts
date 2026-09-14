@@ -1,6 +1,7 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { duffelErrorMessage, geocode, searchCars } from "@/lib/duffel";
 import type { CarOffer } from "@/lib/types";
+import { testPrice } from "@/lib/pricing";
 
 function normalizeCar(r: any): CarOffer {
   const car = r.car ?? {};
@@ -9,7 +10,7 @@ function normalizeCar(r: any): CarOffer {
       new Date(r.pickup_date ?? "").getTime()) /
       86400000,
   ));
-  const total = Number(r.total_amount ?? 0);
+  const total = testPrice(Number(r.total_amount ?? 0));
   return {
     id: r.id ?? r.rate_id,
     name: car.name ?? car.category ?? "Car",

@@ -48,6 +48,7 @@ export type PassengerInfo = {
   gender: string;
   email: string;
   phone: string;
+  dialCode?: string;
   passport: string;
 };
 

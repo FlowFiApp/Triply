@@ -166,7 +166,7 @@ export function Sheet({
         onClick={onClose}
       />
       <div
-        className="relative z-10 w-full max-w-[390px] rounded-t-2xl border-t border-border bg-background animate-sheet-up"
+        className="relative z-10 w-full max-w-[768px] rounded-t-2xl border-t border-border bg-background animate-sheet-up"
         style={{ height }}
       >
         <div className="mx-auto mt-2.5 h-1 w-10 rounded-full bg-muted/50" />

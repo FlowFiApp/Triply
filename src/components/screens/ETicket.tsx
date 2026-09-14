@@ -6,6 +6,7 @@ import { Check, Download, Share2, Wallet } from "lucide-react";
 import { BottomTabBar, MobileShell } from "@/components/shell";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import BookingQR from "@/components/ui/booking-qr";
+import Identicon from "@/components/ui/identicon";
 import { useQueryParam } from "@/lib/query";
 import { readFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
@@ -128,10 +129,8 @@ export default function ETicket() {
             <div className="flex flex-col rounded-2xl border border-border bg-card">
               <div className="flex flex-col gap-4 p-[18px]">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full border border-border bg-card-2 text-[9px] font-bold text-accent-2">
-                      {order.airlineCode || "AV"}
-                    </span>
+<div className="flex items-center gap-2">
+                    <Identicon seed={`${order.airlineCode}${order.flightNumber}`} size={24} />
                     <span className="text-[14px] font-bold text-foreground">
                       {order.airline}
                     </span>

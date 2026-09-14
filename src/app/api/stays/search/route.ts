@@ -1,11 +1,12 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { duffelErrorMessage, geocode, searchStays } from "@/lib/duffel";
 import type { StayOffer } from "@/lib/types";
+import { testPrice } from "@/lib/pricing";
 
 function normalizeStay(r: any): StayOffer {
   const acc = r.accommodation ?? {};
   const city = acc.location?.city ?? acc.address?.city_name ?? "";
-  const amount = Number(r.cheapest_rate_total_amount ?? 0);
+  const amount = testPrice(Number(r.cheapest_rate_total_amount ?? 0));
   const nights = Math.max(
     1,
     Math.round(

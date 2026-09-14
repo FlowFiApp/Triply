@@ -151,7 +151,7 @@ export default function DateRangePicker({
         className="absolute inset-0 bg-black/50 animate-fade-in"
         onClick={onClose}
       />
-      <div className="relative z-10 w-full max-w-[390px] rounded-t-2xl border-t border-border bg-background p-5 pb-7 animate-sheet-up">
+      <div className="relative z-10 w-full max-w-[768px] rounded-t-2xl border-t border-border bg-background p-5 pb-7 animate-sheet-up">
         <div className="mb-3 flex items-center justify-between">
           <button
             onClick={prev}

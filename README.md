@@ -26,7 +26,7 @@ cp .env.local.example .env.local   # optional: add DUFFEL_ACCESS_TOKEN
 npm run dev
 ```
 
-Open <http://localhost:3000>. The app renders inside a 390px mobile frame and
+Open <http://localhost:3000>. The app renders inside a 768px mobile frame and
 works in a normal browser; inside Nimiq Pay the wallet provider is used for
 real USDT settlement.
 

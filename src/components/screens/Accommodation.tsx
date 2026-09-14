@@ -29,7 +29,9 @@ import DateRangePicker, {
   formatDateLabel,
 } from "@/components/ui/date-range-picker";
 import ImageCarousel from "@/components/ui/image-carousel";
-import PlacesCombobox, { type PlaceSelection } from "@/components/ui/places-combobox";
+import PlacesCombobox, {
+  type PlaceSelection,
+} from "@/components/ui/places-combobox";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { getStoredIdentity } from "@/lib/identity";
@@ -53,7 +55,11 @@ function SearchField({
       {icon}
       <span className="flex flex-1 flex-col gap-0.5">
         <span className="text-[11px] font-medium text-muted">{label}</span>
-        {children ?? <span className="text-[14px] font-semibold text-foreground">{value}</span>}
+        {children ?? (
+          <span className="text-[14px] font-semibold text-foreground">
+            {value}
+          </span>
+        )}
       </span>
     </div>
   );
@@ -135,9 +141,12 @@ function GuestsRoomsSheet({
 export function AccSearch() {
   const router = useRouter();
   const [destination, setDestination] = useState("London, UK");
-  const [range, setRange] = useState({ start: "2026-10-24", end: "2026-11-08" });
+  const [range, setRange] = useState({
+    start: "2026-10-24",
+    end: "2026-11-08",
+  });
   const [dateOpen, setDateOpen] = useState(false);
-const [stays, setStays] = useState<StayOffer[]>([]);
+  const [stays, setStays] = useState<StayOffer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [testMode, setTestMode] = useState(false);
@@ -198,7 +207,10 @@ const [stays, setStays] = useState<StayOffer[]>([]);
               <h2 className="text-[18px] font-extrabold text-foreground">
                 Book Accommodations
               </h2>
-<SearchField icon={<MapPin size={20} className="text-accent-2" />} label="Destination">
+              <SearchField
+                icon={<MapPin size={20} className="text-accent-2" />}
+                label="Destination"
+              >
                 <PlacesCombobox
                   value={destination}
                   onChange={setDestination}
@@ -218,11 +230,12 @@ const [stays, setStays] = useState<StayOffer[]>([]);
                     Check-in / Check-out
                   </span>
                   <span className="text-[14px] font-semibold text-foreground">
-                    {formatDateLabel(range.start)} — {formatDateLabel(range.end)}
+                    {formatDateLabel(range.start)} —{" "}
+                    {formatDateLabel(range.end)}
                   </span>
                 </span>
               </button>
-<button
+              <button
                 onClick={() => setGrOpen(true)}
                 className="flex h-[60px] w-full items-center gap-3 rounded-xl border border-border bg-card-2 px-3 text-left"
               >
@@ -233,8 +246,9 @@ const [stays, setStays] = useState<StayOffer[]>([]);
                   </span>
                   <span className="text-[14px] font-semibold text-foreground">
                     {guestCount.Adults + guestCount.Children} Guest
-                    {guestCount.Adults + guestCount.Children !== 1 ? "s" : ""},{" "}
-                    {rooms} Room{rooms !== 1 ? "s" : ""}
+                    {guestCount.Adults + guestCount.Children !== 1
+                      ? "s"
+                      : ""}, {rooms} Room{rooms !== 1 ? "s" : ""}
                   </span>
                 </span>
               </button>
@@ -252,7 +266,7 @@ const [stays, setStays] = useState<StayOffer[]>([]);
             </div>
           </div>
 
-<div className="flex gap-2 overflow-x-auto px-5 py-3 no-scrollbar">
+          <div className="flex gap-2 overflow-x-auto px-5 py-3 no-scrollbar">
             {["Price", "Rating", "Amenities", "Instant Book"].map((f, i) => (
               <span
                 key={f}
@@ -292,9 +306,7 @@ const [stays, setStays] = useState<StayOffer[]>([]);
                   : "Results"}
             </h2>
 
-            {loading ? (
-              <SkeletonRows rows={3} height={120} />
-            ) : null}
+            {loading ? <SkeletonRows rows={3} height={120} /> : null}
 
             {!loading && error ? (
               <EmptyState
@@ -312,7 +324,7 @@ const [stays, setStays] = useState<StayOffer[]>([]);
               />
             ) : null}
 
-<div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3">
               {!loading &&
                 !error &&
                 stays.map((s, i) => (
@@ -324,17 +336,30 @@ const [stays, setStays] = useState<StayOffer[]>([]);
                   >
                     <div className="relative h-[100px] w-[110px] shrink-0 overflow-hidden rounded-lg bg-card-2">
                       {s.image ? (
-                        <Image src={s.image} alt={s.name} fill sizes="110px" className="object-cover" />
+                        <Image
+                          src={s.image}
+                          alt={s.name}
+                          fill
+                          sizes="110px"
+                          className="object-cover"
+                        />
                       ) : null}
                     </div>
                     <div className="flex flex-1 flex-col gap-0.5">
-                      <span className="text-[14px] font-bold text-foreground">{s.name}</span>
+                      <span className="text-[14px] font-bold text-foreground">
+                        {s.name}
+                      </span>
                       <span className="flex items-center gap-1 text-[12px] text-muted">
-                        <Star size={12} className="fill-current text-foreground" />
-                        {s.rating > 0 ? `${s.rating} (${s.reviews})` : "New"} · {s.city}
+                        <Star
+                          size={12}
+                          className="fill-current text-foreground"
+                        />
+                        {s.rating > 0 ? `${s.rating} (${s.reviews})` : "New"} ·{" "}
+                        {s.city}
                       </span>
                       <span className="text-[13px] font-semibold text-accent-2">
-                        <UsdtAmount value={s.pricePerNight} />/night
+                        <UsdtAmount value={s.pricePerNight} />
+                        /night
                       </span>
                       <span className="text-[10px] text-muted">
                         <UsdtAmount value={s.totalAmount} /> total
@@ -349,7 +374,7 @@ const [stays, setStays] = useState<StayOffer[]>([]);
         <BottomTabBar active="Explore" />
       </div>
 
-<DateRangePicker
+      <DateRangePicker
         open={dateOpen}
         initial={range}
         onApply={(r) => {
@@ -374,14 +399,18 @@ const [stays, setStays] = useState<StayOffer[]>([]);
 
 export function AccDetails() {
   const router = useRouter();
-const [stay, setStay] = useState<StayOffer | null>(() => readFlow().stay ?? null);
+  const [stay, setStay] = useState<StayOffer | null>(
+    () => readFlow().stay ?? null,
+  );
   const [booking, setBooking] = useState(false);
   const [error, setError] = useState("");
   const [reviews, setReviews] = useState<
     { reviewer_name: string; score: number; text: string }[]
   >([]);
   const { toast } = useToast();
-  const similar = (readFlow().stays ?? []).filter((s) => s.id !== stay?.id).slice(0, 6);
+  const similar = (readFlow().stays ?? [])
+    .filter((s) => s.id !== stay?.id)
+    .slice(0, 6);
 
   useEffect(() => {
     if (!stay) return;
@@ -454,7 +483,7 @@ const [stay, setStay] = useState<StayOffer | null>(() => readFlow().stay ?? null
     setBooking(true);
     setError("");
     try {
-const res = await fetch("/api/stays/book", {
+      const res = await fetch("/api/stays/book", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -463,12 +492,12 @@ const res = await fetch("/api/stays/book", {
             given_name: passenger.first,
             family_name: passenger.last,
             email: passenger.email,
-            phone_number: `+234${passenger.phone}`,
+            phone_number: `${passenger.dialCode ?? "+234"}${passenger.phone}`,
           },
           ...getStoredIdentity(),
         }),
       });
-const d = await res.json();
+      const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Booking failed");
       writeFlow({ stayBooking: d.booking as StayBooking });
       router.push("/stay/confirmed");
@@ -500,7 +529,9 @@ const d = await res.json();
               </svg>
             </button>
             <div className="flex flex-col gap-0.5">
-              <h1 className="text-[16px] font-bold text-foreground">{stay.name}</h1>
+              <h1 className="text-[16px] font-bold text-foreground">
+                {stay.name}
+              </h1>
               <p className="text-[12px] text-muted">
                 {stay.city} • Guest Rating {stay.rating}
               </p>
@@ -508,7 +539,9 @@ const d = await res.json();
           </div>
 
           <ImageCarousel
-            images={stay.images?.length ? stay.images : stay.image ? [stay.image] : []}
+            images={
+              stay.images?.length ? stay.images : stay.image ? [stay.image] : []
+            }
             alt={stay.name}
             className="h-[200px] w-full"
           />
@@ -521,35 +554,49 @@ const d = await res.json();
               <div className="flex items-center gap-2 text-[14px]">
                 <Star size={14} className="fill-current text-foreground" />
                 <span className="text-foreground">
-                  {stay.rating > 0 ? `${stay.rating} (${stay.reviews} reviews)` : "New listing"}
+                  {stay.rating > 0
+                    ? `${stay.rating} (${stay.reviews} reviews)`
+                    : "New listing"}
                 </span>
                 <span className="text-muted">•</span>
-                <span className="font-semibold text-accent-2">{stay.location}</span>
+                <span className="font-semibold text-accent-2">
+                  {stay.location}
+                </span>
               </div>
             </div>
 
             <div className="h-px w-full bg-border" />
 
             <div className="flex flex-col gap-3">
-              <h3 className="text-[16px] font-bold text-foreground">Your stay</h3>
+              <h3 className="text-[16px] font-bold text-foreground">
+                Your stay
+              </h3>
               <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-3">
                 <div className="flex justify-between">
                   <span className="text-[12px] text-muted">Check-in</span>
-                  <span className="text-[13px] font-semibold text-foreground">{stay.checkIn}</span>
+                  <span className="text-[13px] font-semibold text-foreground">
+                    {stay.checkIn}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[12px] text-muted">Check-out</span>
-                  <span className="text-[13px] font-semibold text-foreground">{stay.checkOut}</span>
+                  <span className="text-[13px] font-semibold text-foreground">
+                    {stay.checkOut}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[12px] text-muted">Guests</span>
-                  <span className="text-[13px] font-semibold text-foreground">2 Adults</span>
+                  <span className="text-[13px] font-semibold text-foreground">
+                    2 Adults
+                  </span>
                 </div>
               </div>
             </div>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-[14px] font-bold text-foreground">Location</h3>
+              <h3 className="text-[14px] font-bold text-foreground">
+                Location
+              </h3>
               <GoogleMap
                 center={{
                   lat: stay.latitude || 51.5072,
@@ -565,7 +612,7 @@ const d = await res.json();
                   Similar stays
                 </h3>
                 <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
-{similar.map((s, i) => (
+                  {similar.map((s, i) => (
                     <button
                       key={s.id}
                       onClick={() => selectStay(s)}
@@ -577,7 +624,8 @@ const d = await res.json();
                       </span>
                       <span className="text-[11px] text-muted">{s.city}</span>
                       <span className="text-[13px] font-semibold text-accent-2">
-                        <UsdtAmount value={s.pricePerNight} />/night
+                        <UsdtAmount value={s.pricePerNight} />
+                        /night
                       </span>
                     </button>
                   ))}
@@ -588,12 +636,14 @@ const d = await res.json();
             <div className="h-px w-full bg-border" />
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-[14px] font-bold text-foreground">Price breakdown</h3>
+              <h3 className="text-[14px] font-bold text-foreground">
+                Price breakdown
+              </h3>
               <div className="flex justify-between">
                 <span className="text-[13px] text-muted">
                   {stay.pricePerNight.toFixed(2)}/night
                 </span>
-<span className="text-[13px] text-foreground">
+                <span className="text-[13px] text-foreground">
                   <UsdtAmount value={stay.totalAmount} />
                 </span>
               </div>
@@ -634,7 +684,7 @@ const d = await res.json();
         </div>
 
         <div aria-hidden className="h-[84px] w-full shrink-0" />
-      <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[390px] -translate-x-1/2 border-t border-border bg-card px-5 pb-2 pt-3 pb-safe">
+        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-2 pt-3 pb-safe">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-0.5">
               <span className="text-[12px] text-muted">Total Price</span>
@@ -696,7 +746,11 @@ export function AccConfirmed() {
   };
 
   const cancelBooking = async () => {
-    if (!booking || !window.confirm(`Cancel stay booking ${booking.reference}?`)) return;
+    if (
+      !booking ||
+      !window.confirm(`Cancel stay booking ${booking.reference}?`)
+    )
+      return;
     setCancelling(true);
     try {
       const res = await fetch(
@@ -708,7 +762,10 @@ export function AccConfirmed() {
       setBooking(null);
       toast("success", `Stay booking ${booking.reference} cancelled.`);
     } catch (err) {
-      toast("error", err instanceof Error ? err.message : "Cancellation failed");
+      toast(
+        "error",
+        err instanceof Error ? err.message : "Cancellation failed",
+      );
     } finally {
       setCancelling(false);
     }
@@ -718,8 +775,12 @@ export function AccConfirmed() {
     return (
       <MobileShell>
         <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-10 text-center">
-          <p className="text-[16px] font-bold text-foreground">Stay Confirmed</p>
-          <p className="text-[13px] text-muted">No stay booking found on this device.</p>
+          <p className="text-[16px] font-bold text-foreground">
+            Stay Confirmed
+          </p>
+          <p className="text-[13px] text-muted">
+            No stay booking found on this device.
+          </p>
           <button
             onClick={() => router.push("/stays")}
             className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-5 text-[13px] font-bold text-accent-2"
@@ -751,7 +812,9 @@ export function AccConfirmed() {
               </svg>
             </button>
             <div className="flex flex-col gap-0.5">
-              <h1 className="text-[16px] font-bold text-foreground">Stay Confirmed</h1>
+              <h1 className="text-[16px] font-bold text-foreground">
+                Stay Confirmed
+              </h1>
               <p className="text-[12px] text-muted">{booking.reference}</p>
             </div>
           </div>
@@ -762,7 +825,9 @@ export function AccConfirmed() {
                 <Check size={16} strokeWidth={3} className="text-[#090d1a]" />
               </span>
               <div className="flex flex-col">
-                <span className="text-[18px] font-extrabold text-white">Stay Confirmed!</span>
+                <span className="text-[18px] font-extrabold text-white">
+                  Stay Confirmed!
+                </span>
                 <span className="text-[12px] text-white/80">
                   Securely recorded on-chain · {booking.status}
                 </span>
@@ -784,7 +849,9 @@ export function AccConfirmed() {
                   <span className="text-[18px] font-extrabold text-foreground">
                     {booking.checkIn}
                   </span>
-                  <span className="text-[12px] text-muted">Check-In (3 PM)</span>
+                  <span className="text-[12px] text-muted">
+                    Check-In (3 PM)
+                  </span>
                 </div>
                 <div className="flex flex-col items-center gap-1">
                   <span className="text-[11px] text-muted">Stay</span>
@@ -798,7 +865,9 @@ export function AccConfirmed() {
                   <span className="text-[18px] font-extrabold text-foreground">
                     {booking.checkOut}
                   </span>
-                  <span className="text-[12px] text-muted">Check-Out (11 AM)</span>
+                  <span className="text-[12px] text-muted">
+                    Check-Out (11 AM)
+                  </span>
                 </div>
               </div>
 
@@ -810,7 +879,7 @@ export function AccConfirmed() {
                   </span>
                 </div>
                 <div className="flex flex-col items-end gap-0.5">
-<span className="text-[10px] text-muted">Total Paid</span>
+                  <span className="text-[10px] text-muted">Total Paid</span>
                   <span className="text-[13px] font-bold text-foreground">
                     <UsdtAmount value={booking.totalAmount} />
                   </span>
@@ -830,7 +899,9 @@ export function AccConfirmed() {
                   Add to Calendar
                 </button>
                 <a
-                  href={directionsUrl(booking.address || booking.accommodationName)}
+                  href={directionsUrl(
+                    booking.address || booking.accommodationName,
+                  )}
                   target="_blank"
                   rel="noreferrer"
                   className="flex h-[43px] flex-1 items-center justify-center rounded-xl border border-border bg-card text-[14px] font-bold text-foreground"
@@ -860,6 +931,3 @@ export function AccConfirmed() {
     </MobileShell>
   );
 }
-
-
-

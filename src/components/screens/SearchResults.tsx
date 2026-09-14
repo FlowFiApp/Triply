@@ -8,6 +8,7 @@ import {
   MobileShell,
 } from "@/components/shell";
 import { Chip } from "@/components/ui";
+import Identicon from "@/components/ui/identicon";
 import { FilterSortSheet } from "@/components/screens/sheets";
 import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
 import { useQueryParam } from "@/lib/query";
@@ -26,9 +27,7 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
     <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25)]">
       <div className="flex items-center justify-between">
 <div className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#5b7cfa] text-[12px] font-extrabold text-accent-2">
-            {offer.airlineCode || "—"}
-          </span>
+          <Identicon seed={`${offer.airlineCode}${offer.flightNumber}`} size={36} />
           <div className="flex flex-col">
             <span className="text-[13px] font-semibold leading-4 text-foreground">
               {offer.airline}
@@ -139,9 +138,12 @@ body: JSON.stringify({
         if (d.error) {
           setError(d.error);
           setOffers([]);
-        } else if (d.live) {
+} else if (d.live) {
           setOffers(d.offers);
-          writeFlow({ offers: d.offers });
+          writeFlow({
+            offers: d.offers,
+            passengers: Number(passengers) || 1,
+          });
         } else {
           setError("Live search unavailable — is DUFFEL_ACCESS_TOKEN configured?");
           setOffers([]);

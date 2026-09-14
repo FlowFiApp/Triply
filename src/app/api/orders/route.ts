@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { listOrders } from "@/lib/duffel";
 import { formatAMPM, formatDuration } from "@/lib/format";
+import { testPrice } from "@/lib/pricing";
 import type { OrderRecord } from "@/lib/types";
 
 function normalizeOrder(o: any): OrderRecord {
@@ -29,7 +30,7 @@ function normalizeOrder(o: any): OrderRecord {
     gate: seg.gate ?? "—",
     terminal: seg.departing_terminal ?? "—",
     departureDate: (seg.departing_at ?? "").slice(0, 10),
-    amountUsd: Number(o.total_amount ?? 0),
+    amountUsd: testPrice(Number(o.total_amount ?? 0)),
   };
 }
 

@@ -27,8 +27,12 @@ import GoogleMap from "@/components/GoogleMap";
 import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import ImageCarousel from "@/components/ui/image-carousel";
-import DateRangePicker, { formatDateLabel } from "@/components/ui/date-range-picker";
-import PlacesCombobox, { type PlaceSelection } from "@/components/ui/places-combobox";
+import DateRangePicker, {
+  formatDateLabel,
+} from "@/components/ui/date-range-picker";
+import PlacesCombobox, {
+  type PlaceSelection,
+} from "@/components/ui/places-combobox";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { getStoredIdentity } from "@/lib/identity";
@@ -37,8 +41,18 @@ import { haptic } from "@/lib/haptics";
 import type { CarOffer, CarBooking } from "@/lib/types";
 
 const TIMES = [
-  "08:00", "09:00", "10:00", "10:30", "11:00", "12:00", "13:00",
-  "14:00", "15:00", "16:00", "17:00", "18:00",
+  "08:00",
+  "09:00",
+  "10:00",
+  "10:30",
+  "11:00",
+  "12:00",
+  "13:00",
+  "14:00",
+  "15:00",
+  "16:00",
+  "17:00",
+  "18:00",
 ];
 
 function SearchField({
@@ -57,7 +71,11 @@ function SearchField({
       {icon}
       <span className="flex flex-1 flex-col gap-0.5">
         <span className="text-[11px] font-medium text-muted">{label}</span>
-        {children ?? <span className="text-[14px] font-semibold text-foreground">{value}</span>}
+        {children ?? (
+          <span className="text-[14px] font-semibold text-foreground">
+            {value}
+          </span>
+        )}
       </span>
     </div>
   );
@@ -71,7 +89,10 @@ export function CarSearch() {
   const [testMode, setTestMode] = useState(false);
   const [pickupLocation, setPickupLocation] = useState("London Heathrow (LHR)");
   const [pickupPlace, setPickupPlace] = useState<PlaceSelection | null>(null);
-  const [range, setRange] = useState({ start: "2026-10-24", end: "2026-10-29" });
+  const [range, setRange] = useState({
+    start: "2026-10-24",
+    end: "2026-10-29",
+  });
   const [dateOpen, setDateOpen] = useState(false);
   const [pickupTime, setPickupTime] = useState("10:30");
   const [returnTime, setReturnTime] = useState("15:00");
@@ -127,8 +148,13 @@ export function CarSearch() {
 
           <div className="px-5 py-3">
             <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-[18px]">
-<h2 className="text-[18px] font-extrabold text-foreground">Rent a Car</h2>
-              <SearchField icon={<MapPin size={20} className="text-accent-2" />} label="Pickup Location">
+              <h2 className="text-[18px] font-extrabold text-foreground">
+                Rent a Car
+              </h2>
+              <SearchField
+                icon={<MapPin size={20} className="text-accent-2" />}
+                label="Pickup Location"
+              >
                 <PlacesCombobox
                   value={pickupLocation}
                   onChange={setPickupLocation}
@@ -148,37 +174,49 @@ export function CarSearch() {
                     Pickup / Return Date
                   </span>
                   <span className="text-[14px] font-semibold text-foreground">
-                    {formatDateLabel(range.start)} — {formatDateLabel(range.end)}
+                    {formatDateLabel(range.start)} —{" "}
+                    {formatDateLabel(range.end)}
                   </span>
                 </span>
               </button>
               <div className="flex gap-2">
                 <label className="flex flex-1 flex-col gap-1.5">
-                  <span className="text-[11px] font-medium text-muted">Pickup Time</span>
+                  <span className="text-[11px] font-medium text-muted">
+                    Pickup Time
+                  </span>
                   <select
                     value={pickupTime}
                     onChange={(e) => setPickupTime(e.target.value)}
                     className="h-[43px] rounded-[10px] border border-border bg-card px-3 text-[14px] font-semibold text-foreground outline-none"
                   >
                     {TIMES.map((t) => (
-                      <option key={t} value={t}>{t}</option>
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
                     ))}
                   </select>
                 </label>
                 <label className="flex flex-1 flex-col gap-1.5">
-                  <span className="text-[11px] font-medium text-muted">Return Time</span>
+                  <span className="text-[11px] font-medium text-muted">
+                    Return Time
+                  </span>
                   <select
                     value={returnTime}
                     onChange={(e) => setReturnTime(e.target.value)}
                     className="h-[43px] rounded-[10px] border border-border bg-card px-3 text-[14px] font-semibold text-foreground outline-none"
                   >
                     {TIMES.map((t) => (
-                      <option key={t} value={t}>{t}</option>
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
                     ))}
                   </select>
                 </label>
               </div>
-              <SearchField icon={<Users size={20} className="text-accent-2" />} label="Driver's Age">
+              <SearchField
+                icon={<Users size={20} className="text-accent-2" />}
+                label="Driver's Age"
+              >
                 <div className="flex items-center justify-between gap-3">
                   <button
                     onClick={() => setAge((a) => Math.max(18, a - 1))}
@@ -211,7 +249,7 @@ export function CarSearch() {
             </div>
           </div>
 
-<div className="flex gap-2 overflow-x-auto px-5 py-3 no-scrollbar">
+          <div className="flex gap-2 overflow-x-auto px-5 py-3 no-scrollbar">
             {["Automatic", "Manual", "SUV", "Electric"].map((f, i) => (
               <span
                 key={f}
@@ -261,7 +299,7 @@ export function CarSearch() {
               />
             ) : null}
 
-<div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3">
               {!loading &&
                 !error &&
                 cars.map((c, i) => (
@@ -273,11 +311,19 @@ export function CarSearch() {
                   >
                     <div className="relative h-[60px] w-20 shrink-0 overflow-hidden rounded-lg bg-card-2">
                       {c.image ? (
-                        <Image src={c.image} alt={c.name} fill sizes="80px" className="object-cover" />
+                        <Image
+                          src={c.image}
+                          alt={c.name}
+                          fill
+                          sizes="80px"
+                          className="object-cover"
+                        />
                       ) : null}
                     </div>
                     <div className="flex flex-1 flex-col gap-0.5">
-                      <span className="text-[14px] font-bold text-foreground">{c.name}</span>
+                      <span className="text-[14px] font-bold text-foreground">
+                        {c.name}
+                      </span>
                       <span className="text-[12px] text-muted">
                         {c.category || "Car"} • {c.transmission || "—"}
                         {c.supplier ? ` • ${c.supplier}` : ""}
@@ -295,7 +341,7 @@ export function CarSearch() {
           </section>
         </div>
 
-<BottomTabBar active="Home" />
+        <BottomTabBar active="Home" />
       </div>
 
       <DateRangePicker
@@ -344,7 +390,7 @@ export function CarDetails() {
     setBooking(true);
     setError("");
     try {
-const res = await fetch("/api/cars/book", {
+      const res = await fetch("/api/cars/book", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -353,7 +399,7 @@ const res = await fetch("/api/cars/book", {
             given_name: passenger.first,
             family_name: passenger.last,
             email: passenger.email,
-            phone_number: `+234${passenger.phone}`,
+            phone_number: `${passenger.dialCode ?? "+234"}${passenger.phone}`,
             date_of_birth: passenger.dob,
           },
           ...getStoredIdentity(),
@@ -361,7 +407,7 @@ const res = await fetch("/api/cars/book", {
       });
       const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Booking failed");
-writeFlow({ carBooking: d.booking as CarBooking });
+      writeFlow({ carBooking: d.booking as CarBooking });
       router.push("/car/confirmed");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Booking failed");
@@ -389,7 +435,9 @@ writeFlow({ carBooking: d.booking as CarBooking });
               </svg>
             </button>
             <div className="flex flex-col gap-0.5">
-              <h1 className="text-[16px] font-bold text-foreground">{car.name}</h1>
+              <h1 className="text-[16px] font-bold text-foreground">
+                {car.name}
+              </h1>
               <p className="text-[12px] text-muted">
                 {car.category || "Car"} • {car.transmission || "Automatic"}
               </p>
@@ -404,7 +452,9 @@ writeFlow({ carBooking: d.booking as CarBooking });
 
           <div className="flex flex-col gap-4 px-5 py-5">
             <div className="flex items-center justify-between">
-              <h2 className="text-[22px] font-extrabold text-foreground">{car.name}</h2>
+              <h2 className="text-[22px] font-extrabold text-foreground">
+                {car.name}
+              </h2>
               <span className="flex h-[23px] items-center rounded-md bg-card-2 px-2 text-[11px] font-bold text-accent-2">
                 {car.category || "Car"}
               </span>
@@ -417,7 +467,8 @@ writeFlow({ carBooking: d.booking as CarBooking });
                 </span>
               ) : null}
               <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
-                <Settings size={14} className="text-accent-2" /> {car.transmission || "Automatic"}
+                <Settings size={14} className="text-accent-2" />{" "}
+                {car.transmission || "Automatic"}
               </span>
               {car.fuel ? (
                 <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
@@ -439,19 +490,25 @@ writeFlow({ carBooking: d.booking as CarBooking });
                 <span className="text-[12px] font-bold text-accent-2">
                   PICKUP: {car.pickup}
                 </span>
-                <span className="text-[13px] text-foreground">{car.pickupTime}</span>
+                <span className="text-[13px] text-foreground">
+                  {car.pickupTime}
+                </span>
               </div>
               <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-3">
                 <span className="text-[12px] font-bold text-accent-2">
                   RETURN: {car.dropoff}
                 </span>
-                <span className="text-[13px] text-foreground">{car.dropoffTime}</span>
+                <span className="text-[13px] text-foreground">
+                  {car.dropoffTime}
+                </span>
               </div>
             </div>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-[14px] font-bold text-foreground">Pickup Location</h3>
-<GoogleMap
+              <h3 className="text-[14px] font-bold text-foreground">
+                Pickup Location
+              </h3>
+              <GoogleMap
                 center={{
                   lat: car.pickupLatitude || 51.47,
                   lng: car.pickupLongitude || -0.4543,
@@ -473,8 +530,10 @@ writeFlow({ carBooking: d.booking as CarBooking });
             <div className="h-px w-full bg-border" />
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-[14px] font-bold text-foreground">Price Breakdown</h3>
-<div className="flex justify-between">
+              <h3 className="text-[14px] font-bold text-foreground">
+                Price Breakdown
+              </h3>
+              <div className="flex justify-between">
                 <span className="text-[13px] text-muted">
                   Rental ({car.pricePerDay.toFixed(2)}/day)
                 </span>
@@ -484,7 +543,9 @@ writeFlow({ carBooking: d.booking as CarBooking });
               </div>
               <div className="flex justify-between">
                 <span className="text-[13px] text-muted">Supplier</span>
-                <span className="text-[13px] text-foreground">{car.supplier || "—"}</span>
+                <span className="text-[13px] text-foreground">
+                  {car.supplier || "—"}
+                </span>
               </div>
             </div>
 
@@ -497,7 +558,7 @@ writeFlow({ carBooking: d.booking as CarBooking });
         </div>
 
         <div aria-hidden className="h-[84px] w-full shrink-0" />
-      <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[390px] -translate-x-1/2 border-t border-border bg-card px-5 pb-2 pt-3 pb-safe">
+        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-2 pt-3 pb-safe">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-0.5">
               <span className="text-[12px] text-muted">Total Price</span>
@@ -559,7 +620,8 @@ export function CarConfirmed() {
   };
 
   const cancelBooking = async () => {
-    if (!booking || !window.confirm(`Cancel car booking ${booking.reference}?`)) return;
+    if (!booking || !window.confirm(`Cancel car booking ${booking.reference}?`))
+      return;
     setCancelling(true);
     try {
       const res = await fetch(
@@ -571,7 +633,10 @@ export function CarConfirmed() {
       setBooking(null);
       toast("success", `Car booking ${booking.reference} cancelled.`);
     } catch (err) {
-      toast("error", err instanceof Error ? err.message : "Cancellation failed");
+      toast(
+        "error",
+        err instanceof Error ? err.message : "Cancellation failed",
+      );
     } finally {
       setCancelling(false);
     }
@@ -581,8 +646,12 @@ export function CarConfirmed() {
     return (
       <MobileShell>
         <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-10 text-center">
-          <p className="text-[16px] font-bold text-foreground">Rental Confirmed</p>
-          <p className="text-[13px] text-muted">No car booking found on this device.</p>
+          <p className="text-[16px] font-bold text-foreground">
+            Rental Confirmed
+          </p>
+          <p className="text-[13px] text-muted">
+            No car booking found on this device.
+          </p>
           <button
             onClick={() => router.push("/cars")}
             className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-5 text-[13px] font-bold text-accent-2"
@@ -614,7 +683,9 @@ export function CarConfirmed() {
               </svg>
             </button>
             <div className="flex flex-col gap-0.5">
-              <h1 className="text-[16px] font-bold text-foreground">Rental Confirmed</h1>
+              <h1 className="text-[16px] font-bold text-foreground">
+                Rental Confirmed
+              </h1>
               <p className="text-[12px] text-muted">{booking.reference}</p>
             </div>
           </div>
@@ -636,7 +707,9 @@ export function CarConfirmed() {
 
             <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-card">
               <div className="flex items-center justify-between bg-[#090d1a] px-4 py-3.5">
-                <span className="text-[14px] font-bold text-foreground">{booking.carName}</span>
+                <span className="text-[14px] font-bold text-foreground">
+                  {booking.carName}
+                </span>
                 <span className="text-[12px] font-semibold text-muted">
                   {booking.reference}
                 </span>
@@ -673,7 +746,7 @@ export function CarConfirmed() {
                   </span>
                 </div>
                 <div className="flex flex-col items-end gap-0.5">
-<span className="text-[10px] text-muted">Amount Paid</span>
+                  <span className="text-[10px] text-muted">Amount Paid</span>
                   <span className="text-[13px] font-bold text-foreground">
                     <UsdtAmount value={booking.totalAmount} />
                   </span>
@@ -724,5 +797,3 @@ export function CarConfirmed() {
     </MobileShell>
   );
 }
-
-

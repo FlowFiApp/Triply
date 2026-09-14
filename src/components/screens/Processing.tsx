@@ -69,7 +69,7 @@ export default function Processing() {
               family_name: flow.passenger?.last ?? "",
               born_on: flow.passenger?.dob ?? "",
               email: flow.passenger?.email ?? "",
-              phone_number: `+234${flow.passenger?.phone ?? ""}`,
+              phone_number: `${flow.passenger?.dialCode ?? "+234"}${flow.passenger?.phone ?? ""}`,
               gender: flow.passenger?.gender?.toLowerCase() ?? "female",
             },
           ],
