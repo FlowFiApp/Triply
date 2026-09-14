@@ -1,0 +1,26 @@
+import { cancelCarBooking, duffelErrorMessage } from "@/lib/duffel";
+
+export async function POST(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  try {
+    const result = await cancelCarBooking(id);
+    if (!result) {
+      return Response.json({
+        live: false,
+        error: "Duffel is not configured. Set DUFFEL_ACCESS_TOKEN to cancel bookings.",
+      });
+    }
+    return Response.json({
+      live: true,
+      status: result.status ?? "cancelled",
+    });
+  } catch (err) {
+    return Response.json(
+      { error: duffelErrorMessage(err, "Cancellation failed") },
+      { status: 502 },
+    );
+  }
+}

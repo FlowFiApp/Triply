@@ -1,0 +1,550 @@
+﻿{
+    "composio_execution_message":  "Minimal response: file data simplified for AI consumption (CSS-like properties, empty values removed, invisible nodes stripped). Use response_detail=\u0027full\u0027 for the raw Figma API response with all nested objects and metadata.",
+    "lastModified":  "2026-09-14T14:21:46Z",
+    "name":  "Untitled",
+    "nodes":  [
+                  {
+                      "bounds":  {
+                                     "height":  844,
+                                     "width":  390,
+                                     "x":  12930,
+                                     "y":  0
+                                 },
+                      "children":  [
+                                       {
+                                           "bounds":  {
+                                                          "height":  92,
+                                                          "width":  390,
+                                                          "x":  12930,
+                                                          "y":  0
+                                                      },
+                                           "children":  [
+                                                            {
+                                                                "bounds":  {
+                                                                               "height":  44,
+                                                                               "width":  390,
+                                                                               "x":  12930,
+                                                                               "y":  0
+                                                                           },
+                                                                "children":  [
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  19,
+                                                                                                    "width":  31,
+                                                                                                    "x":  12954,
+                                                                                                    "y":  12.5
+                                                                                                },
+                                                                                     "fills":  "$fill2",
+                                                                                     "id":  "17:694",
+                                                                                     "layout":  "$layout4",
+                                                                                     "name":  "time",
+                                                                                     "text":  "9:41",
+                                                                                     "type":  "TEXT"
+                                                                                 },
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  18,
+                                                                                                    "width":  80,
+                                                                                                    "x":  13216,
+                                                                                                    "y":  13
+                                                                                                },
+                                                                                     "children":  [
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  18,
+                                                                                                                         "width":  18,
+                                                                                                                         "x":  13216,
+                                                                                                                         "y":  13
+                                                                                                                     },
+                                                                                                          "id":  "17:696",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "ios-signal",
+                                                                                                          "type":  "FRAME"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  18,
+                                                                                                                         "width":  18,
+                                                                                                                         "x":  13242,
+                                                                                                                         "y":  13
+                                                                                                                     },
+                                                                                                          "id":  "17:698",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "ios-wifi-signal",
+                                                                                                          "type":  "FRAME"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  18,
+                                                                                                                         "width":  28,
+                                                                                                                         "x":  13268,
+                                                                                                                         "y":  13
+                                                                                                                     },
+                                                                                                          "id":  "17:700",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "ios-battery-full",
+                                                                                                          "type":  "FRAME"
+                                                                                                      }
+                                                                                                  ],
+                                                                                     "id":  "17:695",
+                                                                                     "layout":  "$layout5",
+                                                                                     "name":  "status-icons",
+                                                                                     "type":  "FRAME"
+                                                                                 }
+                                                                             ],
+                                                                "id":  "17:693",
+                                                                "layout":  "$layout3",
+                                                                "name":  "status-bar",
+                                                                "type":  "FRAME"
+                                                            },
+                                                            {
+                                                                "bounds":  {
+                                                                               "height":  48,
+                                                                               "width":  390,
+                                                                               "x":  12930,
+                                                                               "y":  44
+                                                                           },
+                                                                "children":  [
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  24,
+                                                                                                    "width":  350,
+                                                                                                    "x":  12950,
+                                                                                                    "y":  56
+                                                                                                },
+                                                                                     "children":  [
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  24,
+                                                                                                                         "width":  107,
+                                                                                                                         "x":  12950,
+                                                                                                                         "y":  56
+                                                                                                                     },
+                                                                                                          "fills":  "$fill2",
+                                                                                                          "id":  "17:704",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "My Bookings",
+                                                                                                          "text":  "My Bookings",
+                                                                                                          "type":  "TEXT"
+                                                                                                      }
+                                                                                                  ],
+                                                                                     "id":  "17:703",
+                                                                                     "layout":  "$layout7",
+                                                                                     "name":  "header-text",
+                                                                                     "type":  "FRAME"
+                                                                                 }
+                                                                             ],
+                                                                "fills":  "$fill3",
+                                                                "id":  "17:702",
+                                                                "layout":  "$layout6",
+                                                                "name":  "results-header",
+                                                                "strokes":  "$stroke1",
+                                                                "type":  "FRAME"
+                                                            }
+                                                        ],
+                                           "id":  "17:692",
+                                           "layout":  "$layout2",
+                                           "name":  "preview-underlay",
+                                           "opacity":  0.3,
+                                           "type":  "FRAME"
+                                       },
+                                       {
+                                           "bounds":  {
+                                                          "height":  582,
+                                                          "width":  390,
+                                                          "x":  12930,
+                                                          "y":  262
+                                                      },
+                                           "children":  [
+                                                            {
+                                                                "bounds":  {
+                                                                               "height":  20,
+                                                                               "width":  390,
+                                                                               "x":  12930,
+                                                                               "y":  262
+                                                                           },
+                                                                "children":  [
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  4,
+                                                                                                    "width":  40,
+                                                                                                    "x":  13105,
+                                                                                                    "y":  270
+                                                                                                },
+                                                                                     "cornerRadius":  2,
+                                                                                     "fills":  "$fill4",
+                                                                                     "id":  "17:707",
+                                                                                     "layout":  "$layout4",
+                                                                                     "name":  "drag-handle",
+                                                                                     "type":  "RECTANGLE"
+                                                                                 }
+                                                                             ],
+                                                                "id":  "17:706",
+                                                                "layout":  "$layout8",
+                                                                "name":  "drag-handle-container",
+                                                                "type":  "FRAME"
+                                                            },
+                                                            {
+                                                                "bounds":  {
+                                                                               "height":  562,
+                                                                               "width":  390,
+                                                                               "x":  12930,
+                                                                               "y":  282
+                                                                           },
+                                                                "children":  [
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  24,
+                                                                                                    "width":  215,
+                                                                                                    "x":  12950,
+                                                                                                    "y":  282
+                                                                                                },
+                                                                                     "fills":  "$fill2",
+                                                                                     "id":  "17:709",
+                                                                                     "layout":  "$layout4",
+                                                                                     "name":  "Passengers \u0026 Cabin Class",
+                                                                                     "text":  "Passengers \u0026 Cabin Class",
+                                                                                     "type":  "TEXT"
+                                                                                 },
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  175,
+                                                                                                    "width":  350,
+                                                                                                    "x":  12950,
+                                                                                                    "y":  326
+                                                                                                },
+                                                                                     "children":  [
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  37,
+                                                                                                                         "width":  350,
+                                                                                                                         "x":  12950,
+                                                                                                                         "y":  326
+                                                                                                                     },
+                                                                                                          "id":  "17:711",
+                                                                                                          "layout":  "$layout11",
+                                                                                                          "name":  "counter-adults",
+                                                                                                          "type":  "FRAME"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  0,
+                                                                                                                         "width":  350,
+                                                                                                                         "x":  12950,
+                                                                                                                         "y":  379
+                                                                                                                     },
+                                                                                                          "id":  "17:721",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "Line",
+                                                                                                          "strokes":  "$stroke1",
+                                                                                                          "type":  "LINE"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  37,
+                                                                                                                         "width":  350,
+                                                                                                                         "x":  12950,
+                                                                                                                         "y":  395
+                                                                                                                     },
+                                                                                                          "id":  "17:722",
+                                                                                                          "layout":  "$layout11",
+                                                                                                          "name":  "counter-children",
+                                                                                                          "type":  "FRAME"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  0,
+                                                                                                                         "width":  350,
+                                                                                                                         "x":  12950,
+                                                                                                                         "y":  448
+                                                                                                                     },
+                                                                                                          "id":  "17:732",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "Line",
+                                                                                                          "strokes":  "$stroke1",
+                                                                                                          "type":  "LINE"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  37,
+                                                                                                                         "width":  350,
+                                                                                                                         "x":  12950,
+                                                                                                                         "y":  464
+                                                                                                                     },
+                                                                                                          "id":  "17:733",
+                                                                                                          "layout":  "$layout11",
+                                                                                                          "name":  "counter-infants",
+                                                                                                          "type":  "FRAME"
+                                                                                                      }
+                                                                                                  ],
+                                                                                     "id":  "17:710",
+                                                                                     "layout":  "$layout10",
+                                                                                     "name":  "counters-group",
+                                                                                     "type":  "FRAME"
+                                                                                 },
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  231,
+                                                                                                    "width":  350,
+                                                                                                    "x":  12950,
+                                                                                                    "y":  521
+                                                                                                },
+                                                                                     "children":  [
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  19,
+                                                                                                                         "width":  88,
+                                                                                                                         "x":  12950,
+                                                                                                                         "y":  521
+                                                                                                                     },
+                                                                                                          "fills":  "$fill5",
+                                                                                                          "id":  "17:744",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "CABIN CLASS",
+                                                                                                          "text":  "CABIN CLASS",
+                                                                                                          "type":  "TEXT"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  200,
+                                                                                                                         "width":  350,
+                                                                                                                         "x":  12950,
+                                                                                                                         "y":  552
+                                                                                                                     },
+                                                                                                          "id":  "17:745",
+                                                                                                          "layout":  "$layout13",
+                                                                                                          "name":  "class-list",
+                                                                                                          "type":  "FRAME"
+                                                                                                      }
+                                                                                                  ],
+                                                                                     "id":  "17:743",
+                                                                                     "layout":  "$layout12",
+                                                                                     "name":  "class-group",
+                                                                                     "type":  "FRAME"
+                                                                                 },
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  48,
+                                                                                                    "width":  350,
+                                                                                                    "x":  12950,
+                                                                                                    "y":  772
+                                                                                                },
+                                                                                     "children":  [
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  20,
+                                                                                                                         "width":  108,
+                                                                                                                         "x":  13071,
+                                                                                                                         "y":  786
+                                                                                                                     },
+                                                                                                          "fills":  "$fill3",
+                                                                                                          "id":  "17:760",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "Apply Selection",
+                                                                                                          "text":  "Apply Selection",
+                                                                                                          "type":  "TEXT"
+                                                                                                      }
+                                                                                                  ],
+                                                                                     "cornerRadius":  12,
+                                                                                     "fills":  "$fill6",
+                                                                                     "id":  "17:759",
+                                                                                     "layout":  "$layout14",
+                                                                                     "name":  "apply-cta",
+                                                                                     "type":  "FRAME"
+                                                                                 }
+                                                                             ],
+                                                                "id":  "17:708",
+                                                                "layout":  "$layout9",
+                                                                "name":  "sheet-content",
+                                                                "type":  "FRAME"
+                                                            }
+                                                        ],
+                                           "fills":  "$fill3",
+                                           "id":  "17:705",
+                                           "layout":  "$layout2",
+                                           "name":  "bottom-sheet",
+                                           "strokes":  "$stroke1",
+                                           "type":  "FRAME"
+                                       }
+                                   ],
+                      "fills":  "$fill1",
+                      "id":  "17:691",
+                      "layout":  "$layout1",
+                      "name":  "triply-light-passenger-class-sheet",
+                      "type":  "FRAME"
+                  }
+              ],
+    "variables":  {
+                      "fill1":  [
+                                    "#f8fafc"
+                                ],
+                      "fill2":  [
+                                    "#0f172a"
+                                ],
+                      "fill3":  [
+                                    "#ffffff"
+                                ],
+                      "fill4":  [
+                                    "#e2e8f0"
+                                ],
+                      "fill5":  [
+                                    "#64748b"
+                                ],
+                      "fill6":  [
+                                    "#203da3"
+                                ],
+                      "layout1":  {
+                                      "alignItems":  "space_between",
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  0,
+                                      "mode":  "vertical"
+                                  },
+                      "layout10":  {
+                                       "constraints":  {
+                                                           "horizontal":  "left",
+                                                           "vertical":  "top"
+                                                       },
+                                       "gap":  16,
+                                       "mode":  "vertical"
+                                   },
+                      "layout11":  {
+                                       "alignItems":  "space_between",
+                                       "constraints":  {
+                                                           "horizontal":  "left",
+                                                           "vertical":  "top"
+                                                       },
+                                       "gap":  0,
+                                       "justifyContent":  "center",
+                                       "mode":  "horizontal"
+                                   },
+                      "layout12":  {
+                                       "constraints":  {
+                                                           "horizontal":  "left",
+                                                           "vertical":  "top"
+                                                       },
+                                       "gap":  12,
+                                       "mode":  "vertical"
+                                   },
+                      "layout13":  {
+                                       "constraints":  {
+                                                           "horizontal":  "left",
+                                                           "vertical":  "top"
+                                                       },
+                                       "gap":  8,
+                                       "mode":  "vertical"
+                                   },
+                      "layout14":  {
+                                       "alignItems":  "center",
+                                       "constraints":  {
+                                                           "horizontal":  "left",
+                                                           "vertical":  "top"
+                                                       },
+                                       "gap":  0,
+                                       "mode":  "horizontal",
+                                       "padding":  {
+                                                       "bottom":  14,
+                                                       "left":  0,
+                                                       "right":  0,
+                                                       "top":  14
+                                                   }
+                                   },
+                      "layout2":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  0,
+                                      "mode":  "vertical"
+                                  },
+                      "layout3":  {
+                                      "alignItems":  "space_between",
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  0,
+                                      "justifyContent":  "center",
+                                      "mode":  "horizontal",
+                                      "padding":  {
+                                                      "bottom":  0,
+                                                      "left":  24,
+                                                      "right":  24,
+                                                      "top":  0
+                                                  }
+                                  },
+                      "layout4":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      }
+                                  },
+                      "layout5":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  8,
+                                      "mode":  "horizontal"
+                                  },
+                      "layout6":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  12,
+                                      "justifyContent":  "center",
+                                      "mode":  "horizontal",
+                                      "padding":  {
+                                                      "bottom":  12,
+                                                      "left":  20,
+                                                      "right":  20,
+                                                      "top":  12
+                                                  }
+                                  },
+                      "layout7":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  2,
+                                      "mode":  "vertical"
+                                  },
+                      "layout8":  {
+                                      "alignItems":  "center",
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  0,
+                                      "mode":  "horizontal",
+                                      "padding":  {
+                                                      "bottom":  8,
+                                                      "left":  0,
+                                                      "right":  0,
+                                                      "top":  8
+                                                  }
+                                  },
+                      "layout9":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  20,
+                                      "mode":  "vertical",
+                                      "padding":  {
+                                                      "bottom":  24,
+                                                      "left":  20,
+                                                      "right":  20,
+                                                      "top":  0
+                                                  }
+                                  },
+                      "stroke1":  {
+                                      "align":  "inside",
+                                      "color":  "#e2e8f0",
+                                      "width":  1
+                                  }
+                  }
+}

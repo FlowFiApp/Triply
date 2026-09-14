@@ -1,0 +1,592 @@
+﻿{
+    "composio_execution_message":  "Minimal response: file data simplified for AI consumption (CSS-like properties, empty values removed, invisible nodes stripped). Use response_detail=\u0027full\u0027 for the raw Figma API response with all nested objects and metadata.",
+    "lastModified":  "2026-09-14T14:21:46Z",
+    "name":  "Untitled",
+    "nodes":  [
+                  {
+                      "bounds":  {
+                                     "height":  537,
+                                     "width":  390,
+                                     "x":  5620,
+                                     "y":  0
+                                 },
+                      "children":  [
+                                       {
+                                           "bounds":  {
+                                                          "height":  444,
+                                                          "width":  390,
+                                                          "x":  5620,
+                                                          "y":  0
+                                                      },
+                                           "children":  [
+                                                            {
+                                                                "bounds":  {
+                                                                               "height":  24,
+                                                                               "width":  390,
+                                                                               "x":  5620,
+                                                                               "y":  0
+                                                                           },
+                                                                "children":  [
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  4,
+                                                                                                    "width":  40,
+                                                                                                    "x":  5795,
+                                                                                                    "y":  10
+                                                                                                },
+                                                                                     "cornerRadius":  2,
+                                                                                     "fills":  "$fill2",
+                                                                                     "id":  "9:913",
+                                                                                     "layout":  "$layout4",
+                                                                                     "name":  "drag-handle",
+                                                                                     "type":  "RECTANGLE"
+                                                                                 }
+                                                                             ],
+                                                                "id":  "9:912",
+                                                                "layout":  "$layout3",
+                                                                "name":  "drag-handle-container",
+                                                                "type":  "FRAME"
+                                                            },
+                                                            {
+                                                                "bounds":  {
+                                                                               "height":  48,
+                                                                               "width":  390,
+                                                                               "x":  5620,
+                                                                               "y":  24
+                                                                           },
+                                                                "children":  [
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  24,
+                                                                                                    "width":  350,
+                                                                                                    "x":  5640,
+                                                                                                    "y":  36
+                                                                                                },
+                                                                                     "fills":  "$fill3",
+                                                                                     "id":  "9:915",
+                                                                                     "layout":  "$layout4",
+                                                                                     "name":  "Select Wallet to Pay",
+                                                                                     "text":  "Select Wallet to Pay",
+                                                                                     "type":  "TEXT"
+                                                                                 }
+                                                                             ],
+                                                                "id":  "9:914",
+                                                                "layout":  "$layout5",
+                                                                "name":  "header-bar",
+                                                                "type":  "FRAME"
+                                                            },
+                                                            {
+                                                                "bounds":  {
+                                                                               "height":  372,
+                                                                               "width":  390,
+                                                                               "x":  5620,
+                                                                               "y":  72
+                                                                           },
+                                                                "children":  [
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  60,
+                                                                                                    "width":  350,
+                                                                                                    "x":  5640,
+                                                                                                    "y":  92
+                                                                                                },
+                                                                                     "children":  [
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  32,
+                                                                                                                         "width":  32,
+                                                                                                                         "x":  5652,
+                                                                                                                         "y":  106
+                                                                                                                     },
+                                                                                                          "fills":  "$fill5",
+                                                                                                          "id":  "9:918",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "wallet-logo",
+                                                                                                          "type":  "ELLIPSE"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  36,
+                                                                                                                         "width":  256,
+                                                                                                                         "x":  5696,
+                                                                                                                         "y":  104
+                                                                                                                     },
+                                                                                                          "id":  "9:919",
+                                                                                                          "layout":  "$layout8",
+                                                                                                          "name":  "wallet-text",
+                                                                                                          "type":  "FRAME"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  14,
+                                                                                                                         "width":  14,
+                                                                                                                         "x":  5964,
+                                                                                                                         "y":  115
+                                                                                                                     },
+                                                                                                          "id":  "9:1019",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "chevron-right",
+                                                                                                          "type":  "FRAME"
+                                                                                                      }
+                                                                                                  ],
+                                                                                     "cornerRadius":  12,
+                                                                                     "fills":  "$fill4",
+                                                                                     "id":  "9:917",
+                                                                                     "layout":  "$layout7",
+                                                                                     "name":  "wallet-row-MetaMask",
+                                                                                     "strokes":  "$stroke1",
+                                                                                     "type":  "FRAME"
+                                                                                 },
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  60,
+                                                                                                    "width":  350,
+                                                                                                    "x":  5640,
+                                                                                                    "y":  160
+                                                                                                },
+                                                                                     "children":  [
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  32,
+                                                                                                                         "width":  32,
+                                                                                                                         "x":  5652,
+                                                                                                                         "y":  174
+                                                                                                                     },
+                                                                                                          "fills":  "$fill6",
+                                                                                                          "id":  "9:924",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "wallet-logo",
+                                                                                                          "type":  "ELLIPSE"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  36,
+                                                                                                                         "width":  256,
+                                                                                                                         "x":  5696,
+                                                                                                                         "y":  172
+                                                                                                                     },
+                                                                                                          "id":  "9:925",
+                                                                                                          "layout":  "$layout8",
+                                                                                                          "name":  "wallet-text",
+                                                                                                          "type":  "FRAME"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  14,
+                                                                                                                         "width":  14,
+                                                                                                                         "x":  5964,
+                                                                                                                         "y":  183
+                                                                                                                     },
+                                                                                                          "id":  "9:1022",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "chevron-right",
+                                                                                                          "type":  "FRAME"
+                                                                                                      }
+                                                                                                  ],
+                                                                                     "cornerRadius":  12,
+                                                                                     "fills":  "$fill4",
+                                                                                     "id":  "9:923",
+                                                                                     "layout":  "$layout7",
+                                                                                     "name":  "wallet-row-Coinbase Wallet",
+                                                                                     "strokes":  "$stroke1",
+                                                                                     "type":  "FRAME"
+                                                                                 },
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  60,
+                                                                                                    "width":  350,
+                                                                                                    "x":  5640,
+                                                                                                    "y":  228
+                                                                                                },
+                                                                                     "children":  [
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  32,
+                                                                                                                         "width":  32,
+                                                                                                                         "x":  5652,
+                                                                                                                         "y":  242
+                                                                                                                     },
+                                                                                                          "fills":  "$fill7",
+                                                                                                          "id":  "9:930",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "wallet-logo",
+                                                                                                          "type":  "ELLIPSE"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  36,
+                                                                                                                         "width":  256,
+                                                                                                                         "x":  5696,
+                                                                                                                         "y":  240
+                                                                                                                     },
+                                                                                                          "id":  "9:931",
+                                                                                                          "layout":  "$layout8",
+                                                                                                          "name":  "wallet-text",
+                                                                                                          "type":  "FRAME"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  14,
+                                                                                                                         "width":  14,
+                                                                                                                         "x":  5964,
+                                                                                                                         "y":  251
+                                                                                                                     },
+                                                                                                          "id":  "9:1025",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "chevron-right",
+                                                                                                          "type":  "FRAME"
+                                                                                                      }
+                                                                                                  ],
+                                                                                     "cornerRadius":  12,
+                                                                                     "fills":  "$fill4",
+                                                                                     "id":  "9:929",
+                                                                                     "layout":  "$layout7",
+                                                                                     "name":  "wallet-row-Rainbow",
+                                                                                     "strokes":  "$stroke1",
+                                                                                     "type":  "FRAME"
+                                                                                 },
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  60,
+                                                                                                    "width":  350,
+                                                                                                    "x":  5640,
+                                                                                                    "y":  296
+                                                                                                },
+                                                                                     "children":  [
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  32,
+                                                                                                                         "width":  32,
+                                                                                                                         "x":  5652,
+                                                                                                                         "y":  310
+                                                                                                                     },
+                                                                                                          "fills":  "$fill8",
+                                                                                                          "id":  "9:936",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "wallet-logo",
+                                                                                                          "type":  "ELLIPSE"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  36,
+                                                                                                                         "width":  256,
+                                                                                                                         "x":  5696,
+                                                                                                                         "y":  308
+                                                                                                                     },
+                                                                                                          "id":  "9:937",
+                                                                                                          "layout":  "$layout8",
+                                                                                                          "name":  "wallet-text",
+                                                                                                          "type":  "FRAME"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  14,
+                                                                                                                         "width":  14,
+                                                                                                                         "x":  5964,
+                                                                                                                         "y":  319
+                                                                                                                     },
+                                                                                                          "id":  "9:1028",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "chevron-right",
+                                                                                                          "type":  "FRAME"
+                                                                                                      }
+                                                                                                  ],
+                                                                                     "cornerRadius":  12,
+                                                                                     "fills":  "$fill4",
+                                                                                     "id":  "9:935",
+                                                                                     "layout":  "$layout7",
+                                                                                     "name":  "wallet-row-WalletConnect",
+                                                                                     "strokes":  "$stroke1",
+                                                                                     "type":  "FRAME"
+                                                                                 },
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  60,
+                                                                                                    "width":  350,
+                                                                                                    "x":  5640,
+                                                                                                    "y":  364
+                                                                                                },
+                                                                                     "children":  [
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  32,
+                                                                                                                         "width":  32,
+                                                                                                                         "x":  5652,
+                                                                                                                         "y":  378
+                                                                                                                     },
+                                                                                                          "fills":  "$fill9",
+                                                                                                          "id":  "9:942",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "wallet-logo",
+                                                                                                          "type":  "ELLIPSE"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  36,
+                                                                                                                         "width":  256,
+                                                                                                                         "x":  5696,
+                                                                                                                         "y":  376
+                                                                                                                     },
+                                                                                                          "id":  "9:943",
+                                                                                                          "layout":  "$layout8",
+                                                                                                          "name":  "wallet-text",
+                                                                                                          "type":  "FRAME"
+                                                                                                      },
+                                                                                                      {
+                                                                                                          "bounds":  {
+                                                                                                                         "height":  14,
+                                                                                                                         "width":  14,
+                                                                                                                         "x":  5964,
+                                                                                                                         "y":  387
+                                                                                                                     },
+                                                                                                          "id":  "9:1031",
+                                                                                                          "layout":  "$layout4",
+                                                                                                          "name":  "chevron-right",
+                                                                                                          "type":  "FRAME"
+                                                                                                      }
+                                                                                                  ],
+                                                                                     "cornerRadius":  12,
+                                                                                     "fills":  "$fill4",
+                                                                                     "id":  "9:941",
+                                                                                     "layout":  "$layout7",
+                                                                                     "name":  "wallet-row-Phantom",
+                                                                                     "strokes":  "$stroke1",
+                                                                                     "type":  "FRAME"
+                                                                                 }
+                                                                             ],
+                                                                "id":  "9:916",
+                                                                "layout":  "$layout6",
+                                                                "name":  "wallets-list",
+                                                                "type":  "FRAME"
+                                                            }
+                                                        ],
+                                           "id":  "9:911",
+                                           "layout":  "$layout2",
+                                           "name":  "sheet-content",
+                                           "type":  "FRAME"
+                                       },
+                                       {
+                                           "bounds":  {
+                                                          "height":  93,
+                                                          "width":  390,
+                                                          "x":  5620,
+                                                          "y":  444
+                                                      },
+                                           "children":  [
+                                                            {
+                                                                "bounds":  {
+                                                                               "height":  16,
+                                                                               "width":  350,
+                                                                               "x":  5640,
+                                                                               "y":  464
+                                                                           },
+                                                                "fills":  "$fill10",
+                                                                "id":  "9:948",
+                                                                "layout":  "$layout4",
+                                                                "name":  "Powered by Web3 payment infrastructure. Zero setup required.",
+                                                                "text":  "Powered by Web3 payment infrastructure. Zero setup required.",
+                                                                "type":  "TEXT"
+                                                            },
+                                                            {
+                                                                "bounds":  {
+                                                                               "height":  25,
+                                                                               "width":  350,
+                                                                               "x":  5640,
+                                                                               "y":  492
+                                                                           },
+                                                                "children":  [
+                                                                                 {
+                                                                                     "bounds":  {
+                                                                                                    "height":  5,
+                                                                                                    "width":  134,
+                                                                                                    "x":  5748,
+                                                                                                    "y":  504
+                                                                                                },
+                                                                                     "cornerRadius":  100,
+                                                                                     "fills":  "$fill10",
+                                                                                     "id":  "9:950",
+                                                                                     "layout":  "$layout4",
+                                                                                     "name":  "indicator",
+                                                                                     "type":  "RECTANGLE"
+                                                                                 }
+                                                                             ],
+                                                                "id":  "9:949",
+                                                                "layout":  "$layout10",
+                                                                "name":  "home-indicator-container",
+                                                                "type":  "FRAME"
+                                                            }
+                                                        ],
+                                           "fills":  "$fill4",
+                                           "id":  "9:947",
+                                           "layout":  "$layout9",
+                                           "name":  "sheet-footer",
+                                           "strokes":  "$stroke1",
+                                           "type":  "FRAME"
+                                       }
+                                   ],
+                      "fills":  "$fill1",
+                      "id":  "9:910",
+                      "layout":  "$layout1",
+                      "name":  "triply-wallet-connection-sheet",
+                      "strokes":  "$stroke1",
+                      "type":  "FRAME"
+                  }
+              ],
+    "variables":  {
+                      "fill1":  [
+                                    "#090d1a"
+                                ],
+                      "fill10":  [
+                                     "#94a3b8"
+                                 ],
+                      "fill2":  [
+                                    "#243249"
+                                ],
+                      "fill3":  [
+                                    "#ffffff"
+                                ],
+                      "fill4":  [
+                                    "#131c2e"
+                                ],
+                      "fill5":  [
+                                    "#e2761b"
+                                ],
+                      "fill6":  [
+                                    "#0052ff"
+                                ],
+                      "fill7":  [
+                                    "#ff5e7e"
+                                ],
+                      "fill8":  [
+                                    "#3b99fc"
+                                ],
+                      "fill9":  [
+                                    "#ab9ff2"
+                                ],
+                      "layout1":  {
+                                      "alignItems":  "space_between",
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  0,
+                                      "mode":  "vertical"
+                                  },
+                      "layout10":  {
+                                       "alignItems":  "center",
+                                       "constraints":  {
+                                                           "horizontal":  "left",
+                                                           "vertical":  "top"
+                                                       },
+                                       "gap":  0,
+                                       "mode":  "horizontal",
+                                       "padding":  {
+                                                       "bottom":  8,
+                                                       "left":  0,
+                                                       "right":  0,
+                                                       "top":  12
+                                                   }
+                                   },
+                      "layout2":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  0,
+                                      "mode":  "vertical"
+                                  },
+                      "layout3":  {
+                                      "alignItems":  "center",
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  0,
+                                      "mode":  "horizontal",
+                                      "padding":  {
+                                                      "bottom":  10,
+                                                      "left":  0,
+                                                      "right":  0,
+                                                      "top":  10
+                                                  }
+                                  },
+                      "layout4":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      }
+                                  },
+                      "layout5":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  12,
+                                      "justifyContent":  "center",
+                                      "mode":  "horizontal",
+                                      "padding":  {
+                                                      "bottom":  12,
+                                                      "left":  20,
+                                                      "right":  20,
+                                                      "top":  12
+                                                  }
+                                  },
+                      "layout6":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  8,
+                                      "mode":  "vertical",
+                                      "padding":  {
+                                                      "bottom":  20,
+                                                      "left":  20,
+                                                      "right":  20,
+                                                      "top":  20
+                                                  }
+                                  },
+                      "layout7":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  12,
+                                      "justifyContent":  "center",
+                                      "mode":  "horizontal",
+                                      "padding":  {
+                                                      "bottom":  12,
+                                                      "left":  12,
+                                                      "right":  12,
+                                                      "top":  12
+                                                  }
+                                  },
+                      "layout8":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  2,
+                                      "mode":  "vertical"
+                                  },
+                      "layout9":  {
+                                      "constraints":  {
+                                                          "horizontal":  "left",
+                                                          "vertical":  "top"
+                                                      },
+                                      "gap":  12,
+                                      "justifyContent":  "center",
+                                      "mode":  "vertical",
+                                      "padding":  {
+                                                      "bottom":  20,
+                                                      "left":  20,
+                                                      "right":  20,
+                                                      "top":  20
+                                                  }
+                                  },
+                      "stroke1":  {
+                                      "align":  "inside",
+                                      "color":  "#243249",
+                                      "width":  1
+                                  }
+                  }
+}

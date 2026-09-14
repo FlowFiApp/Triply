@@ -1,0 +1,3446 @@
+# Triply Design Reference
+
+
+## 9-8 — triply-home-search (390x934, bg #0f172a)
+
+- triply-home-search  390x934  bg:#0f172a  col ja:space_between
+  - scroll-content  390x845  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - header  390x59  row pad[12,20,12,20] ja:space_between al:center
+      - brand  TEXT  "Triply"  65x35  26px/800 lh34.6  bg:#ffffff
+      - currency-toggle  126x28  bg:#131c2e  brd:#243249  r20  row gap4 pad[6,12,6,12] al:center
+        - USD  TEXT  "USD"  24x16  12px/700 lh16  bg:#cdff9b
+        - / NGN / EUR  TEXT  " / NGN / EUR"  74x16  12px/400 lh16  bg:#94a3b8
+    - search-container  390x424  col pad[12,20,12,20]
+      - search-card  350x400  bg:#131c2e  brd:#243249  r16  col gap16 pad[18,18,18,18]
+        - tabs  314x39  bg:#090d1a  r10  row gap4 pad[3,3,3,3]
+          - tab-0  100x33  r8  row pad[8,0,8,0] ja:center al:center
+            - One Way  TEXT  "One Way"  55x17  13px/500 lh17.3  bg:#94a3b8
+          - tab-1  100x33  bg:#203da3  r8  row pad[8,0,8,0] ja:center al:center
+            - Round Trip  TEXT  "Round Trip"  64x17  13px/600 lh17.3  bg:#cdff9b
+          - tab-2  100x33  r8  row pad[8,0,8,0] ja:center al:center
+            - Multi-city  TEXT  "Multi-city"  57x17  13px/500 lh17.3  bg:#94a3b8
+        - airports-group  314x76  col gap12
+          - airport-row  314x76  row gap16 al:center
+            - from  123x76  col gap4
+              - Origin  TEXT  "Origin"  37x15  11px/500 lh14.6  bg:#94a3b8
+              - LOS  TEXT  "LOS"  52x37  28px/800 lh37.2  bg:#ffffff
+              - Lagos, Nigeria  TEXT  "Lagos, Nigeria"  78x16  12px/400 lh16  bg:#94a3b8
+            - swap-btn  36x36  bg:#203da3  brd:#cdff9b  r18  row ja:center al:center
+              - arrow-left-right  16x16
+                - Vector  VECTOR  10x12  brd:#cdff9b
+            - to  123x76  col gap4 al:max
+              - Destination  TEXT  "Destination"  68x15  11px/500 lh14.6  bg:#94a3b8
+              - LHR  TEXT  "LHR"  52x37  28px/800 lh37.2  bg:#ffffff
+              - London Heathrow  TEXT  "London Heathrow"  97x16  12px/400 lh16  bg:#94a3b8
+        - Line  LINE  314x0  brd:#243249
+        - date-picker-trigger  314x60  bg:#1e293b  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+          - calendar  20x20
+            - Vector  VECTOR  15x16  brd:#cdff9b
+          - date-text  258x36  col gap2
+            - Departure & Return  TEXT  "Departure & Return"  116x15  11px/500 lh14.6  bg:#94a3b8
+            - 24 Oct - 08 Nov 2026  TEXT  "24 Oct - 08 Nov 2026"  150x19  14px/600 lh18.6  bg:#ffffff
+        - passenger-picker-trigger  314x60  bg:#1e293b  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+          - user-round  20x20
+            - Vector  VECTOR  13x15  brd:#cdff9b
+          - passenger-text  258x36  col gap2
+            - Passengers & Cabin  TEXT  "Passengers & Cabin"  114x15  11px/500 lh14.6  bg:#94a3b8
+            - 2 People, Economy  TEXT  "2 People, Economy"  123x19  14px/600 lh18.6  bg:#ffffff
+        - search-cta  314x49  bg:#203da3  brd:#cdff9b  r12  row pad[14,0,14,0] ja:center al:center
+          - Search Flights  TEXT  "Search Flights"  103x21  16px/700 lh21.3  bg:#cdff9b
+    - popular-section  390x221  col gap12 pad[12,20,12,20]
+      - Popular Destinations  TEXT  "Popular Destinations"  149x21  16px/700 lh21.3  bg:#ffffff
+      - popular-carousel  350x164  row gap12
+        - dest-0  140x164  bg:#131c2e  brd:#243249  r12  col gap8 pad[12,12,12,12]
+          - dest-img  RECTANGLE  116x80  bg:img:97a80aede586e98b3fab943e051e9507337c3fc7  r8
+          - dest-info  116x52  col gap2
+            - Ibiza  TEXT  "Ibiza"  29x19  14px/700 lh18.6  bg:#ffffff
+            - $420  TEXT  "$420"  32x16  12px/600 lh16  bg:#cdff9b
+            - 420 USDT  TEXT  "420 USDT"  48x13  10px/400 lh13.3  bg:#94a3b8
+        - dest-1  140x164  bg:#131c2e  brd:#243249  r12  col gap8 pad[12,12,12,12]
+          - dest-img  RECTANGLE  116x80  bg:img:0b4512d1c8f4ddbe1b5ba52c8c76b4f6319761dc  r8
+          - dest-info  116x52  col gap2
+            - Zanzibar  TEXT  "Zanzibar"  55x19  14px/700 lh18.6  bg:#ffffff
+            - $680  TEXT  "$680"  32x16  12px/600 lh16  bg:#cdff9b
+            - 680 USDT  TEXT  "680 USDT"  48x13  10px/400 lh13.3  bg:#94a3b8
+        - dest-2  140x164  bg:#131c2e  brd:#243249  r12  col gap8 pad[12,12,12,12]
+          - dest-img  RECTANGLE  116x80  bg:img:527eeece937ff624ed1a6d9749150d3fc1e0f2af  r8
+          - dest-info  116x52  col gap2
+            - Tokyo  TEXT  "Tokyo"  38x19  14px/700 lh18.6  bg:#ffffff
+            - $950  TEXT  "$950"  32x16  12px/600 lh16  bg:#cdff9b
+            - 950 USDT  TEXT  "950 USDT"  48x13  10px/400 lh13.3  bg:#94a3b8
+    - recent-section  390x97  col gap12 pad[12,20,20,20]
+      - Recent Searches  TEXT  "Recent Searches"  123x21  16px/700 lh21.3  bg:#ffffff
+      - recent-row  350x32  row gap8
+        - chip-0  102x32  bg:#131c2e  brd:#243249  r20  row gap6 pad[8,12,8,12] al:center
+          - history  12x12
+            - Vector  VECTOR  9x9  brd:#94a3b8
+          - LOS → LHR  TEXT  "LOS → LHR"  60x16  12px/500 lh16  bg:#f8fafc
+        - chip-1  99x32  bg:#131c2e  brd:#243249  r20  row gap6 pad[8,12,8,12] al:center
+          - history  12x12
+            - Vector  VECTOR  9x9  brd:#94a3b8
+          - DXB → JFK  TEXT  "DXB → JFK"  57x16  12px/500 lh16  bg:#f8fafc
+        - chip-2  106x32  bg:#131c2e  brd:#243249  r20  row gap6 pad[8,12,8,12] al:center
+          - history  12x12
+            - Vector  VECTOR  9x9  brd:#94a3b8
+          - CPT → CDG  TEXT  "CPT → CDG"  64x16  12px/500 lh16  bg:#f8fafc
+  - bottom-tab-bar  390x89  col
+    - tabs  390x64  bg:#131c2e  brd:#243249  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#cdff9b
+        - label-Home  TEXT  "Home"  28x13  10px/600 lh13.3  bg:#cdff9b
+      - tab-Explore  64x39  col gap4 al:center
+        - compass  22x22
+          - Vector  VECTOR  18x18  brd:#94a3b8
+        - label-Explore  TEXT  "Explore"  34x13  10px/400 lh13.3  bg:#94a3b8
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmark  22x22
+          - Vector  VECTOR  12x16  brd:#94a3b8
+        - label-Bookmarks  TEXT  "Bookmarks"  52x13  10px/400 lh13.3  bg:#94a3b8
+      - tab-Profile  64x39  col gap4 al:center
+        - user  22x22
+          - Vector  VECTOR  12x16  brd:#94a3b8
+        - label-Profile  TEXT  "Profile"  29x13  10px/400 lh13.3  bg:#94a3b8
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-105 — triply-search-results (390x844, bg #0f172a)
+
+- triply-search-results  390x844  bg:#0f172a  col ja:space_between
+  - scroll-content  390x587  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - results-header  390x63  bg:#131c2e  brd:#243249  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#1e293b  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  9x9  brd:#f8fafc
+      - header-text  306x39  col gap2
+        - LOS to LHR  TEXT  "LOS to LHR"  84x21  16px/700 lh21.3  bg:#ffffff
+        - 24 Oct • 2 Passengers • Economy  TEXT  "24 Oct • 2 Passengers • Economy"  187x16  12px/400 lh16  bg:#94a3b8
+    - sticky-filters  390x60  row gap8 pad[12,20,12,20] al:center
+      - filter-icon  36x36  bg:#203da3  brd:#cdff9b  r10  row ja:center al:center
+        - sliders-horizontal  16x16
+          - Vector  VECTOR  12x12  brd:#cdff9b
+      - filter-0  77x32  bg:#cdff9b  brd:#243249  r20  row pad[8,12,8,12] al:center
+        - Cheapest  TEXT  "Cheapest"  53x16  12px/600 lh16  bg:#203da3
+      - filter-1  63x32  bg:#131c2e  brd:#243249  r20  row pad[8,12,8,12] al:center
+        - Fastest  TEXT  "Fastest"  39x16  12px/600 lh16  bg:#f8fafc
+      - filter-2  76x32  bg:#131c2e  brd:#243249  r20  row pad[8,12,8,12] al:center
+        - Non-stop  TEXT  "Non-stop"  52x16  12px/600 lh16  bg:#f8fafc
+      - filter-3  64x32  bg:#131c2e  brd:#243249  r20  row pad[8,12,8,12] al:center
+        - Earliest  TEXT  "Earliest"  40x16  12px/600 lh16  bg:#f8fafc
+    - results-list  390x420  col gap12 pad[0,20,24,20]
+      - flight-card-0  350x192  bg:#131c2e  brd:#243249  r16  col gap16 pad[16,16,16,16]
+        - card-header  318x43  row ja:space_between al:center
+          - airline-info  120x34  row gap8 al:center
+            - logo  ELLIPSE  24x24  bg:#1e293b  brd:#243249
+            - airline-text  88x34  col gap2
+              - British Airways  TEXT  "British Airways"  88x17  13px/600 lh17.3  bg:#ffffff
+              - BA-248  TEXT  "BA-248"  41x15  11px/400 lh14.6  bg:#94a3b8
+          - price-display  68x43  col al:max
+            - $850  TEXT  "$850"  47x24  18px/800 lh23.9  bg:#ffffff
+            - usdt-pill  68x19  bg:#203da3  r4  row pad[2,8,2,8]
+              - 850 USDT  TEXT  "850 USDT"  52x15  11px/700 lh14.6  bg:#cdff9b
+        - path-details  318x48  row ja:space_between al:center
+          - dep  51x40  col
+            - 10:30  TEXT  "10:30"  51x24  18px/700 lh23.9  bg:#ffffff
+            - LOS  TEXT  "LOS"  23x16  12px/400 lh16  bg:#94a3b8
+          - path-visual  216x48  col gap4 pad[0,16,0,16] al:center
+            - 6h 30m  TEXT  "6h 30m"  41x15  11px/400 lh14.6  bg:#94a3b8
+            - line-graphic  184x12  row gap4 al:center
+              - Ellipse  ELLIPSE  6x6  bg:#cdff9b
+              - Line  LINE  72x0  brd:#243249
+              - arrow-up-right  12x12
+                - Vector  VECTOR  4x4  brd:#cdff9b
+              - Line  LINE  72x0  brd:#243249
+              - Ellipse  ELLIPSE  6x6  bg:#94a3b8
+            - Direct  TEXT  "Direct"  27x13  10px/600 lh13.3  bg:#cdff9b
+          - arr  51x40  col al:max
+            - 17:00  TEXT  "17:00"  51x24  18px/700 lh23.9  bg:#ffffff
+            - LHR  TEXT  "LHR"  23x16  12px/400 lh16  bg:#94a3b8
+        - select-cta  318x37  bg:#1e293b  brd:#243249  r8  row pad[10,0,10,0] ja:center al:center
+          - Select Flight  TEXT  "Select Flight"  73x17  13px/600 lh17.3  bg:#cdff9b
+      - flight-card-1  350x192  bg:#131c2e  brd:#243249  r16  col gap16 pad[16,16,16,16]
+        - card-header  318x43  row ja:space_between al:center
+          - airline-info  116x34  row gap8 al:center
+            - logo  ELLIPSE  24x24  bg:#1e293b  brd:#243249
+            - airline-text  84x34  col gap2
+              - Qatar Airways  TEXT  "Qatar Airways"  84x17  13px/600 lh17.3  bg:#ffffff
+              - QR-149  TEXT  "QR-149"  43x15  11px/400 lh14.6  bg:#94a3b8
+          - price-display  68x43  col al:max
+            - $720  TEXT  "$720"  47x24  18px/800 lh23.9  bg:#ffffff
+            - usdt-pill  68x19  bg:#203da3  r4  row pad[2,8,2,8]
+              - 720 USDT  TEXT  "720 USDT"  52x15  11px/700 lh14.6  bg:#cdff9b
+        - path-details  318x48  row ja:space_between al:center
+          - dep  51x40  col
+            - 08:15  TEXT  "08:15"  51x24  18px/700 lh23.9  bg:#ffffff
+            - LOS  TEXT  "LOS"  23x16  12px/400 lh16  bg:#94a3b8
+          - path-visual  216x48  col gap4 pad[0,16,0,16] al:center
+            - 13h 30m  TEXT  "13h 30m"  49x15  11px/400 lh14.6  bg:#94a3b8
+            - line-graphic  184x12  row gap4 al:center
+              - Ellipse  ELLIPSE  6x6  bg:#cdff9b
+              - Line  LINE  72x0  brd:#243249
+              - arrow-up-right  12x12
+                - Vector  VECTOR  4x4  brd:#cdff9b
+              - Line  LINE  72x0  brd:#243249
+              - Ellipse  ELLIPSE  6x6  bg:#94a3b8
+            - 1 Stop in DOH  TEXT  "1 Stop in DOH"  66x13  10px/600 lh13.3  bg:#cdff9b
+          - arr  51x40  col al:max
+            - 21:45  TEXT  "21:45"  51x24  18px/700 lh23.9  bg:#ffffff
+            - LHR  TEXT  "LHR"  23x16  12px/400 lh16  bg:#94a3b8
+        - select-cta  318x37  bg:#1e293b  brd:#243249  r8  row pad[10,0,10,0] ja:center al:center
+          - Select Flight  TEXT  "Select Flight"  73x17  13px/600 lh17.3  bg:#cdff9b
+  - bottom-tab-bar  390x89  col
+    - tabs  390x64  bg:#131c2e  brd:#243249  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#94a3b8
+        - label-Home  TEXT  "Home"  28x13  10px/400 lh13.3  bg:#94a3b8
+      - tab-Explore  64x39  col gap4 al:center
+        - compass  22x22
+          - Vector  VECTOR  18x18  brd:#cdff9b
+        - label-Explore  TEXT  "Explore"  34x13  10px/600 lh13.3  bg:#cdff9b
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmark  22x22
+          - Vector  VECTOR  12x16  brd:#94a3b8
+        - label-Bookmarks  TEXT  "Bookmarks"  52x13  10px/400 lh13.3  bg:#94a3b8
+      - tab-Profile  64x39  col gap4 al:center
+        - user  22x22
+          - Vector  VECTOR  12x16  brd:#94a3b8
+        - label-Profile  TEXT  "Profile"  29x13  10px/400 lh13.3  bg:#94a3b8
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-206 — triply-flight-details (390x844, bg #0f172a)
+
+- triply-flight-details  390x844  bg:#0f172a  col ja:space_between
+  - scroll-content  390x579  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - details-header  390x56  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  9x9  brd:#f8fafc
+      - Flight Details  TEXT  "Flight Details"  105x24  18px/800 lh23.9  bg:#ffffff
+    - timeline-container  390x278  col pad[12,20,12,20]
+      - timeline-card  350x254  bg:#131c2e  brd:#243249  r16  col gap20 pad[18,18,18,18]
+        - timeline-row-1  314x39  row gap12
+          - time-col  48x34  col
+            - 10:30  TEXT  "10:30"  40x19  14px/700 lh18.6  bg:#ffffff
+            - 24 Oct  TEXT  "24 Oct"  36x15  11px/400 lh14.6  bg:#94a3b8
+          - line-visual  16x39  col al:center
+            - Ellipse  ELLIPSE  8x8  bg:#cdff9b  brd:#cdff9b
+            - Line  LINE  16x0  brd:#243249
+          - info-col  226x39  col gap4
+            - Murtala Muhammed (LOS)  TEXT  "Murtala Muhammed (LOS)"  170x19  14px/700 lh18.6  bg:#ffffff
+            - Terminal 2 • Gate D4  TEXT  "Terminal 2 • Gate D4"  115x16  12px/400 lh16  bg:#94a3b8
+        - aircraft-info  314x100  row gap12
+          - Frame  48x100  row
+          - line-visual-empty  16x100  col al:center
+            - Line  LINE  16x0  brd:#243249
+          - specs-card  226x55  bg:#1e293b  brd:#243249  r10  col gap8 pad[12,12,12,12]
+            - specs-grid  202x31  row ja:space_between
+              - spec-1  65x31  col gap2
+                - Aircraft  TEXT  "Aircraft"  47x13  10px/400 lh13.3  bg:#94a3b8
+                - Boeing 777  TEXT  "Boeing 777"  65x16  12px/600 lh16  bg:#ffffff
+              - spec-2  75x31  col gap2
+                - Seat Pitch  TEXT  "Seat Pitch"  54x13  10px/400 lh13.3  bg:#94a3b8
+                - 32" Economy  TEXT  "32" Economy"  75x16  12px/600 lh16  bg:#ffffff
+              - spec-3  81x31  col gap2
+                - Luggage  TEXT  "Luggage"  45x13  10px/400 lh13.3  bg:#94a3b8
+                - 23kg check-in  TEXT  "23kg check-in"  81x16  12px/600 lh16  bg:#ffffff
+        - timeline-row-2  314x39  row gap12
+          - time-col-2  48x34  col
+            - 17:00  TEXT  "17:00"  40x19  14px/700 lh18.6  bg:#ffffff
+            - 24 Oct  TEXT  "24 Oct"  36x15  11px/400 lh14.6  bg:#94a3b8
+          - line-visual-2  16x8  col al:center
+            - Ellipse  ELLIPSE  8x8  bg:#203da3  brd:#cdff9b
+          - info-col-2  226x39  col gap4
+            - London Heathrow (LHR)  TEXT  "London Heathrow (LHR)"  154x19  14px/700 lh18.6  bg:#ffffff
+            - Terminal 5 • Arrival Gate  TEXT  "Terminal 5 • Arrival Gate"  134x16  12px/400 lh16  bg:#94a3b8
+    - addons-section  390x201  col gap12 pad[12,20,24,20]
+      - Baggage & Extras  TEXT  "Baggage & Extras"  133x21  16px/700 lh21.3  bg:#ffffff
+      - addons-card  350x132  bg:#131c2e  brd:#243249  r16  col gap16 pad[16,16,16,16]
+        - addon-row-1  318x34  row ja:space_between al:center
+          - info  274x34  row gap12 al:center
+            - luggage  20x20
+              - Vector  VECTOR  13x16  brd:#cdff9b
+            - text  242x34  col gap2
+              - Extra Checked Bag (23kg)  TEXT  "Extra Checked Bag (23kg)"  160x17  13px/600 lh17.3  bg:#ffffff
+              - +$35 / 35 USDT  TEXT  "+$35 / 35 USDT"  85x15  11px/400 lh14.6  bg:#94a3b8
+          - toggle-on  44x24  bg:#cdff9b  r12  row pad[2,2,2,2] ja:max al:center
+            - Ellipse  ELLIPSE  20x20  bg:#203da3
+        - Line  LINE  318x0  brd:#243249
+        - addon-row-2  318x34  row ja:space_between al:center
+          - info  274x34  row gap12 al:center
+            - airplay  20x20
+              - Vector  VECTOR  16x15  brd:#cdff9b
+            - text  242x34  col gap2
+              - Preferred Seat Selection  TEXT  "Preferred Seat Selection"  144x17  13px/600 lh17.3  bg:#ffffff
+              - +$15 / 15 USDT  TEXT  "+$15 / 15 USDT"  85x15  11px/400 lh14.6  bg:#94a3b8
+          - toggle-off  44x24  bg:#1e293b  r12  row pad[2,2,2,2] al:center
+            - Ellipse  ELLIPSE  20x20  bg:#94a3b8
+  - sticky-checkout-bar  390x152  bg:#131c2e  brd:#243249  col gap12 pad[12,20,0,20]
+    - summary-text-row  350x43  row ja:space_between al:center
+      - Total (1 Passenger)  TEXT  "Total (1 Passenger)"  125x19  14px/400 lh18.6  bg:#94a3b8
+      - price-col  83x43  col al:max
+        - $885.00  TEXT  "$885.00"  83x27  20px/800 lh26.6  bg:#ffffff
+        - 885.00 USDT  TEXT  "885.00 USDT"  75x16  12px/600 lh16  bg:#cdff9b
+    - action-btn  350x48  bg:#203da3  brd:#cdff9b  r12  row pad[14,0,14,0] ja:center
+      - Proceed to Passenger Details  TEXT  "Proceed to Passenger Details"  201x20  15px/700 lh20  bg:#cdff9b
+    - home-indicator-container  350x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-285 — triply-passenger-details (390x844, bg #0f172a)
+
+- triply-passenger-details  390x844  bg:#0f172a  col ja:space_between
+  - scroll-content  390x602  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - header-bar  390x56  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  9x9  brd:#f8fafc
+      - Passenger Details  TEXT  "Passenger Details"  146x24  18px/800 lh23.9  bg:#ffffff
+    - notice-banner  390x82  row pad[12,20,12,20]
+      - banner-card  350x58  bg:#cdff9b  r12  row gap10 pad[12,12,12,12] al:center
+        - shield-check  20x20
+          - Vector  VECTOR  13x16  brd:#203da3
+        - No account needed. Your ticket will be sent to your email and saved to this device.  TEXT  "No account needed. Your ticket will be sent to your email and saved to this device."  296x34  12px/600 lh16.8  bg:#203da3
+    - passenger-form  390x420  col gap16 pad[12,20,24,20]
+      - name-row  350x64  row gap12
+        - first-name-field  169x64  col gap6
+          - First Name  TEXT  "First Name"  62x15  11px/600 lh14.6  bg:#94a3b8
+          - input  169x43  bg:#131c2e  brd:#243249  r10  row pad[12,12,12,12]
+            - Sarah  TEXT  "Sarah"  37x19  14px/400 lh18.6  bg:#f8fafc
+        - last-name-field  169x64  col gap6
+          - Last Name  TEXT  "Last Name"  60x15  11px/600 lh14.6  bg:#94a3b8
+          - input  169x43  bg:#131c2e  brd:#243249  r10  row pad[12,12,12,12]
+            - Chen  TEXT  "Chen"  34x19  14px/400 lh18.6  bg:#f8fafc
+      - dob-gender-row  350x64  row gap12
+        - dob-field  169x64  col gap6
+          - Date of Birth  TEXT  "Date of Birth"  77x15  11px/600 lh14.6  bg:#94a3b8
+          - input  169x43  bg:#131c2e  brd:#243249  r10  row pad[12,12,12,12] ja:space_between al:center
+            - 14 Nov 1994  TEXT  "14 Nov 1994"  89x19  14px/400 lh18.6  bg:#f8fafc
+            - calendar  16x16
+              - Vector  VECTOR  12x13  brd:#94a3b8
+        - gender-field  169x64  col gap6
+          - Gender  TEXT  "Gender"  43x15  11px/600 lh14.6  bg:#94a3b8
+          - input  169x43  bg:#131c2e  brd:#243249  r10  row pad[12,12,12,12] ja:space_between al:center
+            - Female  TEXT  "Female"  46x19  14px/400 lh18.6  bg:#f8fafc
+            - chevron-down  16x16
+              - Vector  VECTOR  8x4  brd:#94a3b8
+      - email-field  350x64  col gap6
+        - Email Address  TEXT  "Email Address"  83x15  11px/600 lh14.6  bg:#94a3b8
+        - input  350x43  bg:#131c2e  brd:#243249  r10  row pad[12,12,12,12]
+          - sarah.chen@gmail.com  TEXT  "sarah.chen@gmail.com"  149x19  14px/400 lh18.6  bg:#f8fafc
+      - phone-field  350x64  col gap6
+        - Phone Number  TEXT  "Phone Number"  83x15  11px/600 lh14.6  bg:#94a3b8
+        - input  350x43  bg:#131c2e  brd:#243249  r10  row gap8 pad[12,12,12,12] al:center
+          - +234  TEXT  "+234"  36x19  14px/600 lh18.6  bg:#cdff9b
+          - Line  LINE  0x16  brd:#243249
+          - 801 234 5678  TEXT  "801 234 5678"  274x19  14px/400 lh18.6  bg:#f8fafc
+      - passport-field  350x64  col gap6
+        - Frame  350x15  row ja:space_between
+          - Passport Number  TEXT  "Passport Number"  101x15  11px/600 lh14.6  bg:#94a3b8
+          - OPTIONAL  TEXT  "OPTIONAL"  48x13  10px/400 lh13.3  bg:#94a3b8
+        - input  350x43  bg:#131c2e  brd:#243249  r10  row pad[12,12,12,12]
+          - A00123456  TEXT  "A00123456"  83x19  14px/400 lh18.6  bg:#94a3b8
+  - sticky-action-bar  390x125  bg:#131c2e  brd:#243249  col gap12 pad[20,20,20,20]
+    - action-btn  350x48  bg:#203da3  brd:#cdff9b  r12  row pad[14,0,14,0] ja:center
+      - Continue to Checkout  TEXT  "Continue to Checkout"  149x20  15px/700 lh20  bg:#cdff9b
+    - home-indicator-container  350x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-344 — triply-web3-checkout (390x844, bg #0f172a)
+
+- triply-web3-checkout  390x844  bg:#0f172a  col ja:space_between
+  - scroll-content  390x645  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - header-bar  390x56  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  9x9  brd:#f8fafc
+      - Web3 Checkout  TEXT  "Web3 Checkout"  134x24  18px/800 lh23.9  bg:#ffffff
+    - notice-banner  390x68  row pad[12,20,12,20]
+      - banner-card  350x44  bg:#cdff9b  r12  row pad[12,12,12,12] ja:space_between al:center
+        - left  126x20  row gap10 al:center
+          - clock  20x20
+            - Vector  VECTOR  16x16  brd:#203da3
+          - Price Guaranteed  TEXT  "Price Guaranteed"  96x16  12px/700 lh16  bg:#203da3
+        - 14:59  TEXT  "14:59"  37x17  13px/800 lh17.3  bg:#203da3
+    - breakdown-container  390x186  col pad[12,20,12,20]
+      - breakdown-card  350x162  bg:#131c2e  brd:#243249  r16  col gap12 pad[16,16,16,16]
+        - Order Summary  TEXT  "Order Summary"  104x19  14px/700 lh18.6  bg:#ffffff
+        - breakdown-table  318x99  col gap8
+          - row-base  318x16  row ja:space_between al:center
+            - Flight Base Fare  TEXT  "Flight Base Fare"  87x16  12px/400 lh16  bg:#94a3b8
+            - prices  115x16  row gap8
+              - $850.00  TEXT  "$850.00"  50x16  12px/400 lh16  bg:#f8fafc
+              - 850 USDT  TEXT  "850 USDT"  57x16  12px/600 lh16  bg:#cdff9b
+          - row-taxes  318x16  row ja:space_between al:center
+            - Taxes & Fees  TEXT  "Taxes & Fees"  72x16  12px/400 lh16  bg:#94a3b8
+            - prices  99x16  row gap8
+              - $25.00  TEXT  "$25.00"  42x16  12px/400 lh16  bg:#f8fafc
+              - 25 USDT  TEXT  "25 USDT"  49x16  12px/600 lh16  bg:#cdff9b
+          - row-service  318x16  row ja:space_between al:center
+            - Service Fee  TEXT  "Service Fee"  64x16  12px/400 lh16  bg:#94a3b8
+            - prices  99x16  row gap8
+              - $10.00  TEXT  "$10.00"  42x16  12px/400 lh16  bg:#f8fafc
+              - 10 USDT  TEXT  "10 USDT"  49x16  12px/600 lh16  bg:#cdff9b
+          - Line  LINE  318x0  brd:#243249
+          - row-total  318x19  row ja:space_between al:center
+            - Total Payable  TEXT  "Total Payable"  78x17  13px/700 lh17.3  bg:#ffffff
+            - prices  133x19  row gap8 al:center
+              - $885.00  TEXT  "$885.00"  58x19  14px/800 lh18.6  bg:#ffffff
+              - 885 USDT  TEXT  "885 USDT"  67x19  14px/800 lh18.6  bg:#cdff9b
+    - payment-method-section  390x291  col gap12 pad[12,20,24,20]
+      - Select Payment Method  TEXT  "Select Payment Method"  164x20  15px/700 lh20  bg:#ffffff
+      - method-card-1  350x84  bg:#131c2e  brd:#cdff9b  r12  col gap12 pad[16,16,16,16]
+        - Frame  318x19  row ja:space_between al:center
+          - Frame  175x19  row gap10 al:center
+            - radio-receiver  18x18
+              - Vector  VECTOR  15x7  brd:#cdff9b
+            - Pay with Crypto Wallet  TEXT  "Pay with Crypto Wallet"  147x19  14px/700 lh18.6  bg:#ffffff
+          - Fast & Gasless  TEXT  "Fast & Gasless"  79x13  10px/700 lh13.3  bg:#cdff9b
+        - chain-icons-group  247x21  row gap8 pad[0,0,0,28] al:center
+          - badge-0  47x21  bg:#1e293b  brd:#243249  r6  row pad[4,8,4,8]
+            - Solana  TEXT  "Solana"  31x13  10px/600 lh13.3  bg:#cdff9b
+          - badge-1  38x21  bg:#1e293b  brd:#243249  r6  row pad[4,8,4,8]
+            - Base  TEXT  "Base"  22x13  10px/600 lh13.3  bg:#cdff9b
+          - badge-2  53x21  bg:#1e293b  brd:#243249  r6  row pad[4,8,4,8]
+            - Polygon  TEXT  "Polygon"  37x13  10px/600 lh13.3  bg:#cdff9b
+          - badge-3  57x21  bg:#1e293b  brd:#243249  r6  row pad[4,8,4,8]
+            - Arbitrum  TEXT  "Arbitrum"  41x13  10px/600 lh13.3  bg:#cdff9b
+      - method-card-2  350x51  bg:#131c2e  brd:#243249  r12  row pad[16,16,16,16] ja:space_between al:center
+        - Frame  204x19  row gap10 al:center
+          - radio  18x18
+            - Vector  VECTOR  15x10  brd:#94a3b8
+          - Pay via QR Code / Transfer  TEXT  "Pay via QR Code / Transfer"  176x19  14px/600 lh18.6  bg:#94a3b8
+      - network-dropdown-field  350x64  col gap6
+        - Select Pay Network  TEXT  "Select Pay Network"  117x15  11px/600 lh14.6  bg:#94a3b8
+        - input  350x43  bg:#131c2e  brd:#243249  r10  row pad[12,12,12,12] ja:space_between al:center
+          - Frame  159x19  row gap8 al:center
+            - Base Network  TEXT  "Base Network"  89x19  14px/600 lh18.6  bg:#ffffff
+            - fee-tag  62x16  bg:#203da3  r4  row pad[2,6,2,6]
+              - ~ $0.01 fee  TEXT  "~ $0.01 fee"  50x12  9px/700 lh12  bg:#cdff9b
+          - chevron-down  16x16
+            - Vector  VECTOR  8x4  brd:#94a3b8
+  - sticky-checkout-bar  390x125  bg:#131c2e  brd:#243249  col gap12 pad[20,20,20,20]
+    - action-btn  350x48  bg:#203da3  brd:#cdff9b  r12  row gap8 pad[14,0,14,0] ja:center
+      - wallet  18x18
+        - Vector  VECTOR  14x13  brd:#cdff9b
+      - Connect Wallet to Pay  TEXT  "Connect Wallet to Pay"  153x20  15px/700 lh20  bg:#cdff9b
+    - home-indicator-container  350x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-568 — triply-processing-settlement (390x844, bg #090d1a)
+
+- triply-processing-settlement  390x844  bg:#090d1a  col ja:space_between
+  - scroll-content  390x595  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - header-bar  390x48  row gap12 pad[12,20,12,20] al:center
+      - Processing Booking  TEXT  "Processing Booking"  350x24  18px/800 lh23.9  bg:#ffffff
+    - main-status-container  390x503  col gap32 pad[20,20,20,20] al:center
+      - step-tracker  350x263  bg:#131c2e  brd:#243249  r16  col gap20 pad[16,16,16,16]
+        - step-1  318x37  row gap12 al:center
+          - step-circle  28x28  bg:#203da3  r14  row ja:center al:center
+            - check  14x14
+              - Vector  VECTOR  9x6  brd:#cdff9b
+          - step-text  278x37  col gap2
+            - On-Chain Payment Verification  TEXT  "On-Chain Payment Verification"  278x19  14px/700 lh18.6  bg:#ffffff
+            - Verified & Secured  TEXT  "Verified & Secured"  278x16  12px/400 lh16  bg:#cdff9b
+        - connector  318x20  row pad[0,0,0,13]
+          - Line  LINE  0x20  brd:#cdff9b
+        - step-2  318x37  row gap12 al:center
+          - step-circle  28x28  bg:#131c2e  brd:#cdff9b  r14  row ja:center al:center
+            - Ellipse  ELLIPSE  8x8  bg:#cdff9b
+          - step-text  278x37  col gap2
+            - Instant Settlement  TEXT  "Instant Settlement"  278x19  14px/700 lh18.6  bg:#ffffff
+            - In Progress...  TEXT  "In Progress..."  278x16  12px/400 lh16  bg:#cdff9b
+        - connector  318x20  row pad[0,0,0,13]
+          - Line  LINE  0x20  brd:#243249
+        - step-3  318x37  row gap12 al:center
+          - step-circle  28x28  bg:#131c2e  brd:#243249  r14  row ja:center al:center
+            - 3  TEXT  "3"  8x16  12px/700 lh16  bg:#94a3b8
+          - step-text  278x37  col gap2
+            - Airline Ticket Issuance  TEXT  "Airline Ticket Issuance"  278x19  14px/600 lh18.6  bg:#ffffff
+            - Pending  TEXT  "Pending"  278x16  12px/400 lh16  bg:#94a3b8
+      - message-box  350x68  col gap12 al:center
+        - Verifying blockchain transaction.  TEXT  "Verifying blockchain transaction."  350x21  16px/700 lh21.3  bg:#ffffff
+        - Do not close this screen or refresh.  TEXT  "Do not close this screen or refresh."  350x19  14px/400 lh18.6  bg:#94a3b8
+        - progress-bar-container  200x4  bg:#243249  r2  row
+          - progress-bar-fill  RECTANGLE  120x4  bg:#cdff9b  r2
+      - tx-card  350x68  bg:#131c2e  brd:#243249  r12  col gap6 pad[14,14,14,14]
+        - Transaction Hash  TEXT  "Transaction Hash"  322x15  11px/600 lh14.6  bg:#94a3b8
+        - tx-hash-row  322x19  row ja:space_between al:center
+          - 0x7a3f89d...b2c1  TEXT  "0x7a3f89d...b2c1"  119x19  14px/600 lh18.6  bg:#cdff9b
+          - copy  16x16
+            - Vector  VECTOR  13x13  brd:#cdff9b
+  - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+    - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-618 — triply-e-ticket-confirmation (390x858, bg #090d1a)
+
+- triply-e-ticket-confirmation  390x858  bg:#090d1a  col ja:space_between
+  - scroll-content  390x769  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - header-bar  390x56  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  9x9  brd:#f8fafc
+      - E-Ticket  TEXT  "E-Ticket"  306x24  18px/800 lh23.9  bg:#ffffff
+    - ticket-container  390x669  col gap16 pad[20,20,20,20]
+      - badge-header  350x48  bg:#22c55e  brd:#22c55e  r12  row gap12 pad[12,12,12,12] al:center
+        - icon-wrap  24x24  bg:#22c55e  r12  row ja:center al:center
+          - check  12x12
+            - Vector  VECTOR  7x5  brd:#ffffff
+        - Booking Confirmed!  TEXT  "Booking Confirmed!"  146x21  16px/700 lh21.3  bg:#22c55e
+      - boarding-pass  350x513  bg:#131c2e  brd:#243249  r16  col
+        - pass-top  350x245  col gap16 pad[18,18,18,18]
+          - carrier-row  314x24  row ja:space_between al:center
+            - carrier-info  126x24  row gap8 al:center
+              - logo  ELLIPSE  24x24  bg:#1e293b  brd:#243249
+              - British Airways  TEXT  "British Airways"  94x19  14px/700 lh18.6  bg:#ffffff
+            - BA-248  TEXT  "BA-248"  49x17  13px/400 lh17.3  bg:#94a3b8
+          - path-row  314x57  row ja:space_between al:center
+            - dep  52x57  col gap4
+              - LOS  TEXT  "LOS"  52x37  28px/800 lh37.2  bg:#ffffff
+              - Lagos  TEXT  "Lagos"  33x16  12px/400 lh16  bg:#94a3b8
+            - arrow  27x33  col al:center
+              - plane  20x20
+                - Vector  VECTOR  15x15  brd:#cdff9b
+              - Direct  TEXT  "Direct"  27x13  10px/400 lh13.3  bg:#94a3b8
+            - arr  52x57  col gap4 al:max
+              - LHR  TEXT  "LHR"  52x37  28px/800 lh37.2  bg:#ffffff
+              - London  TEXT  "London"  41x16  12px/400 lh16  bg:#94a3b8
+          - Line  LINE  314x0  brd:#243249
+          - pass-grid  314x80  col gap12
+            - grid-row-1  314x34  row ja:space_between
+              - cell  100x34  col gap2
+                - Passenger  TEXT  "Passenger"  56x13  10px/400 lh13.3  bg:#94a3b8
+                - Adom Shafi  TEXT  "Adom Shafi"  75x19  14px/700 lh18.6  bg:#ffffff
+              - cell  100x34  col gap2
+                - Class  TEXT  "Class"  31x13  10px/400 lh13.3  bg:#94a3b8
+                - Economy  TEXT  "Economy"  60x19  14px/700 lh18.6  bg:#ffffff
+              - cell  100x34  col gap2 al:max
+                - Seat  TEXT  "Seat"  24x13  10px/400 lh13.3  bg:#94a3b8
+                - 15C  TEXT  "15C"  29x19  14px/700 lh18.6  bg:#cdff9b
+            - grid-row-2  314x34  row ja:space_between
+              - cell  100x34  col gap2
+                - Terminal  TEXT  "Terminal"  48x13  10px/400 lh13.3  bg:#94a3b8
+                - 2  TEXT  "2"  10x19  14px/700 lh18.6  bg:#ffffff
+              - cell  100x34  col gap2
+                - Gate  TEXT  "Gate"  25x13  10px/400 lh13.3  bg:#94a3b8
+                - B7  TEXT  "B7"  18x19  14px/700 lh18.6  bg:#ffffff
+              - cell  100x34  col gap2 al:max
+                - Departure  TEXT  "Departure"  55x13  10px/400 lh13.3  bg:#94a3b8
+                - 09:30 AM  TEXT  "09:30 AM"  66x19  14px/700 lh18.6  bg:#ffffff
+        - perforation-divider  350x20  row ja:space_between al:center
+          - notch-left  ELLIPSE  20x20  bg:#090d1a
+          - Line  LINE  350x0  brd:#243249
+          - notch-right  ELLIPSE  20x20  bg:#090d1a
+        - pass-bottom  350x248  col gap12 pad[18,18,18,18] al:center
+          - Booking Reference (PNR)  TEXT  "Booking Reference (PNR)"  144x15  11px/600 lh14.6  bg:#94a3b8
+          - RZPNX8  TEXT  "RZPNX8"  83x29  22px/800 lh29.3  bg:#ffffff
+          - qr-block  144x144  bg:#ffffff  r8  row pad[12,12,12,12] ja:center al:center
+            - Rectangle  RECTANGLE  120x120  bg:img:8eeb96f84fa044c158d843387d558c31532ce22a
+      - actions-row  350x36  row gap8
+        - pill-btn  114x36  bg:#131c2e  brd:#243249  r20  row gap6 pad[10,12,10,12] al:center
+          - wallet  14x14
+            - Vector  VECTOR  11x10  brd:#cdff9b
+          - Apple Wallet  TEXT  "Apple Wallet"  70x16  12px/600 lh16  bg:#ffffff
+        - pill-btn  124x36  bg:#131c2e  brd:#243249  r20  row gap6 pad[10,12,10,12] al:center
+          - download  14x14
+            - Vector  VECTOR  10x10  brd:#cdff9b
+          - Download PDF  TEXT  "Download PDF"  80x16  12px/600 lh16  bg:#ffffff
+        - pill-btn  76x36  bg:#131c2e  brd:#243249  r20  row gap6 pad[10,12,10,12] al:center
+          - share-2  14x14
+            - Vector  VECTOR  10x11  brd:#cdff9b
+          - Share  TEXT  "Share"  32x16  12px/600 lh16  bg:#ffffff
+  - bottom-tab-bar  390x89  col
+    - tabs  390x64  bg:#131c2e  brd:#243249  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#cdff9b
+        - label-Home  TEXT  "Home"  28x13  10px/600 lh13.3  bg:#cdff9b
+      - tab-Explore  64x39  col gap4 al:center
+        - explore  22x22
+          - Vector  VECTOR  16x17  brd:#94a3b8
+        - label-Explore  TEXT  "Explore"  34x13  10px/500 lh13.3  bg:#94a3b8
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmarks  22x22
+          - Vector  VECTOR  16x17  brd:#94a3b8
+        - label-Bookmarks  TEXT  "Bookmarks"  52x13  10px/500 lh13.3  bg:#94a3b8
+      - tab-Profile  64x39  col gap4 al:center
+        - profile  22x22
+          - Vector  VECTOR  16x17  brd:#94a3b8
+        - label-Profile  TEXT  "Profile"  29x13  10px/500 lh13.3  bg:#94a3b8
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-718 — triply-my-trips (390x844, bg #090d1a)
+
+- triply-my-trips  390x844  bg:#090d1a  col ja:space_between
+  - scroll-content  390x546  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - header-bar  390x48  row gap12 pad[12,20,12,20] al:center
+      - My Bookings  TEXT  "My Bookings"  350x24  18px/800 lh23.9  bg:#ffffff
+    - tab-bar-container  390x51  row pad[0,20,12,20]
+      - tabs  350x39  bg:#131c2e  r10  row gap4 pad[3,3,3,3]
+        - tab-0  170x33  bg:#203da3  r8  row pad[8,0,8,0] ja:center al:center
+          - Upcoming  TEXT  "Upcoming"  61x17  13px/600 lh17.3  bg:#cdff9b
+        - tab-1  170x33  r8  row pad[8,0,8,0] ja:center al:center
+          - Past  TEXT  "Past"  26x17  13px/500 lh17.3  bg:#94a3b8
+    - trips-list  390x403  col gap16 pad[0,20,20,20]
+      - trip-card-upcoming  350x173  bg:#131c2e  brd:#243249  r16  col gap16 pad[16,16,16,16]
+        - card-header  318x32  row ja:space_between al:center
+          - carrier  130x32  row gap8 al:center
+            - logo  ELLIPSE  24x24  bg:#1e293b  brd:#243249
+            - text  98x32  col
+              - British Airways  TEXT  "British Airways"  88x17  13px/600 lh17.3  bg:#ffffff
+              - BA-248 • Economy  TEXT  "BA-248 • Economy"  98x15  11px/400 lh14.6  bg:#94a3b8
+          - status  65x21  bg:#cdff9b  brd:#cdff9b  r6  row pad[4,8,4,8]
+            - Confirmed  TEXT  "Confirmed"  49x13  10px/700 lh13.3  bg:#cdff9b
+        - route  318x40  row ja:space_between al:center
+          - dep  84x40  col
+            - 10:30 AM  TEXT  "10:30 AM"  84x24  18px/700 lh23.9  bg:#ffffff
+            - LOS • Lagos  TEXT  "LOS • Lagos"  67x16  12px/400 lh16  bg:#94a3b8
+          - duration  50x13  col al:center
+            - 6h 30m  TEXT  "6h 30m"  38x13  10px/400 lh13.3  bg:#94a3b8
+            - Line  LINE  50x0  brd:#243249
+          - arr  83x40  col al:max
+            - 05:00 PM  TEXT  "05:00 PM"  83x24  18px/700 lh23.9  bg:#ffffff
+            - LHR • London  TEXT  "LHR • London"  75x16  12px/400 lh16  bg:#94a3b8
+        - view-boarding-cta  318x37  bg:#203da3  brd:#243249  r8  row pad[10,0,10,0] ja:center al:center
+          - View Boarding Pass  TEXT  "View Boarding Pass"  117x17  13px/600 lh17.3  bg:#cdff9b
+      - section-past  350x151  col gap12
+        - Past Trips  TEXT  "Past Trips"  62x19  14px/700 lh18.6  bg:#ffffff
+        - trip-card-past  350x120  bg:#131c2e  brd:#243249  r16  col gap16 pad[16,16,16,16]
+          - card-header  318x32  row ja:space_between al:center
+            - carrier  132x32  row gap8 al:center
+              - logo  ELLIPSE  24x24  bg:#1e293b  brd:#243249
+              - text  100x32  col
+                - Qatar Airways  TEXT  "Qatar Airways"  84x17  13px/600 lh17.3  bg:#ffffff
+                - QR-149 • Economy  TEXT  "QR-149 • Economy"  100x15  11px/400 lh14.6  bg:#94a3b8
+            - status  67x21  bg:#243249  r6  row pad[4,8,4,8]
+              - Completed  TEXT  "Completed"  51x13  10px/600 lh13.3  bg:#94a3b8
+          - route  318x40  row ja:space_between al:center
+            - dep  84x40  col
+              - 08:15 AM  TEXT  "08:15 AM"  84x24  18px/700 lh23.9  bg:#ffffff
+              - LOS • Lagos  TEXT  "LOS • Lagos"  67x16  12px/400 lh16  bg:#94a3b8
+            - duration  50x13  col al:center
+              - 13h 30m  TEXT  "13h 30m"  44x13  10px/400 lh13.3  bg:#94a3b8
+              - Line  LINE  50x0  brd:#243249
+            - arr  83x40  col al:max
+              - 09:45 PM  TEXT  "09:45 PM"  83x24  18px/700 lh23.9  bg:#ffffff
+              - LHR • London  TEXT  "LHR • London"  75x16  12px/400 lh16  bg:#94a3b8
+      - storage-note  350x27  row pad[12,0,0,0] ja:center
+        - Tickets retrieved from device storage — no login required.  TEXT  "Tickets retrieved from device storage — no login required."  350x15  11px/400 lh14.6  bg:#94a3b8
+  - bottom-tab-bar  390x89  col
+    - tabs  390x64  bg:#131c2e  brd:#243249  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#94a3b8
+        - label-Home  TEXT  "Home"  28x13  10px/500 lh13.3  bg:#94a3b8
+      - tab-Explore  64x39  col gap4 al:center
+        - explore  22x22
+          - Vector  VECTOR  16x17  brd:#94a3b8
+        - label-Explore  TEXT  "Explore"  34x13  10px/500 lh13.3  bg:#94a3b8
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmarks  22x22
+          - Vector  VECTOR  16x17  brd:#cdff9b
+        - label-Bookmarks  TEXT  "Bookmarks"  52x13  10px/600 lh13.3  bg:#cdff9b
+      - tab-Profile  64x39  col gap4 al:center
+        - profile  22x22
+          - Vector  VECTOR  16x17  brd:#94a3b8
+        - label-Profile  TEXT  "Profile"  29x13  10px/500 lh13.3  bg:#94a3b8
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-803 — triply-passenger-class-sheet (390x680, bg #090d1a)
+
+- triply-passenger-class-sheet  390x680  bg:#090d1a  brd:#243249  col ja:space_between
+  - sheet-content  390x549  col
+    - drag-handle-container  390x24  row pad[10,0,10,0] ja:center
+      - drag-handle  RECTANGLE  40x4  bg:#243249  r2
+    - header-bar  390x48  row gap12 pad[12,20,12,20] al:center
+      - Passengers & Cabin  TEXT  "Passengers & Cabin"  350x24  18px/800 lh23.9  bg:#ffffff
+    - passenger-counters  390x210  col gap16 pad[20,20,20,20]
+      - counter-row  350x50  brd:#243249  row pad[0,0,12,0] ja:space_between al:center
+        - label-block  94x38  col gap2
+          - Adults  TEXT  "Adults"  43x20  15px/700 lh20  bg:#ffffff
+          - Age 12 or above  TEXT  "Age 12 or above"  94x16  12px/400 lh16  bg:#94a3b8
+        - control  107x32  row gap16 al:center
+          - btn-minus  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+            - -  TEXT  "-"  8x21  16px/700 lh21.3  bg:#94a3b8
+          - 2  TEXT  "2"  11x21  16px/700 lh21.3  bg:#ffffff
+          - btn-plus  32x32  bg:#203da3  r16  row ja:center al:center
+            - +  TEXT  "+"  10x21  16px/700 lh21.3  bg:#cdff9b
+      - counter-row  350x50  brd:#243249  row pad[0,0,12,0] ja:space_between al:center
+        - label-block  63x38  col gap2
+          - Children  TEXT  "Children"  57x20  15px/700 lh20  bg:#ffffff
+          - Age 2 - 11  TEXT  "Age 2 - 11"  63x16  12px/400 lh16  bg:#94a3b8
+        - control  107x32  row gap16 al:center
+          - btn-minus  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+            - -  TEXT  "-"  8x21  16px/700 lh21.3  bg:#94a3b8
+          - 0  TEXT  "0"  11x21  16px/700 lh21.3  bg:#ffffff
+          - btn-plus  32x32  bg:#203da3  r16  row ja:center al:center
+            - +  TEXT  "+"  10x21  16px/700 lh21.3  bg:#cdff9b
+      - counter-row  350x38  row ja:space_between al:center
+        - label-block  79x38  col gap2
+          - Infants  TEXT  "Infants"  46x20  15px/700 lh20  bg:#ffffff
+          - Under 2 years  TEXT  "Under 2 years"  79x16  12px/400 lh16  bg:#94a3b8
+        - control  107x32  row gap16 al:center
+          - btn-minus  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+            - -  TEXT  "-"  8x21  16px/700 lh21.3  bg:#94a3b8
+          - 0  TEXT  "0"  11x21  16px/700 lh21.3  bg:#ffffff
+          - btn-plus  32x32  bg:#203da3  r16  row ja:center al:center
+            - +  TEXT  "+"  10x21  16px/700 lh21.3  bg:#cdff9b
+    - cabin-class  390x267  col gap12 pad[20,20,20,20]
+      - Cabin Class  TEXT  "Cabin Class"  88x19  14px/700 lh18.6  bg:#94a3b8
+      - radio-group  350x196  col gap8
+        - radio-row-Economy  350x43  bg:#131c2e  brd:#cdff9b  r10  row pad[12,12,12,12] ja:space_between al:center
+          - Economy  TEXT  "Economy"  60x19  14px/600 lh18.6  bg:#ffffff
+          - radio  18x18  bg:#090d1a  brd:#cdff9b  r9  row ja:center al:center
+            - Ellipse  ELLIPSE  8x8  bg:#cdff9b
+        - radio-row-Premium Economy  350x43  bg:#131c2e  brd:#243249  r10  row pad[12,12,12,12] ja:space_between al:center
+          - Premium Economy  TEXT  "Premium Economy"  120x19  14px/600 lh18.6  bg:#ffffff
+          - radio  18x18  bg:#090d1a  brd:#243249  r9  row ja:center al:center
+        - radio-row-Business  350x43  bg:#131c2e  brd:#243249  r10  row pad[12,12,12,12] ja:space_between al:center
+          - Business  TEXT  "Business"  55x19  14px/600 lh18.6  bg:#ffffff
+          - radio  18x18  bg:#090d1a  brd:#243249  r9  row ja:center al:center
+        - radio-row-First Class  350x43  bg:#131c2e  brd:#243249  r10  row pad[12,12,12,12] ja:space_between al:center
+          - First Class  TEXT  "First Class"  66x19  14px/600 lh18.6  bg:#ffffff
+          - radio  18x18  bg:#090d1a  brd:#243249  r9  row ja:center al:center
+  - sticky-action-bar  390x113  bg:#131c2e  brd:#243249  col pad[20,20,20,20]
+    - action-btn  350x48  bg:#203da3  brd:#cdff9b  r12  row pad[14,0,14,0] ja:center
+      - Apply Selection  TEXT  "Apply Selection"  108x20  15px/700 lh20  bg:#cdff9b
+    - home-indicator-container  350x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-862 — triply-filter-sort-sheet (390x651, bg #090d1a)
+
+- triply-filter-sort-sheet  390x651  bg:#090d1a  brd:#243249  col ja:space_between
+  - sheet-content  390x538  col
+    - drag-handle-container  390x24  row pad[10,0,10,0] ja:center
+      - drag-handle  RECTANGLE  40x4  bg:#243249  r2
+    - header-bar  390x48  row gap12 pad[12,20,12,20] al:center
+      - Filter & Sort  TEXT  "Filter & Sort"  350x24  18px/800 lh23.9  bg:#ffffff
+    - filter-section-price  390x111  col gap12 pad[20,20,20,20]
+      - header  350x19  row ja:space_between
+        - Price Range  TEXT  "Price Range"  89x19  14px/700 lh18.6  bg:#94a3b8
+        - $200 - $3,000  TEXT  "$200 - $3,000"  101x19  14px/700 lh18.6  bg:#cdff9b
+      - slider-graphic  350x40  col pad[8,0,8,0] al:center
+        - slider-track  350x24
+          - Rectangle  RECTANGLE  350x4  bg:#243249  r2
+          - Rectangle  RECTANGLE  220x4  bg:#cdff9b  r2
+          - Ellipse  ELLIPSE  20x20  bg:#203da3  brd:#cdff9b
+          - Ellipse  ELLIPSE  20x20  bg:#203da3  brd:#cdff9b
+    - filter-section-stops  390x104  col gap12 pad[20,20,20,20]
+      - Stops  TEXT  "Stops"  43x19  14px/700 lh18.6  bg:#94a3b8
+      - pills  350x33  row gap8
+        - pill-active  89x33  bg:#203da3  brd:#cdff9b  r20  row pad[8,16,8,16]
+          - Non-stop  TEXT  "Non-stop"  57x17  13px/600 lh17.3  bg:#cdff9b
+        - pill-inactive  72x33  bg:#131c2e  brd:#243249  r20  row pad[8,16,8,16]
+          - 1 Stop  TEXT  "1 Stop"  40x17  13px/400 lh17.3  bg:#94a3b8
+        - pill-inactive  86x33  bg:#131c2e  brd:#243249  r20  row pad[8,16,8,16]
+          - 2+ Stops  TEXT  "2+ Stops"  54x17  13px/400 lh17.3  bg:#94a3b8
+    - filter-section-airlines  390x251  col gap12 pad[20,20,20,20]
+      - Airlines  TEXT  "Airlines"  58x19  14px/700 lh18.6  bg:#94a3b8
+      - airlines-grid  350x180  col gap8
+        - airline-row-0  350x39  bg:#131c2e  brd:#243249  r8  row pad[10,10,10,10] ja:space_between al:center
+          - British Airways  TEXT  "British Airways"  94x19  14px/400 lh18.6  bg:#ffffff
+          - checkbox  18x18  bg:#cdff9b  brd:#243249  r4  row ja:center al:center
+            - check  10x10
+              - Vector  VECTOR  6x4  brd:#203da3
+        - airline-row-1  350x39  bg:#131c2e  brd:#243249  r8  row pad[10,10,10,10] ja:space_between al:center
+          - Qatar Airways  TEXT  "Qatar Airways"  91x19  14px/400 lh18.6  bg:#ffffff
+          - checkbox  18x18  bg:#cdff9b  brd:#243249  r4  row ja:center al:center
+            - check  10x10
+              - Vector  VECTOR  6x4  brd:#203da3
+        - airline-row-2  350x39  bg:#131c2e  brd:#243249  r8  row pad[10,10,10,10] ja:space_between al:center
+          - Emirates  TEXT  "Emirates"  55x19  14px/400 lh18.6  bg:#ffffff
+          - checkbox  18x18  bg:#131c2e  brd:#243249  r4  row ja:center al:center
+        - airline-row-3  350x39  bg:#131c2e  brd:#243249  r8  row pad[10,10,10,10] ja:space_between al:center
+          - Turkish Airlines  TEXT  "Turkish Airlines"  96x19  14px/400 lh18.6  bg:#ffffff
+          - checkbox  18x18  bg:#131c2e  brd:#243249  r4  row ja:center al:center
+  - sticky-action-bar  390x113  bg:#131c2e  brd:#243249  col pad[20,20,20,20]
+    - action-btn  350x48  bg:#203da3  brd:#cdff9b  r12  row pad[14,0,14,0] ja:center
+      - Apply Filters  TEXT  "Apply Filters"  85x20  15px/700 lh20  bg:#cdff9b
+    - home-indicator-container  350x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-910 — triply-wallet-connection-sheet (390x537, bg #090d1a)
+
+- triply-wallet-connection-sheet  390x537  bg:#090d1a  brd:#243249  col ja:space_between
+  - sheet-content  390x444  col
+    - drag-handle-container  390x24  row pad[10,0,10,0] ja:center
+      - drag-handle  RECTANGLE  40x4  bg:#243249  r2
+    - header-bar  390x48  row gap12 pad[12,20,12,20] al:center
+      - Select Wallet to Pay  TEXT  "Select Wallet to Pay"  350x24  18px/800 lh23.9  bg:#ffffff
+    - wallets-list  390x372  col gap8 pad[20,20,20,20]
+      - wallet-row-MetaMask  350x60  bg:#131c2e  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+        - wallet-logo  ELLIPSE  32x32  bg:#e2761b
+        - wallet-text  256x36  col gap2
+          - MetaMask  TEXT  "MetaMask"  256x19  14px/700 lh18.6  bg:#ffffff
+          - Connect via extension or mobile app  TEXT  "Connect via extension or mobile app"  256x15  11px/400 lh14.6  bg:#94a3b8
+        - chevron-right  14x14
+          - Vector  VECTOR  3x7  brd:#94a3b8
+      - wallet-row-Coinbase Wallet  350x60  bg:#131c2e  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+        - wallet-logo  ELLIPSE  32x32  bg:#0052ff
+        - wallet-text  256x36  col gap2
+          - Coinbase Wallet  TEXT  "Coinbase Wallet"  256x19  14px/700 lh18.6  bg:#ffffff
+          - Pay directly from Coinbase  TEXT  "Pay directly from Coinbase"  256x15  11px/400 lh14.6  bg:#94a3b8
+        - chevron-right  14x14
+          - Vector  VECTOR  3x7  brd:#94a3b8
+      - wallet-row-Rainbow  350x60  bg:#131c2e  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+        - wallet-logo  ELLIPSE  32x32  bg:#ff5e7e
+        - wallet-text  256x36  col gap2
+          - Rainbow  TEXT  "Rainbow"  256x19  14px/700 lh18.6  bg:#ffffff
+          - Easy & secure web3 onboarding  TEXT  "Easy & secure web3 onboarding"  256x15  11px/400 lh14.6  bg:#94a3b8
+        - chevron-right  14x14
+          - Vector  VECTOR  3x7  brd:#94a3b8
+      - wallet-row-WalletConnect  350x60  bg:#131c2e  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+        - wallet-logo  ELLIPSE  32x32  bg:#3b99fc
+        - wallet-text  256x36  col gap2
+          - WalletConnect  TEXT  "WalletConnect"  256x19  14px/700 lh18.6  bg:#ffffff
+          - Scan QR code to connect any wallet  TEXT  "Scan QR code to connect any wallet"  256x15  11px/400 lh14.6  bg:#94a3b8
+        - chevron-right  14x14
+          - Vector  VECTOR  3x7  brd:#94a3b8
+      - wallet-row-Phantom  350x60  bg:#131c2e  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+        - wallet-logo  ELLIPSE  32x32  bg:#ab9ff2
+        - wallet-text  256x36  col gap2
+          - Phantom  TEXT  "Phantom"  256x19  14px/700 lh18.6  bg:#ffffff
+          - Fast, low-fee Solana connection  TEXT  "Fast, low-fee Solana connection"  256x15  11px/400 lh14.6  bg:#94a3b8
+        - chevron-right  14x14
+          - Vector  VECTOR  3x7  brd:#94a3b8
+  - sheet-footer  390x93  bg:#131c2e  brd:#243249  col gap12 pad[20,20,20,20] al:center
+    - Powered by Web3 payment infrastructure. Zero setup required.  TEXT  "Powered by Web3 payment infrastructure. Zero setup required."  350x16  12px/400 lh16  bg:#94a3b8
+    - home-indicator-container  350x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-952 — triply-fare-rules-sheet (390x517, bg #090d1a)
+
+- triply-fare-rules-sheet  390x517  bg:#090d1a  brd:#243249  col ja:space_between
+  - sheet-content  390x404  col
+    - drag-handle-container  390x24  row pad[10,0,10,0] ja:center
+      - drag-handle  RECTANGLE  40x4  bg:#243249  r2
+    - header-bar  390x48  row gap12 pad[12,20,12,20] al:center
+      - Fare Rules & Refund Policy  TEXT  "Fare Rules & Refund Policy"  350x24  18px/800 lh23.9  bg:#ffffff
+    - rules-list  390x332  col gap12 pad[20,20,20,20]
+      - rule-row-0  350x64  bg:#131c2e  brd:#243249  r12  row gap12 pad[14,14,14,14] al:center
+        - icon-wrap  28x28  bg:#22c55e  r14  row ja:center al:center
+          - shield-check  14x14
+            - Vector  VECTOR  9x11  brd:#22c55e
+        - rule-text  282x36  col gap2
+          - Refundable Status  TEXT  "Refundable Status"  282x15  11px/600 lh14.6  bg:#94a3b8
+          - Fully Refundable  TEXT  "Fully Refundable"  282x19  14px/700 lh18.6  bg:#ffffff
+      - rule-row-1  350x64  bg:#131c2e  brd:#243249  r12  row gap12 pad[14,14,14,14] al:center
+        - icon-wrap  28x28  bg:#22c55e  r14  row ja:center al:center
+          - clock  14x14
+            - Vector  VECTOR  11x11  brd:#22c55e
+        - rule-text  282x36  col gap2
+          - Cancellation Window  TEXT  "Cancellation Window"  282x15  11px/600 lh14.6  bg:#94a3b8
+          - Free cancellation within 24 hours  TEXT  "Free cancellation within 24 hours"  282x19  14px/700 lh18.6  bg:#ffffff
+      - rule-row-2  350x64  bg:#131c2e  brd:#243249  r12  row gap12 pad[14,14,14,14] al:center
+        - icon-wrap  28x28  bg:#ef4444  r14  row ja:center al:center
+          - ticket  14x14
+            - Vector  VECTOR  11x8  brd:#ef4444
+        - rule-text  282x36  col gap2
+          - Change Fee Breakdown  TEXT  "Change Fee Breakdown"  282x15  11px/600 lh14.6  bg:#94a3b8
+          - $100 change fee before departure  TEXT  "$100 change fee before departure"  282x19  14px/700 lh18.6  bg:#ffffff
+      - rule-row-3  350x64  bg:#131c2e  brd:#243249  r12  row gap12 pad[14,14,14,14] al:center
+        - icon-wrap  28x28  bg:#22c55e  r14  row ja:center al:center
+          - luggage  14x14
+            - Vector  VECTOR  9x11  brd:#22c55e
+        - rule-text  282x36  col gap2
+          - Baggage Inclusion  TEXT  "Baggage Inclusion"  282x15  11px/600 lh14.6  bg:#94a3b8
+          - 1x 23kg checked bag, 1x 7kg cabin  TEXT  "1x 23kg checked bag, 1x 7kg cabin"  282x19  14px/700 lh18.6  bg:#ffffff
+  - sticky-action-bar  390x113  bg:#131c2e  brd:#243249  col pad[20,20,20,20]
+    - action-btn  350x48  bg:#203da3  brd:#cdff9b  r12  row pad[14,0,14,0] ja:center
+      - Got It, Dismiss  TEXT  "Got It, Dismiss"  99x20  15px/700 lh20  bg:#cdff9b
+    - home-indicator-container  350x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-1051 — triply-processing-settlement (390x844, bg #0f172a)
+
+- triply-processing-settlement  390x844  bg:#0f172a  col ja:space_between
+  - scroll-content  390x819  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - header-bar  390x48  row gap12 pad[12,20,12,20] al:center
+      - Processing Booking  TEXT  "Processing Booking"  350x24  18px/800 lh23.9  bg:#ffffff
+    - main-status-container  390x550  col gap32 pad[20,20,20,20] al:center
+      - step-tracker  350x276  bg:#131c2e  brd:#243249  r16  col gap24 pad[20,20,20,20]
+        - step-1  310x36  row gap16 al:center
+          - status-icon  28x28  bg:#22c55e  brd:#22c55e  r14  row ja:center al:center
+            - check-circle  14x14
+              - Vector  VECTOR  11x11  brd:#22c55e
+          - step-info  266x36  col gap2
+            - On-Chain Payment Verification  TEXT  "On-Chain Payment Verification"  198x19  14px/700 lh18.6  bg:#ffffff
+            - Confirmed on Base Network  TEXT  "Confirmed on Base Network"  143x15  11px/400 lh14.6  bg:#22c55e
+        - connector  310x16  row pad[0,0,0,13]
+          - Line  LINE  0x16  brd:#22c55e
+        - step-2  310x36  row gap16 al:center
+          - status-icon-pulsing  28x28  bg:#cdff9b  brd:#cdff9b  r14  row ja:center al:center
+            - Ellipse  ELLIPSE  8x8  bg:#cdff9b
+          - step-info  266x36  col gap2
+            - Instant Settlement  TEXT  "Instant Settlement"  118x19  14px/700 lh18.6  bg:#ffffff
+            - Routing funds to Airline liquidity pool...  TEXT  "Routing funds to Airline liquidity pool..."  192x15  11px/400 lh14.6  bg:#cdff9b
+        - connector  310x16  row pad[0,0,0,13]
+          - Line  LINE  0x16  brd:#243249
+        - step-3  310x36  row gap16 al:center
+          - status-icon  28x28  bg:#1e293b  brd:#243249  r14  row ja:center al:center
+            - Ellipse  ELLIPSE  8x8  bg:#94a3b8
+          - step-info  266x36  col gap2
+            - Airline Ticket Issuance  TEXT  "Airline Ticket Issuance"  142x19  14px/700 lh18.6  bg:#ffffff
+            - Generating on-chain E-ticket  TEXT  "Generating on-chain E-ticket"  147x15  11px/400 lh14.6  bg:#94a3b8
+      - message-box  350x98  col gap12 al:center
+        - Verifying blockchain transaction. Do not close this screen.  TEXT  "Verifying blockchain transaction. Do not close this screen."  350x38  14px/500 lh18.6  bg:#94a3b8
+        - progress-ring-container  48x48  row ja:center al:center
+          - Ellipse  ELLIPSE  36x36  brd:#243249
+          - Ellipse  ELLIPSE  36x36  brd:#cdff9b
+      - tx-card  350x72  bg:#131c2e  brd:#243249  r12  col gap8 pad[16,16,16,16]
+        - tx-row  318x15  row ja:space_between
+          - Transaction Hash  TEXT  "Transaction Hash"  107x15  11px/600 lh14.6  bg:#94a3b8
+          - Base Scan  TEXT  "Base Scan"  59x15  11px/600 lh14.6  bg:#cdff9b
+        - 0x487Fh3kmjn398rfhS8784F...35620  TEXT  "0x487Fh3kmjn398rfhS8784F...35620"  318x17  13px/500 lh17.3  bg:#ffffff
+  - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+    - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-1101 — triply-e-ticket-confirmation (390x844, bg #0f172a)
+
+- triply-e-ticket-confirmation  390x844  bg:#0f172a  col ja:space_between
+  - scroll-content  390x819  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - header-bar  390x56  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  9x9  brd:#f8fafc
+      - E-Ticket  TEXT  "E-Ticket"  306x24  18px/800 lh23.9  bg:#ffffff
+    - ticket-container  390x662  col gap16 pad[20,20,20,20]
+      - badge-header  350x74  bg:#22c55e  brd:#22c55e  r12  row gap12 pad[16,16,16,16] al:center
+        - success-badge  32x32  bg:#22c55e  r16  row ja:center al:center
+          - check-circle  16x16
+            - Vector  VECTOR  13x13  brd:#000000
+        - banner-text  274x42  col gap2
+          - Booking Confirmed!  TEXT  "Booking Confirmed!"  164x24  18px/800 lh23.9  bg:#000000
+          - Your flight ticket is secured on-chain  TEXT  "Your flight ticket is secured on-chain"  202x16  12px/400 lh16  bg:#94a3b8
+      - boarding-pass  350x417  bg:#131c2e  brd:#243249  r16  col
+        - airline-bar  350x56  bg:#090d1a  row pad[16,16,16,16] ja:space_between al:center
+          - airline  126x24  row gap8 al:center
+            - Ellipse  ELLIPSE  24x24  bg:#1e293b  brd:#243249
+            - British Airways  TEXT  "British Airways"  94x19  14px/700 lh18.6  bg:#ffffff
+          - BA-248  TEXT  "BA-248"  45x16  12px/600 lh16  bg:#94a3b8
+        - pass-pnr-row  350x64  row pad[16,16,8,16] ja:space_between
+          - passenger  102x39  col gap4
+            - Passenger  TEXT  "Passenger"  61x15  11px/500 lh14.6  bg:#94a3b8
+            - Amelia Earhart  TEXT  "Amelia Earhart"  102x20  15px/700 lh20  bg:#ffffff
+          - pnr  104x40  col gap4 al:max
+            - Booking Ref (PNR)  TEXT  "Booking Ref (PNR)"  104x15  11px/500 lh14.6  bg:#94a3b8
+            - RZPNX8  TEXT  "RZPNX8"  60x21  16px/800 lh21.3  bg:#cdff9b
+        - route-row  350x64  row pad[8,16,8,16] ja:space_between al:center
+          - dep  45x48  col
+            - LOS  TEXT  "LOS"  45x32  24px/800 lh31.9  bg:#ffffff
+            - Lagos  TEXT  "Lagos"  33x16  12px/400 lh16  bg:#94a3b8
+          - graphic  228x25  col gap4 al:center
+            - 6h 30m  TEXT  "6h 30m"  41x15  11px/400 lh14.6  bg:#94a3b8
+            - line-visual  100x6  row gap4 al:center
+              - Ellipse  ELLIPSE  6x6  bg:#cdff9b
+              - Line  LINE  80x0  brd:#243249
+              - Ellipse  ELLIPSE  6x6  bg:#94a3b8
+          - arr  45x48  col al:max
+            - LHR  TEXT  "LHR"  45x32  24px/800 lh31.9  bg:#ffffff
+            - London  TEXT  "London"  41x16  12px/400 lh16  bg:#94a3b8
+        - specs-grid  350x56  row pad[8,16,16,16] ja:space_between
+          - spec-item  55x32  col gap2
+            - Class  TEXT  "Class"  31x13  10px/400 lh13.3  bg:#94a3b8
+            - Economy  TEXT  "Economy"  55x17  13px/700 lh17.3  bg:#ffffff
+          - spec-item  25x32  col gap2 al:center
+            - Seat  TEXT  "Seat"  24x13  10px/400 lh13.3  bg:#94a3b8
+            - 14B  TEXT  "14B"  25x17  13px/700 lh17.3  bg:#cdff9b
+          - spec-item  48x32  col gap2 al:center
+            - Terminal  TEXT  "Terminal"  48x13  10px/400 lh13.3  bg:#94a3b8
+            - 5  TEXT  "5"  9x17  13px/700 lh17.3  bg:#ffffff
+          - spec-item  25x32  col gap2 al:max
+            - Gate  TEXT  "Gate"  25x13  10px/400 lh13.3  bg:#94a3b8
+            - B12  TEXT  "B12"  25x17  13px/700 lh17.3  bg:#ffffff
+        - perforation-row  350x0  row gap4 al:center
+          - Ellipse  ELLIPSE  12x12  bg:#0f172a
+          - Line  LINE  350x0  brd:#243249
+          - Ellipse  ELLIPSE  12x12  bg:#0f172a
+        - barcode-section  350x177  bg:#090d1a  col gap12 pad[20,20,20,20] al:center
+          - qr-placeholder  110x110  r8  row pad[6,6,6,6] ja:center al:center
+            - qr-grid  98x98  col gap4
+              - Frame  98x24  row gap4
+                - Rectangle  RECTANGLE  24x24
+                - Rectangle  RECTANGLE  42x24
+                - Rectangle  RECTANGLE  24x24
+              - Frame  98x42  row gap4
+                - Rectangle  RECTANGLE  12x42
+                - Rectangle  RECTANGLE  62x42
+                - Rectangle  RECTANGLE  16x42
+              - Frame  98x24  row gap4
+                - Rectangle  RECTANGLE  24x24
+                - Rectangle  RECTANGLE  42x24
+                - Rectangle  RECTANGLE  24x24
+          - Scan at airport kiosk for physical pass  TEXT  "Scan at airport kiosk for physical pass"  192x15  11px/600 lh14.6  bg:#94a3b8
+      - actions-stack  350x99  col gap8
+        - action-btn  350x48  bg:#203da3  brd:#cdff9b  r12  row gap8 pad[14,0,14,0] ja:center al:center
+          - btn-icon  18x18
+            - Vector  VECTOR  14x13  brd:#cdff9b
+          - Add to Apple Wallet  TEXT  "Add to Apple Wallet"  138x20  15px/700 lh20  bg:#cdff9b
+        - secondary-actions  350x43  row gap8
+          - pdf-btn  171x43  bg:#131c2e  brd:#243249  r12  row gap6 pad[12,12,12,12] ja:center al:center
+            - Download PDF  TEXT  "Download PDF"  93x19  14px/700 lh18.6  bg:#ffffff
+          - share-btn  171x43  bg:#131c2e  brd:#243249  r12  row gap6 pad[12,12,12,12] ja:center al:center
+            - Share Ticket  TEXT  "Share Ticket"  80x19  14px/700 lh18.6  bg:#ffffff
+  - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+    - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-1196 — triply-my-trips (390x844, bg #0f172a)
+
+- triply-my-trips  390x844  bg:#0f172a  col ja:space_between
+  - scroll-content  390x819  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - header-bar  390x48  row gap12 pad[12,20,12,20] al:center
+      - My Bookings  TEXT  "My Bookings"  350x24  18px/800 lh23.9  bg:#ffffff
+    - tab-bar-container  390x51  row pad[0,20,12,20]
+      - tabs  350x39  bg:#131c2e  r10  row gap4 pad[3,3,3,3]
+        - tab-upcoming  171x33  bg:#203da3  brd:#cdff9b  r8  row pad[8,0,8,0] ja:center al:center
+          - Upcoming  TEXT  "Upcoming"  61x17  13px/600 lh17.3  bg:#cdff9b
+        - tab-past  169x33  r8  row pad[8,0,8,0] ja:center al:center
+          - Past (4)  TEXT  "Past (4)"  48x17  13px/500 lh17.3  bg:#94a3b8
+    - trips-list  390x374  col gap16 pad[0,20,20,20]
+      - trip-card-upcoming  350x181  bg:#131c2e  brd:#243249  r16  col gap16 pad[16,16,16,16]
+        - card-header  318x34  row ja:space_between al:center
+          - airline  179x34  row gap8 al:center
+            - Ellipse  ELLIPSE  24x24  bg:#1e293b  brd:#243249
+            - Frame  147x34  col gap2
+              - British Airways  TEXT  "British Airways"  88x17  13px/700 lh17.3  bg:#ffffff
+              - 24 Oct 2026 • 2 Passengers  TEXT  "24 Oct 2026 • 2 Passengers"  147x15  11px/400 lh14.6  bg:#94a3b8
+          - badge  73x21  bg:#cdff9b  r6  row pad[4,8,4,8]
+            - CONFIRMED  TEXT  "CONFIRMED"  57x13  10px/700 lh13.3  bg:#cdff9b
+        - path-details  318x43  row ja:space_between al:center
+          - dep  56x43  col
+            - LOS  TEXT  "LOS"  37x27  20px/800 lh26.6  bg:#ffffff
+            - 10:30 AM  TEXT  "10:30 AM"  56x16  12px/400 lh16  bg:#94a3b8
+          - path-visual  207x24  col gap4 al:center
+            - 6h 30m  TEXT  "6h 30m"  41x15  11px/400 lh14.6  bg:#94a3b8
+            - line  100x5  row gap4 al:center
+              - Ellipse  ELLIPSE  5x5  bg:#cdff9b
+              - Line  LINE  82x0  brd:#243249
+              - Ellipse  ELLIPSE  5x5  bg:#94a3b8
+          - arr  55x43  col al:max
+            - LHR  TEXT  "LHR"  37x27  20px/800 lh26.6  bg:#ffffff
+            - 05:00 PM  TEXT  "05:00 PM"  55x16  12px/400 lh16  bg:#94a3b8
+        - action-row  318x40  brd:#243249  row pad[8,0,0,0] ja:space_between al:center
+          - Seat 14B • Terminal 5  TEXT  "Seat 14B • Terminal 5"  121x16  12px/600 lh16  bg:#cdff9b
+          - view-btn  136x32  bg:#203da3  brd:#cdff9b  r8  row pad[8,14,8,14]
+            - View Boarding Pass  TEXT  "View Boarding Pass"  108x16  12px/700 lh16  bg:#cdff9b
+      - section-past  350x113  col gap12
+        - Past Trips  TEXT  "Past Trips"  62x19  14px/700 lh18.6  bg:#94a3b8
+        - trip-card-past  350x82  bg:#131c2e  brd:#243249  r16  col gap12 pad[16,16,16,16]
+          - card-header  318x17  row ja:space_between al:center
+            - Qatar Airways • QR-149  TEXT  "Qatar Airways • QR-149"  147x17  13px/700 lh17.3  bg:#ffffff
+            - 12 May 2026  TEXT  "12 May 2026"  72x15  11px/400 lh14.6  bg:#94a3b8
+          - path-row  318x21  row ja:space_between al:center
+            - LOS → DXB  TEXT  "LOS → DXB"  81x21  16px/800 lh21.3  bg:#ffffff
+            - Completed  TEXT  "Completed"  61x16  12px/400 lh16  bg:#94a3b8
+      - storage-note  350x28  row gap8 pad[12,0,0,0] ja:center al:center
+        - shield-check  16x16
+          - Vector  VECTOR  10x13  brd:#22c55e
+        - Saved locally • No login required  TEXT  "Saved locally • No login required"  177x16  12px/400 lh16  bg:#94a3b8
+  - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+    - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-1258 — triply-passenger-class-sheet (390x844, bg #0f172a)
+
+- triply-passenger-class-sheet  390x844  bg:#0f172a  col ja:space_between
+  - scroll-content  390x819  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - background-shim  390x272  col gap16 pad[20,20,20,20]
+      - header-bar  350x56  row gap12 pad[12,20,12,20] al:center
+        - back-btn  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+          - arrow-left  16x16
+            - Vector  VECTOR  9x9  brd:#f8fafc
+        - Search Flights  TEXT  "Search Flights"  266x24  18px/800 lh23.9  bg:#ffffff
+      - Rectangle  RECTANGLE  350x160  bg:#131c2e  r16
+    - overlay  390x844  bg:#000000  row
+    - bottom-sheet  390x610  bg:#090d1a  brd:#243249  col ja:space_between
+      - sheet-content  390x610  col
+        - drag-handle-container  390x24  row pad[10,0,10,0] ja:center
+          - drag-handle  RECTANGLE  40x4  bg:#243249  r2
+        - sheet-header  390x48  row pad[12,20,12,20]
+          - Passengers & Cabin Class  TEXT  "Passengers & Cabin Class"  215x24  18px/800 lh23.9  bg:#ffffff
+        - sheet-body  390x538  col gap20 pad[20,20,20,20]
+          - counters-group  350x178  col gap16
+            - counter-row  350x38  row ja:space_between al:center
+              - text-side  94x38  col gap2
+                - Adults  TEXT  "Adults"  43x20  15px/700 lh20  bg:#ffffff
+                - Age 12 or above  TEXT  "Age 12 or above"  94x16  12px/400 lh16  bg:#94a3b8
+              - controls-side  107x32  row gap16 al:center
+                - minus-btn  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+                  - -  TEXT  "-"  8x21  16px/600 lh21.3  bg:#ffffff
+                - 1  TEXT  "1"  11x21  16px/700 lh21.3  bg:#cdff9b
+                - plus-btn  32x32  bg:#203da3  brd:#cdff9b  r16  row ja:center al:center
+                  - +  TEXT  "+"  10x21  16px/600 lh21.3  bg:#cdff9b
+            - Line  LINE  350x0  brd:#243249
+            - counter-row  350x38  row ja:space_between al:center
+              - text-side  63x38  col gap2
+                - Children  TEXT  "Children"  57x20  15px/700 lh20  bg:#ffffff
+                - Age 2 - 11  TEXT  "Age 2 - 11"  63x16  12px/400 lh16  bg:#94a3b8
+              - controls-side  107x32  row gap16 al:center
+                - minus-btn  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+                  - -  TEXT  "-"  8x21  16px/600 lh21.3  bg:#ffffff
+                - 0  TEXT  "0"  11x21  16px/700 lh21.3  bg:#ffffff
+                - plus-btn  32x32  bg:#203da3  brd:#cdff9b  r16  row ja:center al:center
+                  - +  TEXT  "+"  10x21  16px/600 lh21.3  bg:#cdff9b
+            - Line  LINE  350x0  brd:#243249
+            - counter-row  350x38  row ja:space_between al:center
+              - text-side  79x38  col gap2
+                - Infants  TEXT  "Infants"  46x20  15px/700 lh20  bg:#ffffff
+                - Under 2 years  TEXT  "Under 2 years"  79x16  12px/400 lh16  bg:#94a3b8
+              - controls-side  107x32  row gap16 al:center
+                - minus-btn  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+                  - -  TEXT  "-"  8x21  16px/600 lh21.3  bg:#ffffff
+                - 0  TEXT  "0"  11x21  16px/700 lh21.3  bg:#ffffff
+                - plus-btn  32x32  bg:#203da3  brd:#cdff9b  r16  row ja:center al:center
+                  - +  TEXT  "+"  10x21  16px/600 lh21.3  bg:#cdff9b
+          - cabin-class-group  350x232  col gap12 pad[8,0,0,0]
+            - Cabin Class  TEXT  "Cabin Class"  76x16  12px/700 lh16  bg:#94a3b8
+            - radio-grid  350x196  col gap8
+              - radio-row  350x43  bg:#131c2e  brd:#243249  r10  row pad[12,12,12,12] ja:space_between al:center
+                - Economy  TEXT  "Economy"  60x19  14px/700 lh18.6  bg:#cdff9b
+                - radio-outer  18x18  bg:#000000  brd:#cdff9b  r9  row ja:center al:center
+                  - radio-inner  ELLIPSE  8x8  bg:#cdff9b
+              - radio-row  350x43  bg:#000000  brd:#000000  r10  row pad[12,12,12,12] ja:space_between al:center
+                - Premium Economy  TEXT  "Premium Economy"  120x19  14px/500 lh18.6  bg:#94a3b8
+                - radio-outer  18x18  bg:#000000  brd:#243249  r9  row ja:center al:center
+              - radio-row  350x43  bg:#000000  brd:#000000  r10  row pad[12,12,12,12] ja:space_between al:center
+                - Business  TEXT  "Business"  55x19  14px/500 lh18.6  bg:#94a3b8
+                - radio-outer  18x18  bg:#000000  brd:#243249  r9  row ja:center al:center
+              - radio-row  350x43  bg:#000000  brd:#000000  r10  row pad[12,12,12,12] ja:space_between al:center
+                - First Class  TEXT  "First Class"  66x19  14px/500 lh18.6  bg:#94a3b8
+                - radio-outer  18x18  bg:#000000  brd:#243249  r9  row ja:center al:center
+          - action-btn  350x48  bg:#203da3  brd:#cdff9b  r12  row gap8 pad[14,0,14,0] ja:center al:center
+            - Apply Selection  TEXT  "Apply Selection"  108x20  15px/700 lh20  bg:#cdff9b
+  - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+    - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-1338 — triply-filter-sort-sheet (390x844, bg #0f172a)
+
+- triply-filter-sort-sheet  390x844  bg:#0f172a  col ja:space_between
+  - scroll-content  390x819  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - background-shim  390x352  col gap16 pad[20,20,20,20]
+      - header-bar  350x56  row gap12 pad[12,20,12,20] al:center
+        - back-btn  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+          - arrow-left  16x16
+            - Vector  VECTOR  9x9  brd:#f8fafc
+        - Search Results  TEXT  "Search Results"  266x24  18px/800 lh23.9  bg:#ffffff
+      - Rectangle  RECTANGLE  350x240  bg:#131c2e  r16
+    - overlay  390x844  bg:#000000  row
+    - bottom-sheet  390x607  bg:#090d1a  brd:#243249  col ja:space_between
+      - sheet-content  390x607  col
+        - drag-handle-container  390x24  row pad[10,0,10,0] ja:center
+          - drag-handle  RECTANGLE  40x4  bg:#243249  r2
+        - sheet-header  390x48  row pad[12,20,12,20]
+          - Filter & Sort  TEXT  "Filter & Sort"  99x24  18px/800 lh23.9  bg:#ffffff
+        - sheet-body  390x535  col gap20 pad[20,20,20,20]
+          - price-filter  350x51  col gap12
+            - header-row  350x17  row ja:space_between
+              - Price Range  TEXT  "Price Range"  76x16  12px/700 lh16  bg:#94a3b8
+              - $200 - $3,000  TEXT  "$200 - $3,000"  94x17  13px/700 lh17.3  bg:#cdff9b
+            - slider-track-container  350x22  col pad[8,0,8,0]
+              - slider-track  350x6  bg:#1e293b  r3
+                - active-segment  RECTANGLE  230x6  bg:#cdff9b
+                - left-thumb  ELLIPSE  16x16  bg:#cdff9b  brd:#0f172a
+                - right-thumb  ELLIPSE  16x16  bg:#cdff9b  brd:#0f172a
+          - stops-filter  350x61  col gap12
+            - Stops  TEXT  "Stops"  37x16  12px/700 lh16  bg:#94a3b8
+            - pills-row  350x33  row gap8
+              - pill  89x33  bg:#203da3  brd:#cdff9b  r20  row pad[8,16,8,16]
+                - Non-stop  TEXT  "Non-stop"  57x17  13px/600 lh17.3  bg:#cdff9b
+              - pill  72x33  bg:#131c2e  brd:#243249  r20  row pad[8,16,8,16]
+                - 1 Stop  TEXT  "1 Stop"  40x17  13px/600 lh17.3  bg:#94a3b8
+              - pill  86x33  bg:#131c2e  brd:#243249  r20  row pad[8,16,8,16]
+                - 2+ Stops  TEXT  "2+ Stops"  54x17  13px/600 lh17.3  bg:#94a3b8
+          - airlines-filter  350x204  col gap12
+            - Airlines  TEXT  "Airlines"  50x16  12px/700 lh16  bg:#94a3b8
+            - airlines-list  350x176  col gap8
+              - airline-row  350x38  bg:#131c2e  brd:#243249  r10  row pad[10,10,10,10] ja:space_between al:center
+                - Emirates  TEXT  "Emirates"  51x17  13px/500 lh17.3  bg:#94a3b8
+                - checkbox  18x18  bg:#000000  brd:#243249  r4  row ja:center al:center
+              - airline-row  350x38  bg:#131c2e  brd:#243249  r10  row pad[10,10,10,10] ja:space_between al:center
+                - British Airways  TEXT  "British Airways"  88x17  13px/500 lh17.3  bg:#ffffff
+                - checkbox  18x18  bg:#cdff9b  brd:#cdff9b  r4  row ja:center al:center
+                  - check  10x8
+                    - Vector  VECTOR  6x3  brd:#203da3
+              - airline-row  350x38  bg:#131c2e  brd:#243249  r10  row pad[10,10,10,10] ja:space_between al:center
+                - Qatar Airways  TEXT  "Qatar Airways"  84x17  13px/500 lh17.3  bg:#ffffff
+                - checkbox  18x18  bg:#cdff9b  brd:#cdff9b  r4  row ja:center al:center
+                  - check  10x8
+                    - Vector  VECTOR  6x3  brd:#203da3
+              - airline-row  350x38  bg:#131c2e  brd:#243249  r10  row pad[10,10,10,10] ja:space_between al:center
+                - Turkish Airlines  TEXT  "Turkish Airlines"  89x17  13px/500 lh17.3  bg:#94a3b8
+                - checkbox  18x18  bg:#000000  brd:#243249  r4  row ja:center al:center
+          - time-filter  350x51  col gap12
+            - header-row  350x17  row ja:space_between
+              - Departure Time  TEXT  "Departure Time"  96x16  12px/700 lh16  bg:#94a3b8
+              - 06:00 - 22:00  TEXT  "06:00 - 22:00"  88x17  13px/700 lh17.3  bg:#cdff9b
+            - slider-track-container  350x22  col pad[8,0,8,0]
+              - slider-track  350x6  bg:#1e293b  r3
+                - active-segment  RECTANGLE  260x6  bg:#cdff9b
+                - left-thumb  ELLIPSE  16x16  bg:#cdff9b  brd:#0f172a
+                - right-thumb  ELLIPSE  16x16  bg:#cdff9b  brd:#0f172a
+          - action-btn  350x48  bg:#203da3  brd:#cdff9b  r12  row gap8 pad[14,0,14,0] ja:center al:center
+            - Apply Filters  TEXT  "Apply Filters"  85x20  15px/700 lh20  bg:#cdff9b
+  - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+    - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-1413 — triply-wallet-connection-sheet (390x844, bg #0f172a)
+
+- triply-wallet-connection-sheet  390x844  bg:#0f172a  col ja:space_between
+  - scroll-content  390x819  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - background-shim  390x312  col gap16 pad[20,20,20,20]
+      - header-bar  350x56  row gap12 pad[12,20,12,20] al:center
+        - back-btn  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+          - arrow-left  16x16
+            - Vector  VECTOR  9x9  brd:#f8fafc
+        - Checkout  TEXT  "Checkout"  266x24  18px/800 lh23.9  bg:#ffffff
+      - Rectangle  RECTANGLE  350x200  bg:#131c2e  r16
+    - overlay  390x844  bg:#000000  row
+    - bottom-sheet  390x580  bg:#090d1a  brd:#243249  col ja:space_between
+      - sheet-content  390x492  col
+        - drag-handle-container  390x24  row pad[10,0,10,0] ja:center
+          - drag-handle  RECTANGLE  40x4  bg:#243249  r2
+        - sheet-header  390x48  row pad[12,20,12,20]
+          - Select Wallet to Pay  TEXT  "Select Wallet to Pay"  164x24  18px/800 lh23.9  bg:#ffffff
+        - sheet-body  390x420  col gap20 pad[20,20,20,20]
+          - wallets-list  350x332  col gap8
+            - wallet-row  350x60  bg:#131c2e  brd:#243249  r12  row pad[14,14,14,14] ja:space_between al:center
+              - left-side  111x32  row gap12 al:center
+                - logo-circle  32x32  bg:#1e293b  r16  row ja:center al:center
+                  - 🦊  TEXT  "🦊"  16x16  16px/400 lh21.3  bg:#000000
+                - MetaMask  TEXT  "MetaMask"  67x19  14px/700 lh18.6  bg:#ffffff
+              - right-side  16x16  row gap8 al:center
+                - arrow-right  16x16
+                  - Chevron right  INSTANCE  100x100
+                    - Icon  VECTOR  25x50  brd:#1e1e1e
+            - wallet-row  350x60  bg:#131c2e  brd:#243249  r12  row pad[14,14,14,14] ja:space_between al:center
+              - left-side  148x32  row gap12 al:center
+                - logo-circle  32x32  bg:#1e293b  r16  row ja:center al:center
+                  - 🛡️  TEXT  "🛡️"  16x16  16px/400 lh21.3  bg:#000000
+                - Coinbase Wallet  TEXT  "Coinbase Wallet"  104x19  14px/700 lh18.6  bg:#ffffff
+              - right-side  16x16  row gap8 al:center
+                - arrow-right  16x16
+                  - Chevron right  INSTANCE  100x100
+                    - Icon  VECTOR  25x50  brd:#1e1e1e
+            - wallet-row  350x60  bg:#131c2e  brd:#243249  r12  row pad[14,14,14,14] ja:space_between al:center
+              - left-side  99x32  row gap12 al:center
+                - logo-circle  32x32  bg:#1e293b  r16  row ja:center al:center
+                  - 🌈  TEXT  "🌈"  16x16  16px/400 lh21.3  bg:#000000
+                - Rainbow  TEXT  "Rainbow"  55x19  14px/700 lh18.6  bg:#ffffff
+              - right-side  16x16  row gap8 al:center
+                - arrow-right  16x16
+                  - Chevron right  INSTANCE  100x100
+                    - Icon  VECTOR  25x50  brd:#1e1e1e
+            - wallet-row  350x60  bg:#131c2e  brd:#243249  r12  row pad[14,14,14,14] ja:space_between al:center
+              - left-side  138x32  row gap12 al:center
+                - logo-circle  32x32  bg:#1e293b  r16  row ja:center al:center
+                  - ⚡  TEXT  "⚡"  16x16  16px/400 lh21.3  bg:#000000
+                - WalletConnect  TEXT  "WalletConnect"  94x19  14px/700 lh18.6  bg:#ffffff
+              - right-side  78x17  row gap8 al:center
+                - tag  54x17  bg:#203da3  r4  row pad[2,6,2,6]
+                  - QR Code  TEXT  "QR Code"  42x13  10px/700 lh13.3  bg:#cdff9b
+                - arrow-right  16x16
+                  - Chevron right  INSTANCE  100x100
+                    - Icon  VECTOR  25x50  brd:#1e1e1e
+            - wallet-row  350x60  bg:#131c2e  brd:#243249  r12  row pad[14,14,14,14] ja:space_between al:center
+              - left-side  102x32  row gap12 al:center
+                - logo-circle  32x32  bg:#1e293b  r16  row ja:center al:center
+                  - 👻  TEXT  "👻"  16x16  16px/400 lh21.3  bg:#000000
+                - Phantom  TEXT  "Phantom"  58x19  14px/700 lh18.6  bg:#ffffff
+              - right-side  16x16  row gap8 al:center
+                - arrow-right  16x16
+                  - Chevron right  INSTANCE  100x100
+                    - Icon  VECTOR  25x50  brd:#1e1e1e
+          - sheet-footer  350x28  col gap12 pad[12,0,0,0] al:center
+            - Powered by Web3 payment infrastructure. Zero setup required.  TEXT  "Powered by Web3 payment infrastructure. Zero setup required."  350x16  12px/400 lh16  bg:#94a3b8
+  - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+    - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 9-1487 — triply-fare-rules-sheet (390x844, bg #0f172a)
+
+- triply-fare-rules-sheet  390x844  bg:#0f172a  col ja:space_between
+  - scroll-content  390x819  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - background-shim  390x332  col gap16 pad[20,20,20,20]
+      - header-bar  350x56  row gap12 pad[12,20,12,20] al:center
+        - back-btn  32x32  bg:#131c2e  brd:#243249  r16  row ja:center al:center
+          - arrow-left  16x16
+            - Vector  VECTOR  9x9  brd:#f8fafc
+        - Flight Details  TEXT  "Flight Details"  266x24  18px/800 lh23.9  bg:#ffffff
+      - Rectangle  RECTANGLE  350x220  bg:#131c2e  r16
+    - overlay  390x844  bg:#000000  row
+    - bottom-sheet  390x580  bg:#090d1a  brd:#243249  col ja:space_between
+      - sheet-content  390x440  col
+        - drag-handle-container  390x24  row pad[10,0,10,0] ja:center
+          - drag-handle  RECTANGLE  40x4  bg:#243249  r2
+        - sheet-header  390x48  row pad[12,20,12,20]
+          - Fare Rules & Refund Policy  TEXT  "Fare Rules & Refund Policy"  219x24  18px/800 lh23.9  bg:#ffffff
+        - sheet-body  390x368  col gap20 pad[20,20,20,20]
+          - rules-list  350x260  col gap12
+            - rule-row  350x56  bg:#131c2e  brd:#243249  r12  row pad[12,12,12,12] ja:space_between al:center
+              - left  150x32  row gap10 al:center
+                - icon-container  32x32  bg:#22c55e  r8  row ja:center al:center
+                  - check-circle  18x18
+                    - Vector  VECTOR  15x15  brd:#22c55e
+                - Refundable Status  TEXT  "Refundable Status"  108x17  13px/600 lh17.3  bg:#ffffff
+              - tag  99x23  bg:#22c55e  r6  row pad[4,8,4,8]
+                - Fully Refundable  TEXT  "Fully Refundable"  83x15  11px/700 lh14.6  bg:#22c55e
+            - rule-row  350x56  bg:#131c2e  brd:#243249  r12  row pad[12,12,12,12] ja:space_between al:center
+              - left  150x32  row gap10 al:center
+                - icon-container  32x32  bg:#cdff9b  r8  row ja:center al:center
+                  - ticket-percent  18x18
+                    - Vector  VECTOR  15x10  brd:#cdff9b
+                - Flight Change Fee  TEXT  "Flight Change Fee"  108x17  13px/600 lh17.3  bg:#ffffff
+              - $75 / 75 USDT  TEXT  "$75 / 75 USDT"  93x17  13px/700 lh17.3  bg:#cdff9b
+            - rule-row  350x56  bg:#131c2e  brd:#243249  r12  row pad[12,12,12,12] ja:space_between al:center
+              - left  197x32  row gap10 al:center
+                - icon-container  32x32  bg:#1e293b  r8  row ja:center al:center
+                  - Clock  INSTANCE  18x18
+                    - Icon  VECTOR  15x15  brd:#1e1e1e
+                - Free Cancellation Window  TEXT  "Free Cancellation Window"  155x17  13px/600 lh17.3  bg:#ffffff
+              - Within 24 hours  TEXT  "Within 24 hours"  96x17  13px/700 lh17.3  bg:#94a3b8
+            - rule-row  350x56  bg:#131c2e  brd:#243249  r12  row pad[12,12,12,12] ja:space_between al:center
+              - left  160x32  row gap10 al:center
+                - icon-container  32x32  bg:#1e293b  r8  row ja:center al:center
+                  - luggage  18x18
+                    - Vector  VECTOR  11x15  brd:#94a3b8
+                - Baggage Allowance  TEXT  "Baggage Allowance"  118x17  13px/600 lh17.3  bg:#ffffff
+              - 1x 23kg Checked  TEXT  "1x 23kg Checked"  108x17  13px/700 lh17.3  bg:#94a3b8
+          - action-btn  350x48  bg:#203da3  brd:#cdff9b  r12  row gap8 pad[14,0,14,0] ja:center al:center
+            - Got It  TEXT  "Got It"  39x20  15px/700 lh20  bg:#cdff9b
+  - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+    - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 17-14 — triply-light-home-search (390x934, bg #f8fafc)
+
+- triply-light-home-search  390x934  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x845  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#0f172a
+    - header  390x59  row pad[12,20,12,20] ja:space_between al:center
+      - brand  TEXT  "Triply"  65x35  26px/800 lh34.6  bg:#0f172a
+      - currency-toggle  126x28  bg:#f1f5f9  brd:#e2e8f0  r20  row gap4 pad[6,12,6,12] al:center
+        - USD  TEXT  "USD"  24x16  12px/700 lh16  bg:#203da3
+        - / NGN / EUR  TEXT  " / NGN / EUR"  74x16  12px/400 lh16  bg:#64748b
+    - search-container  390x424  col pad[12,20,12,20]
+      - search-card  350x400  bg:#ffffff  brd:#e2e8f0  r16  col gap16 pad[18,18,18,18]
+        - tabs  314x39  bg:#f1f5f9  r10  row gap4 pad[3,3,3,3]
+          - tab-0  100x33  r8  row pad[8,0,8,0] ja:center al:center
+            - One Way  TEXT  "One Way"  55x17  13px/500 lh17.3  bg:#64748b
+          - tab-1  100x33  bg:#203da3  r8  row pad[8,0,8,0] ja:center al:center
+            - Round Trip  TEXT  "Round Trip"  64x17  13px/600 lh17.3  bg:#cdff9b
+          - tab-2  100x33  r8  row pad[8,0,8,0] ja:center al:center
+            - Multi-city  TEXT  "Multi-city"  57x17  13px/500 lh17.3  bg:#64748b
+        - airports-group  314x76  col gap12
+          - airport-row  314x76  row gap16 al:center
+            - from  123x76  col gap4
+              - Origin  TEXT  "Origin"  37x15  11px/500 lh14.6  bg:#64748b
+              - LOS  TEXT  "LOS"  52x37  28px/800 lh37.2  bg:#0f172a
+              - Lagos, Nigeria  TEXT  "Lagos, Nigeria"  78x16  12px/400 lh16  bg:#64748b
+            - swap-btn  36x36  bg:#203da3  brd:#cdff9b  r18  row ja:center al:center
+              - arrow-left-right  16x16
+                - Vector  VECTOR  10x12  brd:#cdff9b
+            - to  123x76  col gap4 al:max
+              - Destination  TEXT  "Destination"  68x15  11px/500 lh14.6  bg:#64748b
+              - LHR  TEXT  "LHR"  52x37  28px/800 lh37.2  bg:#0f172a
+              - London Heathrow  TEXT  "London Heathrow"  97x16  12px/400 lh16  bg:#64748b
+        - Line  LINE  314x0  brd:#e2e8f0
+        - date-picker-trigger  314x60  bg:#f8fafc  brd:#e2e8f0  r12  row gap12 pad[12,12,12,12] al:center
+          - calendar  20x20
+            - Vector  VECTOR  15x16  brd:#203da3
+          - date-text  258x36  col gap2
+            - Departure & Return  TEXT  "Departure & Return"  116x15  11px/500 lh14.6  bg:#64748b
+            - 24 Oct - 08 Nov 2026  TEXT  "24 Oct - 08 Nov 2026"  150x19  14px/600 lh18.6  bg:#0f172a
+        - passenger-picker-trigger  314x60  bg:#f8fafc  brd:#e2e8f0  r12  row gap12 pad[12,12,12,12] al:center
+          - user-round  20x20
+            - Vector  VECTOR  13x15  brd:#203da3
+          - passenger-text  258x36  col gap2
+            - Passengers & Cabin  TEXT  "Passengers & Cabin"  114x15  11px/500 lh14.6  bg:#64748b
+            - 2 People, Economy  TEXT  "2 People, Economy"  123x19  14px/600 lh18.6  bg:#0f172a
+        - search-cta  314x49  bg:#203da3  brd:#e2e8f0  r12  row pad[14,0,14,0] ja:center al:center
+          - Search Flights  TEXT  "Search Flights"  103x21  16px/700 lh21.3  bg:#000000
+    - popular-section  390x221  col gap12 pad[12,20,12,20]
+      - Popular Destinations  TEXT  "Popular Destinations"  149x21  16px/700 lh21.3  bg:#0f172a
+      - popular-carousel  350x164  row gap12
+        - dest-0  140x164  bg:#ffffff  brd:#e2e8f0  r12  col gap8 pad[12,12,12,12]
+          - dest-img  RECTANGLE  116x80  bg:img:97a80aede586e98b3fab943e051e9507337c3fc7  r8
+          - dest-info  116x52  col gap2
+            - Ibiza  TEXT  "Ibiza"  29x19  14px/700 lh18.6  bg:#0f172a
+            - $420  TEXT  "$420"  32x16  12px/600 lh16  bg:#203da3
+            - 420 USDT  TEXT  "420 USDT"  48x13  10px/400 lh13.3  bg:#64748b
+        - dest-1  140x164  bg:#ffffff  brd:#e2e8f0  r12  col gap8 pad[12,12,12,12]
+          - dest-img  RECTANGLE  116x80  bg:img:0b4512d1c8f4ddbe1b5ba52c8c76b4f6319761dc  r8
+          - dest-info  116x52  col gap2
+            - Zanzibar  TEXT  "Zanzibar"  55x19  14px/700 lh18.6  bg:#0f172a
+            - $680  TEXT  "$680"  32x16  12px/600 lh16  bg:#203da3
+            - 680 USDT  TEXT  "680 USDT"  48x13  10px/400 lh13.3  bg:#64748b
+        - dest-2  140x164  bg:#ffffff  brd:#e2e8f0  r12  col gap8 pad[12,12,12,12]
+          - dest-img  RECTANGLE  116x80  bg:img:527eeece937ff624ed1a6d9749150d3fc1e0f2af  r8
+          - dest-info  116x52  col gap2
+            - Tokyo  TEXT  "Tokyo"  38x19  14px/700 lh18.6  bg:#0f172a
+            - $950  TEXT  "$950"  32x16  12px/600 lh16  bg:#203da3
+            - 950 USDT  TEXT  "950 USDT"  48x13  10px/400 lh13.3  bg:#64748b
+    - recent-section  390x97  col gap12 pad[12,20,20,20]
+      - Recent Searches  TEXT  "Recent Searches"  123x21  16px/700 lh21.3  bg:#0f172a
+      - recent-row  350x32  row gap8
+        - chip-0  102x32  bg:#ffffff  brd:#e2e8f0  r20  row gap6 pad[8,12,8,12] al:center
+          - history  12x12
+            - Vector  VECTOR  9x9  brd:#64748b
+          - LOS → LHR  TEXT  "LOS → LHR"  60x16  12px/500 lh16  bg:#334155
+        - chip-1  99x32  bg:#ffffff  brd:#e2e8f0  r20  row gap6 pad[8,12,8,12] al:center
+          - history  12x12
+            - Vector  VECTOR  9x9  brd:#64748b
+          - DXB → JFK  TEXT  "DXB → JFK"  57x16  12px/500 lh16  bg:#334155
+        - chip-2  106x32  bg:#ffffff  brd:#e2e8f0  r20  row gap6 pad[8,12,8,12] al:center
+          - history  12x12
+            - Vector  VECTOR  9x9  brd:#64748b
+          - CPT → CDG  TEXT  "CPT → CDG"  64x16  12px/500 lh16  bg:#334155
+  - bottom-tab-bar  390x89  col
+    - tabs  390x64  bg:#ffffff  brd:#e2e8f0  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#203da3
+        - label-Home  TEXT  "Home"  28x13  10px/600 lh13.3  bg:#203da3
+      - tab-Explore  64x39  col gap4 al:center
+        - compass  22x22
+          - Vector  VECTOR  18x18  brd:#64748b
+        - label-Explore  TEXT  "Explore"  34x13  10px/400 lh13.3  bg:#64748b
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmark  22x22
+          - Vector  VECTOR  12x16  brd:#64748b
+        - label-Bookmarks  TEXT  "Bookmarks"  52x13  10px/400 lh13.3  bg:#64748b
+      - tab-Profile  64x39  col gap4 al:center
+        - user  22x22
+          - Vector  VECTOR  12x16  brd:#64748b
+        - label-Profile  TEXT  "Profile"  29x13  10px/400 lh13.3  bg:#64748b
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-124 — triply-light-search-results (390x844, bg #f8fafc)
+
+- triply-light-search-results  390x844  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x588  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#0f172a
+    - results-header  390x64  bg:#ffffff  brd:#e2e8f0  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#f1f5f9  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  9x9  brd:#0f172a
+      - header-text  306x40  col gap2
+        - LOS to LHR  TEXT  "LOS to LHR"  84x21  16px/700 lh21.3  bg:#0f172a
+        - 24 Oct • 2 Passengers • Economy  TEXT  "24 Oct • 2 Passengers • Economy"  203x17  13px/400 lh17.3  bg:#64748b
+    - sticky-filters  390x60  row gap8 pad[12,20,12,20] al:center
+      - filter-icon  36x36  bg:#203da3  brd:#cdff9b  r10  row ja:center al:center
+        - sliders-horizontal  16x16
+          - Vector  VECTOR  12x12  brd:#cdff9b
+      - filter-0  77x32  bg:#cdff9b  brd:#e2e8f0  r20  row pad[8,12,8,12] al:center
+        - Cheapest  TEXT  "Cheapest"  53x16  12px/600 lh16  bg:#203da3
+      - filter-1  63x32  bg:#ffffff  brd:#e2e8f0  r20  row pad[8,12,8,12] al:center
+        - Fastest  TEXT  "Fastest"  39x16  12px/600 lh16  bg:#0f172a
+      - filter-2  76x32  bg:#ffffff  brd:#e2e8f0  r20  row pad[8,12,8,12] al:center
+        - Non-stop  TEXT  "Non-stop"  52x16  12px/600 lh16  bg:#0f172a
+    - results-list  390x420  col gap12 pad[0,20,24,20]
+      - flight-card-0  350x192  bg:#ffffff  brd:#e2e8f0  r16  col gap16 pad[16,16,16,16]
+        - card-header  318x43  row ja:space_between al:center
+          - airline-info  120x34  row gap8 al:center
+            - logo  ELLIPSE  24x24  bg:#f1f5f9  brd:#e2e8f0
+            - airline-text  88x34  col gap2
+              - British Airways  TEXT  "British Airways"  88x17  13px/600 lh17.3  bg:#0f172a
+              - BA-248  TEXT  "BA-248"  41x15  11px/400 lh14.6  bg:#64748b
+          - price-display  68x43  col al:max
+            - $850  TEXT  "$850"  47x24  18px/800 lh23.9  bg:#0f172a
+            - usdt-pill  68x19  bg:#203da3  r4  row pad[2,8,2,8]
+              - 850 USDT  TEXT  "850 USDT"  52x15  11px/700 lh14.6  bg:#cdff9b
+        - path-details  318x48  row ja:space_between al:center
+          - dep  51x40  col
+            - 10:30  TEXT  "10:30"  51x24  18px/700 lh23.9  bg:#0f172a
+            - LOS  TEXT  "LOS"  23x16  12px/400 lh16  bg:#64748b
+          - path-visual  216x48  col gap4 pad[0,16,0,16] al:center
+            - 6h 30m  TEXT  "6h 30m"  41x15  11px/400 lh14.6  bg:#64748b
+            - line-graphic  184x12  row gap4 al:center
+              - Ellipse  ELLIPSE  6x6  bg:#203da3
+              - Line  LINE  72x0  brd:#e2e8f0
+              - arrow-up-right  12x12
+                - Vector  VECTOR  4x4  brd:#203da3
+              - Line  LINE  72x0  brd:#e2e8f0
+              - Ellipse  ELLIPSE  6x6  bg:#64748b
+            - Direct  TEXT  "Direct"  27x13  10px/600 lh13.3  bg:#203da3
+          - arr  51x40  col al:max
+            - 17:00  TEXT  "17:00"  51x24  18px/700 lh23.9  bg:#0f172a
+            - LHR  TEXT  "LHR"  23x16  12px/400 lh16  bg:#64748b
+        - select-cta  318x37  bg:#f8fafc  brd:#e2e8f0  r8  row pad[10,0,10,0] ja:center al:center
+          - Select Flight  TEXT  "Select Flight"  73x17  13px/600 lh17.3  bg:#203da3
+      - flight-card-1  350x192  bg:#ffffff  brd:#e2e8f0  r16  col gap16 pad[16,16,16,16]
+        - card-header  318x43  row ja:space_between al:center
+          - airline-info  116x34  row gap8 al:center
+            - logo  ELLIPSE  24x24  bg:#f1f5f9  brd:#e2e8f0
+            - airline-text  84x34  col gap2
+              - Qatar Airways  TEXT  "Qatar Airways"  84x17  13px/600 lh17.3  bg:#0f172a
+              - QR-149  TEXT  "QR-149"  43x15  11px/400 lh14.6  bg:#64748b
+          - price-display  68x43  col al:max
+            - $720  TEXT  "$720"  47x24  18px/800 lh23.9  bg:#0f172a
+            - usdt-pill  68x19  bg:#203da3  r4  row pad[2,8,2,8]
+              - 720 USDT  TEXT  "720 USDT"  52x15  11px/700 lh14.6  bg:#cdff9b
+        - path-details  318x48  row ja:space_between al:center
+          - dep  51x40  col
+            - 08:15  TEXT  "08:15"  51x24  18px/700 lh23.9  bg:#0f172a
+            - LOS  TEXT  "LOS"  23x16  12px/400 lh16  bg:#64748b
+          - path-visual  216x48  col gap4 pad[0,16,0,16] al:center
+            - 13h 30m  TEXT  "13h 30m"  49x15  11px/400 lh14.6  bg:#64748b
+            - line-graphic  184x12  row gap4 al:center
+              - Ellipse  ELLIPSE  6x6  bg:#203da3
+              - Line  LINE  72x0  brd:#e2e8f0
+              - arrow-up-right  12x12
+                - Vector  VECTOR  4x4  brd:#203da3
+              - Line  LINE  72x0  brd:#e2e8f0
+              - Ellipse  ELLIPSE  6x6  bg:#64748b
+            - 1 Stop in DOH  TEXT  "1 Stop in DOH"  66x13  10px/600 lh13.3  bg:#203da3
+          - arr  51x40  col al:max
+            - 21:45  TEXT  "21:45"  51x24  18px/700 lh23.9  bg:#0f172a
+            - LHR  TEXT  "LHR"  23x16  12px/400 lh16  bg:#64748b
+        - select-cta  318x37  bg:#f8fafc  brd:#e2e8f0  r8  row pad[10,0,10,0] ja:center al:center
+          - Select Flight  TEXT  "Select Flight"  73x17  13px/600 lh17.3  bg:#203da3
+  - bottom-tab-bar  390x89  col
+    - tabs  390x64  bg:#ffffff  brd:#e2e8f0  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#64748b
+        - label-Home  TEXT  "Home"  28x13  10px/600 lh13.3  bg:#64748b
+      - tab-Explore  64x39  col gap4 al:center
+        - compass  22x22
+          - Vector  VECTOR  18x18  brd:#203da3
+        - label-Explore  TEXT  "Explore"  34x13  10px/600 lh13.3  bg:#203da3
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmark  22x22
+          - Vector  VECTOR  12x16  brd:#64748b
+        - label-Bookmarks  TEXT  "Bookmarks"  52x13  10px/400 lh13.3  bg:#64748b
+      - tab-Profile  64x39  col gap4 al:center
+        - user  22x22
+          - Vector  VECTOR  12x16  brd:#64748b
+        - label-Profile  TEXT  "Profile"  29x13  10px/400 lh13.3  bg:#64748b
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-234 — triply-light-flight-details (390x844, bg #f8fafc)
+
+- triply-light-flight-details  390x844  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x579  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#0f172a
+    - details-header  390x56  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#ffffff  brd:#e2e8f0  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  9x9  brd:#0f172a
+      - Flight Details  TEXT  "Flight Details"  105x24  18px/800 lh23.9  bg:#0f172a
+    - timeline-container  390x278  col pad[12,20,12,20]
+      - timeline-card  350x254  bg:#ffffff  brd:#e2e8f0  r16  col gap20 pad[18,18,18,18]
+        - timeline-row-1  314x39  row gap12
+          - time-col  48x34  col
+            - 10:30  TEXT  "10:30"  40x19  14px/700 lh18.6  bg:#0f172a
+            - 24 Oct  TEXT  "24 Oct"  36x15  11px/400 lh14.6  bg:#64748b
+          - line-visual  16x39  col al:center
+            - Ellipse  ELLIPSE  8x8  bg:#203da3  brd:#203da3
+            - Line  LINE  16x0  brd:#e2e8f0
+          - info-col  226x39  col gap4
+            - Murtala Muhammed (LOS)  TEXT  "Murtala Muhammed (LOS)"  170x19  14px/700 lh18.6  bg:#0f172a
+            - Terminal 2 • Gate D4  TEXT  "Terminal 2 • Gate D4"  115x16  12px/400 lh16  bg:#64748b
+        - aircraft-info  314x100  row gap12
+          - Frame  48x100  row
+          - line-visual-empty  16x100  col al:center
+            - Line  LINE  16x0  brd:#e2e8f0
+          - specs-card  226x55  bg:#f8fafc  brd:#e2e8f0  r10  col gap8 pad[12,12,12,12]
+            - specs-grid  202x31  row ja:space_between
+              - spec-1  65x31  col gap2
+                - Aircraft  TEXT  "Aircraft"  47x13  10px/400 lh13.3  bg:#64748b
+                - Boeing 777  TEXT  "Boeing 777"  65x16  12px/600 lh16  bg:#0f172a
+              - spec-2  75x31  col gap2
+                - Seat Pitch  TEXT  "Seat Pitch"  54x13  10px/400 lh13.3  bg:#64748b
+                - 32" Economy  TEXT  "32" Economy"  75x16  12px/600 lh16  bg:#0f172a
+              - spec-3  81x31  col gap2
+                - Luggage  TEXT  "Luggage"  45x13  10px/400 lh13.3  bg:#64748b
+                - 23kg check-in  TEXT  "23kg check-in"  81x16  12px/600 lh16  bg:#0f172a
+        - timeline-row-2  314x39  row gap12
+          - time-col-2  48x34  col
+            - 17:00  TEXT  "17:00"  40x19  14px/700 lh18.6  bg:#0f172a
+            - 24 Oct  TEXT  "24 Oct"  36x15  11px/400 lh14.6  bg:#64748b
+          - line-visual-2  16x8  col al:center
+            - Ellipse  ELLIPSE  8x8  bg:#203da3  brd:#cdff9b
+          - info-col-2  226x39  col gap4
+            - London Heathrow (LHR)  TEXT  "London Heathrow (LHR)"  154x19  14px/700 lh18.6  bg:#0f172a
+            - Terminal 5 • Arrival Gate  TEXT  "Terminal 5 • Arrival Gate"  134x16  12px/400 lh16  bg:#64748b
+    - addons-section  390x201  col gap12 pad[12,20,24,20]
+      - Baggage & Extras  TEXT  "Baggage & Extras"  133x21  16px/700 lh21.3  bg:#0f172a
+      - addons-card  350x132  bg:#ffffff  brd:#e2e8f0  r16  col gap16 pad[16,16,16,16]
+        - addon-row-1  318x34  row ja:space_between al:center
+          - info  274x34  row gap12 al:center
+            - luggage  20x20
+              - Vector  VECTOR  13x16  brd:#203da3
+            - text  242x34  col gap2
+              - Extra Checked Bag (23kg)  TEXT  "Extra Checked Bag (23kg)"  160x17  13px/600 lh17.3  bg:#0f172a
+              - +$35 / 35 USDT  TEXT  "+$35 / 35 USDT"  85x15  11px/400 lh14.6  bg:#64748b
+          - toggle-on  44x24  bg:#cdff9b  brd:#203da3  r12  row pad[2,2,2,2] ja:max al:center
+            - Ellipse  ELLIPSE  20x20  bg:#203da3
+        - Line  LINE  318x0  brd:#e2e8f0
+        - addon-row-2  318x34  row ja:space_between al:center
+          - info  274x34  row gap12 al:center
+            - airplay  20x20
+              - Vector  VECTOR  16x15  brd:#203da3
+            - text  242x34  col gap2
+              - Preferred Seat Selection  TEXT  "Preferred Seat Selection"  144x17  13px/600 lh17.3  bg:#0f172a
+              - +$15 / 15 USDT  TEXT  "+$15 / 15 USDT"  85x15  11px/400 lh14.6  bg:#64748b
+          - toggle-off  44x24  bg:#f1f5f9  brd:#e2e8f0  r12  row pad[2,2,2,2] al:center
+            - Ellipse  ELLIPSE  20x20  bg:#64748b
+  - sticky-checkout-bar  390x152  bg:#ffffff  brd:#e2e8f0  col gap12 pad[12,20,0,20]
+    - summary-text-row  350x43  row ja:space_between al:center
+      - Total (1 Passenger)  TEXT  "Total (1 Passenger)"  125x19  14px/400 lh18.6  bg:#64748b
+      - price-col  83x43  col al:max
+        - $885.00  TEXT  "$885.00"  83x27  20px/800 lh26.6  bg:#0f172a
+        - 885.00 USDT  TEXT  "885.00 USDT"  75x16  12px/600 lh16  bg:#203da3
+    - action-btn  350x48  bg:#203da3  r12  row pad[14,0,14,0] ja:center
+      - Proceed to Passenger Details  TEXT  "Proceed to Passenger Details"  201x20  15px/700 lh20  bg:#000000
+    - home-indicator-container  350x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-319 — triply-light-passenger-details (390x844, bg #f8fafc)
+
+- triply-light-passenger-details  390x844  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x604  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#0f172a
+    - header-bar  390x56  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#ffffff  brd:#e2e8f0  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  9x9  brd:#0f172a
+      - Passenger Details  TEXT  "Passenger Details"  146x24  18px/800 lh23.9  bg:#0f172a
+    - notice-banner  390x84  row pad[12,20,12,20]
+      - banner-card  350x60  bg:#203da3  r12  row gap10 pad[12,12,12,12] al:center
+        - shield-check  20x20
+          - Vector  VECTOR  13x16  brd:#203da3
+        - No account needed. Your ticket will be sent to your email and saved to this device.  TEXT  "No account needed. Your ticket will be sent to your email and saved to this device."  296x36  13px/600 lh18.2  bg:#203da3
+    - passenger-form  390x420  col gap16 pad[12,20,24,20]
+      - name-row  350x64  row gap12
+        - first-name-field  169x64  col gap6
+          - First Name  TEXT  "First Name"  62x15  11px/600 lh14.6  bg:#64748b
+          - input  169x43  bg:#ffffff  brd:#e2e8f0  r10  row pad[12,12,12,12]
+            - Sarah  TEXT  "Sarah"  37x19  14px/400 lh18.6  bg:#0f172a
+        - last-name-field  169x64  col gap6
+          - Last Name  TEXT  "Last Name"  60x15  11px/600 lh14.6  bg:#64748b
+          - input  169x43  bg:#ffffff  brd:#e2e8f0  r10  row pad[12,12,12,12]
+            - Chen  TEXT  "Chen"  34x19  14px/400 lh18.6  bg:#0f172a
+      - dob-gender-row  350x64  row gap12
+        - dob-field  169x64  col gap6
+          - Date of Birth  TEXT  "Date of Birth"  77x15  11px/600 lh14.6  bg:#64748b
+          - input  169x43  bg:#ffffff  brd:#e2e8f0  r10  row pad[12,12,12,12] ja:space_between al:center
+            - 14 Nov 1994  TEXT  "14 Nov 1994"  89x19  14px/400 lh18.6  bg:#0f172a
+            - calendar  16x16
+              - Vector  VECTOR  12x13  brd:#64748b
+        - gender-field  169x64  col gap6
+          - Gender  TEXT  "Gender"  43x15  11px/600 lh14.6  bg:#64748b
+          - input  169x43  bg:#ffffff  brd:#e2e8f0  r10  row pad[12,12,12,12] ja:space_between al:center
+            - Female  TEXT  "Female"  46x19  14px/400 lh18.6  bg:#0f172a
+            - chevron-down  16x16
+              - Vector  VECTOR  8x4  brd:#64748b
+      - email-field  350x64  col gap6
+        - Email Address  TEXT  "Email Address"  83x15  11px/600 lh14.6  bg:#64748b
+        - input  350x43  bg:#ffffff  brd:#e2e8f0  r10  row pad[12,12,12,12]
+          - sarah.chen@gmail.com  TEXT  "sarah.chen@gmail.com"  149x19  14px/400 lh18.6  bg:#0f172a
+      - phone-field  350x64  col gap6
+        - Phone Number  TEXT  "Phone Number"  83x15  11px/600 lh14.6  bg:#64748b
+        - input  350x43  bg:#ffffff  brd:#e2e8f0  r10  row gap8 pad[12,12,12,12] al:center
+          - +234  TEXT  "+234"  36x19  14px/600 lh18.6  bg:#203da3
+          - Line  LINE  0x16  brd:#e2e8f0
+          - 801 234 5678  TEXT  "801 234 5678"  274x19  14px/400 lh18.6  bg:#0f172a
+      - passport-field  350x64  col gap6
+        - Frame  350x15  row ja:space_between
+          - Passport Number  TEXT  "Passport Number"  101x15  11px/600 lh14.6  bg:#64748b
+          - OPTIONAL  TEXT  "OPTIONAL"  48x13  10px/400 lh13.3  bg:#64748b
+        - input  350x43  bg:#ffffff  brd:#e2e8f0  r10  row pad[12,12,12,12]
+          - A00123456  TEXT  "A00123456"  83x19  14px/400 lh18.6  bg:#64748b
+  - sticky-action-bar  390x125  bg:#ffffff  brd:#e2e8f0  col gap12 pad[20,20,20,20]
+    - action-btn  350x48  bg:#203da3  r12  row pad[14,0,14,0] ja:center
+      - Continue to Checkout  TEXT  "Continue to Checkout"  149x20  15px/700 lh20  bg:#000000
+    - home-indicator-container  350x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-385 — triply-light-web3-checkout (390x844, bg #f8fafc)
+
+- triply-light-web3-checkout  390x844  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x645  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#0f172a
+    - header-bar  390x56  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#ffffff  brd:#e2e8f0  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  9x9  brd:#0f172a
+      - Web3 Checkout  TEXT  "Web3 Checkout"  134x24  18px/800 lh23.9  bg:#0f172a
+    - notice-banner  390x68  row pad[12,20,12,20]
+      - banner-card  350x44  bg:#203da3  r12  row pad[12,12,12,12] ja:space_between al:center
+        - left  126x20  row gap10 al:center
+          - clock  20x20
+            - Vector  VECTOR  16x16  brd:#203da3
+          - Price Guaranteed  TEXT  "Price Guaranteed"  96x16  12px/700 lh16  bg:#203da3
+        - 14:59  TEXT  "14:59"  37x17  13px/800 lh17.3  bg:#203da3
+    - breakdown-container  390x186  col pad[12,20,12,20]
+      - breakdown-card  350x162  bg:#ffffff  brd:#e2e8f0  r16  col gap12 pad[16,16,16,16]
+        - Order Summary  TEXT  "Order Summary"  104x19  14px/700 lh18.6  bg:#0f172a
+        - breakdown-table  318x99  col gap8
+          - row-base  318x16  row ja:space_between al:center
+            - Flight Base Fare  TEXT  "Flight Base Fare"  87x16  12px/400 lh16  bg:#64748b
+            - prices  115x16  row gap8
+              - $850.00  TEXT  "$850.00"  50x16  12px/400 lh16  bg:#0f172a
+              - 850 USDT  TEXT  "850 USDT"  57x16  12px/600 lh16  bg:#203da3
+          - row-taxes  318x16  row ja:space_between al:center
+            - Taxes & Fees  TEXT  "Taxes & Fees"  72x16  12px/400 lh16  bg:#64748b
+            - prices  99x16  row gap8
+              - $25.00  TEXT  "$25.00"  42x16  12px/400 lh16  bg:#0f172a
+              - 25 USDT  TEXT  "25 USDT"  49x16  12px/600 lh16  bg:#203da3
+          - row-service  318x16  row ja:space_between al:center
+            - Service Fee  TEXT  "Service Fee"  64x16  12px/400 lh16  bg:#64748b
+            - prices  99x16  row gap8
+              - $10.00  TEXT  "$10.00"  42x16  12px/400 lh16  bg:#0f172a
+              - 10 USDT  TEXT  "10 USDT"  49x16  12px/600 lh16  bg:#203da3
+          - Line  LINE  318x0  brd:#e2e8f0
+          - row-total  318x19  row ja:space_between al:center
+            - Total Payable  TEXT  "Total Payable"  78x17  13px/700 lh17.3  bg:#0f172a
+            - prices  133x19  row gap8 al:center
+              - $885.00  TEXT  "$885.00"  58x19  14px/800 lh18.6  bg:#0f172a
+              - 885 USDT  TEXT  "885 USDT"  67x19  14px/800 lh18.6  bg:#203da3
+    - payment-method-section  390x291  col gap12 pad[12,20,24,20]
+      - Select Payment Method  TEXT  "Select Payment Method"  164x20  15px/700 lh20  bg:#0f172a
+      - method-card-1  350x84  bg:#ffffff  brd:#203da3  r12  col gap12 pad[16,16,16,16]
+        - Frame  318x19  row ja:space_between al:center
+          - Frame  175x19  row gap10 al:center
+            - radio-receiver  18x18
+              - Vector  VECTOR  15x7  brd:#203da3
+            - Pay with Crypto Wallet  TEXT  "Pay with Crypto Wallet"  147x19  14px/700 lh18.6  bg:#0f172a
+          - Frame  91x17  bg:#203da3  r4  row pad[2,6,2,6]
+            - Fast & Gasless  TEXT  "Fast & Gasless"  79x13  10px/700 lh13.3  bg:#cdff9b
+        - chain-icons-group  247x21  row gap8 pad[0,0,0,28] al:center
+          - badge-0  47x21  bg:#f8fafc  brd:#e2e8f0  r6  row pad[4,8,4,8]
+            - Solana  TEXT  "Solana"  31x13  10px/600 lh13.3  bg:#203da3
+          - badge-1  38x21  bg:#f8fafc  brd:#e2e8f0  r6  row pad[4,8,4,8]
+            - Base  TEXT  "Base"  22x13  10px/600 lh13.3  bg:#203da3
+          - badge-2  53x21  bg:#f8fafc  brd:#e2e8f0  r6  row pad[4,8,4,8]
+            - Polygon  TEXT  "Polygon"  37x13  10px/600 lh13.3  bg:#203da3
+          - badge-3  57x21  bg:#f8fafc  brd:#e2e8f0  r6  row pad[4,8,4,8]
+            - Arbitrum  TEXT  "Arbitrum"  41x13  10px/600 lh13.3  bg:#203da3
+      - method-card-2  350x51  bg:#ffffff  brd:#e2e8f0  r12  row pad[16,16,16,16] ja:space_between al:center
+        - Frame  204x19  row gap10 al:center
+          - radio  18x18
+            - Vector  VECTOR  15x10  brd:#64748b
+          - Pay via QR Code / Transfer  TEXT  "Pay via QR Code / Transfer"  176x19  14px/600 lh18.6  bg:#64748b
+      - network-dropdown-field  350x64  col gap6
+        - Select Pay Network  TEXT  "Select Pay Network"  117x15  11px/600 lh14.6  bg:#64748b
+        - input  350x43  bg:#ffffff  brd:#e2e8f0  r10  row pad[12,12,12,12] ja:space_between al:center
+          - Frame  159x19  row gap8 al:center
+            - Base Network  TEXT  "Base Network"  89x19  14px/600 lh18.6  bg:#0f172a
+            - fee-tag  62x16  bg:#203da3  r4  row pad[2,6,2,6]
+              - ~ $0.01 fee  TEXT  "~ $0.01 fee"  50x12  9px/700 lh12  bg:#cdff9b
+          - chevron-down  16x16
+            - Vector  VECTOR  8x4  brd:#64748b
+  - sticky-checkout-bar  390x125  bg:#ffffff  brd:#e2e8f0  col gap12 pad[20,20,20,20]
+    - action-btn  350x48  bg:#203da3  r12  row gap8 pad[14,0,14,0] ja:center
+      - wallet  18x18
+        - Vector  VECTOR  14x13  brd:#cdff9b
+      - Connect Wallet to Pay  TEXT  "Connect Wallet to Pay"  153x20  15px/700 lh20  bg:#000000
+    - home-indicator-container  350x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-481 — triply-light-processing (390x844, bg #f8fafc)
+
+- triply-light-processing  390x844  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x502  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  28x18  bg:#0f172a
+    - results-header  390x48  bg:#ffffff  brd:#e2e8f0  row gap12 pad[12,20,12,20] al:center
+      - header-text  350x24  col gap2
+        - Payment Settlement  TEXT  "Payment Settlement"  168x24  18px/800 lh23.9  bg:#0f172a
+    - main-status-container  390x410  col gap24 pad[20,20,20,20] al:center
+      - steps-card  350x263  bg:#ffffff  brd:#e2e8f0  r16  col gap20 pad[20,20,20,20]
+        - step-1  310x37  row gap14 al:center
+          - icon-check  32x32  bg:#10b981  r16  row ja:center al:center
+            - check  16x16
+              - Vector  VECTOR  10x7  brd:#10b981
+          - text-group  264x37  col gap2
+            - On-Chain Payment Verification  TEXT  "On-Chain Payment Verification"  198x19  14px/700 lh18.6  bg:#0f172a
+            - Verified successfully  TEXT  "Verified successfully"  112x16  12px/400 lh16  bg:#10b981
+        - line-1  310x16  row pad[0,0,0,15]
+          - Line  LINE  0x16  brd:#10b981
+        - step-2  310x37  row gap14 al:center
+          - icon-active  32x32  bg:#203da3  r16  row ja:center al:center
+            - Ellipse  ELLIPSE  12x12  bg:#203da3
+          - text-group  264x37  col gap2
+            - Instant Settlement  TEXT  "Instant Settlement"  118x19  14px/700 lh18.6  bg:#0f172a
+            - Settling with airlines smart contract...  TEXT  "Settling with airlines smart contract..."  204x16  12px/400 lh16  bg:#203da3
+        - line-2  310x16  row pad[0,0,0,15]
+          - Line  LINE  0x16  brd:#e2e8f0
+        - step-3  310x37  row gap14 al:center
+          - icon-pending  32x32  bg:#f8fafc  brd:#e2e8f0  r16  row ja:center al:center
+            - 3  TEXT  "3"  8x16  12px/700 lh16  bg:#94a3b8
+          - text-group  264x37  col gap2
+            - Airline Ticket Issuance  TEXT  "Airline Ticket Issuance"  142x19  14px/700 lh18.6  bg:#94a3b8
+            - Pending settlement  TEXT  "Pending settlement"  107x16  12px/400 lh16  bg:#94a3b8
+      - info-group  350x83  col gap12 al:center
+        - Verifying blockchain transaction. Do not close this screen.  TEXT  "Verifying blockchain transaction. Do not close this screen."  350x42  14px/400 lh21  bg:#64748b
+        - hash-pill  115x29  bg:#ffffff  brd:#e2e8f0  r8  row pad[8,12,8,12]
+          - Tx: 0x8f7d...9c2a  TEXT  "Tx: 0x8f7d...9c2a"  91x13  11px/400 lh13.3  bg:#64748b
+  - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+    - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-526 — triply-light-e-ticket (390x892, bg #f8fafc)
+
+- triply-light-e-ticket  390x892  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x803  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  28x18  bg:#0f172a
+    - results-header  390x48  bg:#ffffff  brd:#e2e8f0  row gap12 pad[12,20,12,20] al:center
+      - header-text  350x24  col gap2
+        - Your E-Ticket  TEXT  "Your E-Ticket"  110x24  18px/800 lh23.9  bg:#0f172a
+    - e-ticket-body  390x711  col gap20 pad[20,20,20,20]
+      - confirmed-status  350x83  col gap8 al:center
+        - check-badge  48x48  bg:#10b981  r24  row ja:center al:center
+          - check  24x24
+            - Vector  VECTOR  15x10  brd:#10b981
+        - Booking Confirmed!  TEXT  "Booking Confirmed!"  182x27  20px/800 lh26.6  bg:#0f172a
+      - boarding-pass  350x399  bg:#ffffff  brd:#e2e8f0  r16  col
+        - pass-upper  350x213  col gap16 pad[18,18,18,18]
+          - route-row  314x57  row ja:space_between al:center
+            - origin  65x57  col gap4
+              - LOS  TEXT  "LOS"  52x37  28px/800 lh37.2  bg:#0f172a
+              - Lagos, NGA  TEXT  "Lagos, NGA"  65x16  12px/400 lh16  bg:#64748b
+            - flight-info  41x39  col gap4 al:center
+              - BA-248  TEXT  "BA-248"  41x15  11px/600 lh14.6  bg:#203da3
+              - circle-x  20x20
+                - Vector  VECTOR  16x16  brd:#203da3
+            - destination  63x57  col gap4 al:max
+              - LHR  TEXT  "LHR"  52x37  28px/800 lh37.2  bg:#0f172a
+              - London, UK  TEXT  "London, UK"  63x16  12px/400 lh16  bg:#64748b
+          - Line  LINE  314x0  brd:#e2e8f0
+          - passenger-pnr  314x38  row ja:space_between al:center
+            - passenger  95x38  col gap4
+              - Passenger  TEXT  "Passenger"  61x15  11px/400 lh14.6  bg:#64748b
+              - Amelia Earhart  TEXT  "Amelia Earhart"  95x19  14px/700 lh18.6  bg:#0f172a
+            - pnr  111x38  col gap4 al:max
+              - Booking Reference  TEXT  "Booking Reference"  111x15  11px/400 lh14.6  bg:#64748b
+              - RZPNX8  TEXT  "RZPNX8"  53x19  14px/800 lh18.6  bg:#203da3
+          - grid-details  314x34  row ja:space_between al:center
+            - seat  25x34  col gap2
+              - Seat  TEXT  "Seat"  23x15  11px/400 lh14.6  bg:#64748b
+              - 14B  TEXT  "14B"  25x17  13px/600 lh17.3  bg:#0f172a
+            - terminal  43x34  col gap2 al:center
+              - Terminal  TEXT  "Terminal"  43x15  11px/400 lh14.6  bg:#64748b
+              - 5  TEXT  "5"  9x17  13px/600 lh17.3  bg:#0f172a
+            - gate  25x34  col gap2 al:max
+              - Gate  TEXT  "Gate"  24x15  11px/400 lh14.6  bg:#64748b
+              - B12  TEXT  "B12"  25x17  13px/600 lh17.3  bg:#0f172a
+        - perforated-divider  350x0  row ja:space_between al:center
+          - Ellipse  ELLIPSE  16x16  bg:#f8fafc  brd:#e2e8f0
+          - Line  LINE  350x0  brd:#e2e8f0
+          - Ellipse  ELLIPSE  16x16  bg:#f8fafc  brd:#e2e8f0
+        - pass-lower  350x186  col gap14 pad[18,18,18,18] al:center
+          - qr-code  RECTANGLE  120x120  bg:img:753e6c30cb814be647a23eb26d604dfb5d380870
+          - Scan at airport check-in desk  TEXT  "Scan at airport check-in desk"  164x16  12px/400 lh16  bg:#64748b
+      - action-pills  350x149  col gap10
+        - btn-apple-wallet  350x43  bg:#203da3  r12  row pad[12,0,12,0] ja:center
+          - Add to Apple Wallet  TEXT  "Add to Apple Wallet"  129x19  14px/700 lh18.6  bg:#ffffff
+        - btn-pdf  350x43  bg:#ffffff  brd:#e2e8f0  r12  row pad[12,0,12,0] ja:center
+          - Download PDF  TEXT  "Download PDF"  93x19  14px/600 lh18.6  bg:#0f172a
+        - btn-share  350x43  bg:#ffffff  brd:#e2e8f0  r12  row pad[12,0,12,0] ja:center
+          - Share Ticket  TEXT  "Share Ticket"  80x19  14px/600 lh18.6  bg:#0f172a
+  - bottom-tab-bar  390x89  col
+    - tabs  390x64  bg:#ffffff  brd:#e2e8f0  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  22x22  brd:#64748b
+        - Home  TEXT  "Home"  28x13  10px/400 lh13.3  bg:#64748b
+      - tab-Explore  64x39  col gap4 al:center
+        - explore  22x22
+          - Vector  VECTOR  22x22  brd:#203da3
+        - Explore  TEXT  "Explore"  34x13  10px/600 lh13.3  bg:#203da3
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmarks  22x22
+          - Vector  VECTOR  22x22  brd:#64748b
+        - Bookmarks  TEXT  "Bookmarks"  52x13  10px/400 lh13.3  bg:#64748b
+      - tab-Profile  64x39  col gap4 al:center
+        - profile  22x22
+          - Vector  VECTOR  22x22  brd:#64748b
+        - Profile  TEXT  "Profile"  29x13  10px/400 lh13.3  bg:#64748b
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-610 — triply-light-my-trips (390x844, bg #f8fafc)
+
+- triply-light-my-trips  390x844  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x558  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  28x18  bg:#0f172a
+    - results-header  390x48  bg:#ffffff  brd:#e2e8f0  row gap12 pad[12,20,12,20] al:center
+      - header-text  350x24  col gap2
+        - My Bookings  TEXT  "My Bookings"  107x24  18px/800 lh23.9  bg:#0f172a
+    - bookings-body  390x466  col gap20 pad[20,20,20,20]
+      - toggle-pills  350x39  bg:#f1f5f9  r10  row gap4 pad[3,3,3,3]
+        - upcoming  170x33  bg:#203da3  r8  row pad[8,0,8,0] ja:center al:center
+          - Upcoming  TEXT  "Upcoming"  61x17  13px/600 lh17.3  bg:#cdff9b
+        - past  170x33  r8  row pad[8,0,8,0] ja:center al:center
+          - Past  TEXT  "Past"  26x17  13px/500 lh17.3  bg:#64748b
+      - ticket-card  350x192  bg:#ffffff  brd:#e2e8f0  r16  col gap16 pad[16,16,16,16]
+        - ticket-header  318x32  row ja:space_between al:center
+          - airline  130x32  row gap8 al:center
+            - Ellipse  ELLIPSE  24x24  bg:#f1f5f9  brd:#e2e8f0
+            - airline-text  98x32  col
+              - British Airways  TEXT  "British Airways"  88x17  13px/700 lh17.3  bg:#0f172a
+              - BA-248 • Economy  TEXT  "BA-248 • Economy"  98x15  11px/400 lh14.6  bg:#64748b
+          - pnr-badge  58x23  bg:#203da3  r6  row pad[4,8,4,8]
+            - RZPNX8  TEXT  "RZPNX8"  42x15  11px/700 lh14.6  bg:#203da3
+        - Line  LINE  318x0  brd:#e2e8f0
+        - flight-route  318x39  row ja:space_between al:center
+          - origin  78x39  col
+            - LOS  TEXT  "LOS"  34x24  18px/700 lh23.9  bg:#0f172a
+            - 10:30 • 24 Oct  TEXT  "10:30 • 24 Oct"  78x15  11px/400 lh14.6  bg:#64748b
+          - path-graphic  162x19  col gap4 al:center
+            - 6h 30m  TEXT  "6h 30m"  41x15  11px/400 lh14.6  bg:#64748b
+            - Line  LINE  100x0  brd:#e2e8f0
+          - destination  78x39  col al:max
+            - LHR  TEXT  "LHR"  34x24  18px/700 lh23.9  bg:#0f172a
+            - 17:00 • 24 Oct  TEXT  "17:00 • 24 Oct"  78x15  11px/400 lh14.6  bg:#64748b
+        - card-actions  318x41  row pad[4,0,0,0]
+          - btn-boarding-pass  318x37  bg:#203da3  r8  row pad[10,0,10,0] ja:center
+            - View Boarding Pass  TEXT  "View Boarding Pass"  117x17  13px/700 lh17.3  bg:#ffffff
+      - past-ticket-card  350x119  bg:#ffffff  brd:#e2e8f0  r16  col gap16 pad[16,16,16,16]
+        - ticket-header  318x32  row ja:space_between al:center
+          - airline  129x32  row gap8 al:center
+            - Ellipse  ELLIPSE  24x24  bg:#f1f5f9  brd:#e2e8f0
+            - airline-text  97x32  col
+              - Emirates  TEXT  "Emirates"  51x17  13px/700 lh17.3  bg:#0f172a
+              - EK-783 • Economy  TEXT  "EK-783 • Economy"  97x15  11px/400 lh14.6  bg:#64748b
+          - pnr-badge  42x23  bg:#f1f5f9  r6  row pad[4,8,4,8]
+            - PAST  TEXT  "PAST"  26x15  11px/700 lh14.6  bg:#64748b
+        - flight-route  318x39  row ja:space_between al:center
+          - origin  77x39  col
+            - LOS  TEXT  "LOS"  34x24  18px/700 lh23.9  bg:#0f172a
+            - 14:20 • 12 Jan  TEXT  "14:20 • 12 Jan"  77x15  11px/400 lh14.6  bg:#64748b
+          - destination  77x39  col al:max
+            - DXB  TEXT  "DXB"  34x24  18px/700 lh23.9  bg:#0f172a
+            - 23:55 • 12 Jan  TEXT  "23:55 • 12 Jan"  77x15  11px/400 lh14.6  bg:#64748b
+      - Saved locally • No login needed  TEXT  "Saved locally • No login needed"  350x16  12px/400 lh16  bg:#64748b
+  - bottom-tab-bar  390x89  col
+    - tabs  390x64  bg:#ffffff  brd:#e2e8f0  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  22x22  brd:#64748b
+        - Home  TEXT  "Home"  28x13  10px/400 lh13.3  bg:#64748b
+      - tab-Explore  64x39  col gap4 al:center
+        - explore  22x22
+          - Vector  VECTOR  22x22  brd:#64748b
+        - Explore  TEXT  "Explore"  34x13  10px/400 lh13.3  bg:#64748b
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmarks  22x22
+          - Vector  VECTOR  22x22  brd:#203da3
+        - Bookmarks  TEXT  "Bookmarks"  52x13  10px/600 lh13.3  bg:#203da3
+      - tab-Profile  64x39  col gap4 al:center
+        - profile  22x22
+          - Vector  VECTOR  22x22  brd:#64748b
+        - Profile  TEXT  "Profile"  29x13  10px/400 lh13.3  bg:#64748b
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-691 — triply-light-passenger-class-sheet (390x844, bg #f8fafc)
+
+- triply-light-passenger-class-sheet  390x844  bg:#f8fafc  col ja:space_between
+  - preview-underlay  390x92  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  28x18  bg:#0f172a
+    - results-header  390x48  bg:#ffffff  brd:#e2e8f0  row gap12 pad[12,20,12,20] al:center
+      - header-text  350x24  col gap2
+        - My Bookings  TEXT  "My Bookings"  107x24  18px/800 lh23.9  bg:#0f172a
+  - bottom-sheet  390x582  bg:#ffffff  brd:#e2e8f0  col
+    - drag-handle-container  390x20  row pad[8,0,8,0] ja:center
+      - drag-handle  RECTANGLE  40x4  bg:#e2e8f0  r2
+    - sheet-content  390x562  col gap20 pad[0,20,24,20]
+      - Passengers & Cabin Class  TEXT  "Passengers & Cabin Class"  215x24  18px/800 lh23.9  bg:#0f172a
+      - counters-group  350x175  col gap16
+        - counter-adults  350x37  row ja:space_between al:center
+          - text  49x37  col gap2
+            - Adults  TEXT  "Adults"  40x19  14px/700 lh18.6  bg:#0f172a
+            - Age 12+  TEXT  "Age 12+"  49x16  12px/400 lh16  bg:#64748b
+          - stepper  99x32  row gap12 al:center
+            - minus  32x32  brd:#e2e8f0  r16  row ja:center al:center
+              - -  TEXT  "-"  9x24  18px/600 lh23.9  bg:#64748b
+            - 2  TEXT  "2"  11x21  16px/700 lh21.3  bg:#0f172a
+            - plus  32x32  bg:#203da3  r16  row ja:center al:center
+              - +  TEXT  "+"  11x24  18px/600 lh23.9  bg:#ffffff
+        - Line  LINE  350x0  brd:#e2e8f0
+        - counter-children  350x37  row ja:space_between al:center
+          - text  55x37  col gap2
+            - Children  TEXT  "Children"  53x19  14px/700 lh18.6  bg:#0f172a
+            - Age 2-12  TEXT  "Age 2-12"  55x16  12px/400 lh16  bg:#64748b
+          - stepper  99x32  row gap12 al:center
+            - minus  32x32  brd:#e2e8f0  r16  row ja:center al:center
+              - -  TEXT  "-"  9x24  18px/600 lh23.9  bg:#64748b
+            - 0  TEXT  "0"  11x21  16px/700 lh21.3  bg:#0f172a
+            - plus  32x32  bg:#203da3  r16  row ja:center al:center
+              - +  TEXT  "+"  11x24  18px/600 lh23.9  bg:#ffffff
+        - Line  LINE  350x0  brd:#e2e8f0
+        - counter-infants  350x37  row ja:space_between al:center
+          - text  91x37  col gap2
+            - Infants  TEXT  "Infants"  43x19  14px/700 lh18.6  bg:#0f172a
+            - Under 2 (on lap)  TEXT  "Under 2 (on lap)"  91x16  12px/400 lh16  bg:#64748b
+          - stepper  99x32  row gap12 al:center
+            - minus  32x32  brd:#e2e8f0  r16  row ja:center al:center
+              - -  TEXT  "-"  9x24  18px/600 lh23.9  bg:#64748b
+            - 0  TEXT  "0"  11x21  16px/700 lh21.3  bg:#0f172a
+            - plus  32x32  bg:#203da3  r16  row ja:center al:center
+              - +  TEXT  "+"  11x24  18px/600 lh23.9  bg:#ffffff
+      - class-group  350x231  col gap12
+        - CABIN CLASS  TEXT  "CABIN CLASS"  88x19  14px/700 lh18.6  bg:#64748b
+        - class-list  350x200  col gap8
+          - class-row-Economy  350x44  bg:#203da3  r10  row pad[12,12,12,12] ja:space_between al:center
+            - Economy  TEXT  "Economy"  60x19  14px/700 lh18.6  bg:#203da3
+            - radio-dot  20x20  bg:#ffffff  brd:#203da3  r10  row ja:center al:center
+              - Ellipse  ELLIPSE  10x10  bg:#203da3
+          - class-row-Premium Economy  350x44  bg:#f8fafc  r10  row pad[12,12,12,12] ja:space_between al:center
+            - Premium Economy  TEXT  "Premium Economy"  120x19  14px/500 lh18.6  bg:#0f172a
+            - radio-dot  20x20  bg:#ffffff  brd:#e2e8f0  r10  row ja:center al:center
+          - class-row-Business  350x44  bg:#f8fafc  r10  row pad[12,12,12,12] ja:space_between al:center
+            - Business  TEXT  "Business"  55x19  14px/500 lh18.6  bg:#0f172a
+            - radio-dot  20x20  bg:#ffffff  brd:#e2e8f0  r10  row ja:center al:center
+          - class-row-First  350x44  bg:#f8fafc  r10  row pad[12,12,12,12] ja:space_between al:center
+            - First  TEXT  "First"  27x19  14px/500 lh18.6  bg:#0f172a
+            - radio-dot  20x20  bg:#ffffff  brd:#e2e8f0  r10  row ja:center al:center
+      - apply-cta  350x48  bg:#203da3  r12  row pad[14,0,14,0] ja:center
+        - Apply Selection  TEXT  "Apply Selection"  108x20  15px/700 lh20  bg:#ffffff
+
+## 17-762 — triply-light-filter-sort-sheet (390x844, bg #f8fafc)
+
+- triply-light-filter-sort-sheet  390x844  bg:#f8fafc  col ja:space_between
+  - preview-underlay  390x100  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  28x18  bg:#0f172a
+    - results-header  390x56  bg:#ffffff  brd:#e2e8f0  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#f1f5f9  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  16x16  brd:#0f172a
+      - header-text  306x24  col gap2
+        - LOS to LHR  TEXT  "LOS to LHR"  94x24  18px/800 lh23.9  bg:#0f172a
+  - bottom-sheet  390x533  bg:#ffffff  brd:#e2e8f0  col
+    - drag-handle-container  390x20  row pad[8,0,8,0] ja:center
+      - drag-handle  RECTANGLE  40x4  bg:#e2e8f0  r2
+    - sheet-content  390x513  col gap24 pad[0,20,24,20]
+      - Filter & Sort  TEXT  "Filter & Sort"  99x24  18px/800 lh23.9  bg:#0f172a
+      - price-range  350x61  col gap12
+        - text-row  350x19  row ja:space_between al:center
+          - PRICE RANGE  TEXT  "PRICE RANGE"  89x19  14px/700 lh18.6  bg:#64748b
+          - $200 - $3,000  TEXT  "$200 - $3,000"  101x19  14px/700 lh18.6  bg:#203da3
+        - slider-track-container  350x30  col pad[12,0,12,0]
+          - slider-track  350x6  bg:#e2e8f0  r3
+            - slider-fill  RECTANGLE  260x6  bg:#203da3
+            - thumb-left  ELLIPSE  16x16  bg:#ffffff  brd:#203da3
+            - thumb-right  ELLIPSE  16x16  bg:#ffffff  brd:#203da3
+      - stops  350x68  col gap12
+        - STOPS  TEXT  "STOPS"  43x19  14px/700 lh18.6  bg:#64748b
+        - stops-row  350x37  row gap8
+          - stop-Non-stop  89x37  bg:#203da3  brd:#203da3  r20  row pad[10,16,10,16]
+            - Non-stop  TEXT  "Non-stop"  57x17  13px/600 lh17.3  bg:#cdff9b
+          - stop-1 Stop  72x37  bg:#f8fafc  brd:#e2e8f0  r20  row pad[10,16,10,16]
+            - 1 Stop  TEXT  "1 Stop"  40x17  13px/600 lh17.3  bg:#0f172a
+          - stop-2+ Stops  86x37  bg:#f8fafc  brd:#e2e8f0  r20  row pad[10,16,10,16]
+            - 2+ Stops  TEXT  "2+ Stops"  54x17  13px/600 lh17.3  bg:#0f172a
+      - airlines  350x149  col gap12
+        - AIRLINES  TEXT  "AIRLINES"  58x19  14px/700 lh18.6  bg:#64748b
+        - airlines-grid  350x118  col gap10
+          - airline-Emirates  350x22  row ja:space_between al:center
+            - Emirates  TEXT  "Emirates"  55x19  14px/500 lh18.6  bg:#0f172a
+            - checkbox  22x22  bg:#203da3  brd:#203da3  r6  row ja:center al:center
+              - check  12x12
+                - Vector  VECTOR  7x5  brd:#ffffff
+          - airline-British Airways  350x22  row ja:space_between al:center
+            - British Airways  TEXT  "British Airways"  94x19  14px/500 lh18.6  bg:#0f172a
+            - checkbox  22x22  bg:#203da3  brd:#203da3  r6  row ja:center al:center
+              - check  12x12
+                - Vector  VECTOR  7x5  brd:#ffffff
+          - airline-Qatar Airways  350x22  row ja:space_between al:center
+            - Qatar Airways  TEXT  "Qatar Airways"  91x19  14px/500 lh18.6  bg:#0f172a
+            - checkbox  22x22  bg:#ffffff  brd:#e2e8f0  r6  row ja:center al:center
+          - airline-Turkish Airlines  350x22  row ja:space_between al:center
+            - Turkish Airlines  TEXT  "Turkish Airlines"  96x19  14px/500 lh18.6  bg:#0f172a
+            - checkbox  22x22  bg:#ffffff  brd:#e2e8f0  r6  row ja:center al:center
+      - departure-time  350x19  col gap12
+        - time-text  350x19  row ja:space_between al:center
+          - DEPARTURE TIME  TEXT  "DEPARTURE TIME"  112x19  14px/700 lh18.6  bg:#64748b
+          - 06:00 - 23:59  TEXT  "06:00 - 23:59"  95x19  14px/700 lh18.6  bg:#0f172a
+      - apply-cta  350x48  bg:#203da3  r12  row pad[14,0,14,0] ja:center
+        - Apply Filters  TEXT  "Apply Filters"  85x20  15px/700 lh20  bg:#ffffff
+
+## 17-826 — triply-light-wallet-sheet (390x844, bg #f8fafc)
+
+- triply-light-wallet-sheet  390x844  bg:#f8fafc  col ja:space_between
+  - preview-underlay  390x100  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  28x18  bg:#0f172a
+    - results-header  390x56  bg:#ffffff  brd:#e2e8f0  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#f1f5f9  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  16x16  brd:#0f172a
+      - header-text  306x24  col gap2
+        - Checkout  TEXT  "Checkout"  79x24  18px/800 lh23.9  bg:#0f172a
+  - bottom-sheet  390x503  bg:#ffffff  brd:#e2e8f0  col
+    - drag-handle-container  390x20  row pad[8,0,8,0] ja:center
+      - drag-handle  RECTANGLE  40x4  bg:#e2e8f0  r2
+    - sheet-content  390x483  col gap20 pad[0,20,24,20]
+      - title-wrapper  350x62  col gap4
+        - Select Wallet to Pay  TEXT  "Select Wallet to Pay"  164x24  18px/800 lh23.9  bg:#0f172a
+        - Connect your Web3 wallet to authorize gasless USDT payment  TEXT  "Connect your Web3 wallet to authorize gasless USDT payment"  350x34  13px/400 lh17.3  bg:#64748b
+      - wallet-list  350x320  col gap10
+        - wallet-item-MetaMask  350x56  bg:#f8fafc  brd:#e2e8f0  r12  row pad[12,12,12,12] ja:space_between al:center
+          - left  111x32  row gap12 al:center
+            - Rectangle  RECTANGLE  32x32  bg:#ffffff  r8
+            - MetaMask  TEXT  "MetaMask"  67x19  14px/700 lh18.6  bg:#0f172a
+          - arrow-right  16x16
+            - Chevron right  INSTANCE  16x16
+              - Icon  VECTOR  4x8  brd:#1e1e1e
+        - wallet-item-Coinbase Wallet  350x56  bg:#f8fafc  brd:#e2e8f0  r12  row pad[12,12,12,12] ja:space_between al:center
+          - left  148x32  row gap12 al:center
+            - Rectangle  RECTANGLE  32x32  bg:#ffffff  r8
+            - Coinbase Wallet  TEXT  "Coinbase Wallet"  104x19  14px/700 lh18.6  bg:#0f172a
+          - arrow-right  16x16
+            - Chevron right  INSTANCE  16x16
+              - Icon  VECTOR  4x8  brd:#1e1e1e
+        - wallet-item-Rainbow  350x56  bg:#f8fafc  brd:#e2e8f0  r12  row pad[12,12,12,12] ja:space_between al:center
+          - left  99x32  row gap12 al:center
+            - Rectangle  RECTANGLE  32x32  bg:#ffffff  r8
+            - Rainbow  TEXT  "Rainbow"  55x19  14px/700 lh18.6  bg:#0f172a
+          - arrow-right  16x16
+            - Chevron right  INSTANCE  16x16
+              - Icon  VECTOR  4x8  brd:#1e1e1e
+        - wallet-item-WalletConnect (QR)  350x56  bg:#f8fafc  brd:#e2e8f0  r12  row pad[12,12,12,12] ja:space_between al:center
+          - left  173x32  row gap12 al:center
+            - Rectangle  RECTANGLE  32x32  bg:#ffffff  r8
+            - WalletConnect (QR)  TEXT  "WalletConnect (QR)"  129x19  14px/700 lh18.6  bg:#0f172a
+          - arrow-right  16x16
+            - Chevron right  INSTANCE  16x16
+              - Icon  VECTOR  4x8  brd:#1e1e1e
+        - wallet-item-Phantom  350x56  bg:#f8fafc  brd:#e2e8f0  r12  row pad[12,12,12,12] ja:space_between al:center
+          - left  102x32  row gap12 al:center
+            - Rectangle  RECTANGLE  32x32  bg:#ffffff  r8
+            - Phantom  TEXT  "Phantom"  58x19  14px/700 lh18.6  bg:#0f172a
+          - arrow-right  16x16
+            - Chevron right  INSTANCE  16x16
+              - Icon  VECTOR  4x8  brd:#1e1e1e
+      - Line  LINE  350x0  brd:#e2e8f0
+      - powered-note  350x17  col gap8
+        - Powered by Web3 payment infrastructure. Zero setup required.  TEXT  "Powered by Web3 payment infrastructure. Zero setup required."  350x17  12px/400 lh16.8  bg:#64748b
+
+## 17-890 — triply-light-fare-rules-sheet (390x844, bg #f8fafc)
+
+- triply-light-fare-rules-sheet  390x844  bg:#f8fafc  col ja:space_between
+  - preview-underlay  390x100  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  18x18  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  28x18  bg:#0f172a
+    - results-header  390x56  bg:#ffffff  brd:#e2e8f0  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#f1f5f9  r16  row ja:center al:center
+        - arrow-left  16x16
+          - Vector  VECTOR  16x16  brd:#0f172a
+      - header-text  306x24  col gap2
+        - Flight Details  TEXT  "Flight Details"  105x24  18px/800 lh23.9  bg:#0f172a
+  - bottom-sheet  390x464  bg:#ffffff  brd:#e2e8f0  col
+    - drag-handle-container  390x20  row pad[8,0,8,0] ja:center
+      - drag-handle  RECTANGLE  40x4  bg:#e2e8f0  r2
+    - sheet-content  390x444  col gap20 pad[0,20,24,20]
+      - Fare Rules & Refund Policy  TEXT  "Fare Rules & Refund Policy"  219x24  18px/800 lh23.9  bg:#0f172a
+      - rules-list  350x288  col gap12
+        - rule-row-0  350x66  bg:#f8fafc  brd:#e2e8f0  r12  row pad[14,14,14,14] ja:space_between al:center
+          - left  322x38  row gap12 al:center
+            - icon-container  28x28  bg:#ffffff  r14  row ja:center al:center
+              - check  14x14
+                - Vector  VECTOR  9x6  brd:#10b981
+            - texts  282x38  col gap2
+              - Refundable  TEXT  "Refundable"  67x15  11px/600 lh14.6  bg:#64748b
+              - badge  114x21  bg:#10b981  r4  row pad[2,8,2,8]
+                - Fully Refundable  TEXT  "Fully Refundable"  98x17  13px/700 lh17.3  bg:#10b981
+        - rule-row-1  350x62  bg:#f8fafc  brd:#e2e8f0  r12  row pad[14,14,14,14] ja:space_between al:center
+          - left  322x34  row gap12 al:center
+            - icon-container  28x28  bg:#ffffff  r14  row ja:center al:center
+              - Clock  INSTANCE  14x14
+                - Icon  VECTOR  11x11  brd:#1e1e1e
+            - texts  282x34  col gap2
+              - Cancellation Window  TEXT  "Cancellation Window"  131x15  11px/600 lh14.6  bg:#64748b
+              - Free cancellation within 24 hours  TEXT  "Free cancellation within 24 hours"  197x17  13px/700 lh17.3  bg:#0f172a
+        - rule-row-2  350x62  bg:#f8fafc  brd:#e2e8f0  r12  row pad[14,14,14,14] ja:space_between al:center
+          - left  322x34  row gap12 al:center
+            - icon-container  28x28  bg:#ffffff  r14  row ja:center al:center
+              - wallet  14x14
+                - Vector  VECTOR  11x10  brd:#203da3
+            - texts  282x34  col gap2
+              - Change Fee  TEXT  "Change Fee"  66x15  11px/600 lh14.6  bg:#64748b
+              - $75 / 75 USDT  TEXT  "$75 / 75 USDT"  93x17  13px/700 lh17.3  bg:#0f172a
+        - rule-row-3  350x62  bg:#f8fafc  brd:#e2e8f0  r12  row pad[14,14,14,14] ja:space_between al:center
+          - left  322x34  row gap12 al:center
+            - icon-container  28x28  bg:#ffffff  r14  row ja:center al:center
+              - luggage  14x14
+                - Vector  VECTOR  9x11  brd:#203da3
+            - texts  282x34  col gap2
+              - Baggage Allowance  TEXT  "Baggage Allowance"  119x15  11px/600 lh14.6  bg:#64748b
+              - 1x 23kg Checked bag included  TEXT  "1x 23kg Checked bag included"  189x17  13px/700 lh17.3  bg:#0f172a
+      - Line  LINE  350x0  brd:#e2e8f0
+      - dismiss-cta  350x48  bg:#203da3  r12  row pad[14,0,14,0] ja:center
+        - Got it  TEXT  "Got it"  38x20  15px/700 lh20  bg:#ffffff
+
+## 17-1510 — triply-accommodations-search (390x886, bg #0f172a)
+
+- triply-accommodations-search  390x886  bg:#0f172a  col ja:space_between
+  - scroll-content  390x797  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - header  390x59  row pad[12,20,12,20] ja:space_between al:center
+      - brand  TEXT  "Triply"  65x35  26px/800 lh34.6  bg:#ffffff
+      - currency-toggle  126x28  bg:#131c2e  brd:#243249  r20  row gap4 pad[6,12,6,12] al:center
+        - USD  TEXT  "USD"  24x16  12px/700 lh16  bg:#cdff9b
+        - / NGN / EUR  TEXT  " / NGN / EUR"  74x16  12px/400 lh16  bg:#94a3b8
+    - search-container  390x377  col pad[12,20,12,20]
+      - search-card  350x353  bg:#131c2e  brd:#243249  r16  col gap16 pad[18,18,18,18]
+        - Book Accommodations  TEXT  "Book Accommodations"  314x24  18px/800 lh23.9  bg:#ffffff
+        - input-field  314x60  bg:#1e293b  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+          - icon-frame  20x20
+            - Map pin  INSTANCE  15x16
+              - Icon  VECTOR  11x15  brd:#1e1e1e
+          - field-text  258x36  col gap2
+            - Destination  TEXT  "Destination"  258x15  11px/500 lh14.6  bg:#94a3b8
+            - London, UK  TEXT  "London, UK"  258x19  14px/600 lh18.6  bg:#ffffff
+        - input-field  314x60  bg:#1e293b  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+          - icon-frame  20x20
+            - Calendar  INSTANCE  15x16
+              - Icon  VECTOR  11x13  brd:#1e1e1e
+          - field-text  258x36  col gap2
+            - Check-in / Check-out  TEXT  "Check-in / Check-out"  258x15  11px/500 lh14.6  bg:#94a3b8
+            - 24 Oct - 08 Nov 2026  TEXT  "24 Oct - 08 Nov 2026"  258x19  14px/600 lh18.6  bg:#ffffff
+        - input-field  314x60  bg:#1e293b  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+          - icon-frame  20x20
+            - Users  INSTANCE  15x16
+              - Icon  VECTOR  13x12  brd:#1e1e1e
+          - field-text  258x36  col gap2
+            - Guests & Rooms  TEXT  "Guests & Rooms"  258x15  11px/500 lh14.6  bg:#94a3b8
+            - 2 Adults, 1 Room  TEXT  "2 Adults, 1 Room"  258x19  14px/600 lh18.6  bg:#ffffff
+        - search-cta  314x49  bg:#203da3  brd:#cdff9b  r12  row pad[14,0,14,0] ja:center al:center
+          - Search Stays  TEXT  "Search Stays"  95x21  16px/700 lh21.3  bg:#cdff9b
+    - filter-section  390x49  row gap8 pad[4,20,12,20] al:center
+      - filter-pill  54x33  bg:#cdff9b  brd:#243249  r20  row pad[8,12,8,12] al:center
+        - Price  TEXT  "Price"  30x17  13px/600 lh17.3  bg:#203da3
+      - filter-pill  63x33  bg:#131c2e  brd:#243249  r20  row pad[8,12,8,12] al:center
+        - Rating  TEXT  "Rating"  39x17  13px/600 lh17.3  bg:#f8fafc
+      - filter-pill  83x33  bg:#131c2e  brd:#243249  r20  row pad[8,12,8,12] al:center
+        - Amenities  TEXT  "Amenities"  59x17  13px/600 lh17.3  bg:#f8fafc
+      - filter-pill  98x33  bg:#131c2e  brd:#243249  r20  row pad[8,12,8,12] al:center
+        - Instant Book  TEXT  "Instant Book"  74x17  13px/600 lh17.3  bg:#f8fafc
+    - popular-section  390x268  col gap12 pad[12,20,20,20]
+      - Trending Stays  TEXT  "Trending Stays"  350x21  16px/700 lh21.3  bg:#ffffff
+      - popular-carousel  350x203  row gap12
+        - dest-0  160x203  bg:#131c2e  brd:#243249  r12  col gap8 pad[12,12,12,12]
+          - dest-img  RECTANGLE  136x100  bg:img:f3581fe00b1c9cc4856838e86b43195bd19b6928  r8
+          - dest-info  136x71  col gap2
+            - Kensington Grand  TEXT  "Kensington Grand"  136x19  14px/700 lh18.6  bg:#ffffff
+            - Frame  71x16  row gap4 al:center
+              - star_filled  INSTANCE  12x12
+                - icon  VECTOR  10x9  bg:#1d1b20
+              - 4.8 (124)  TEXT  "4.8 (124)"  55x16  12px/400 lh16  bg:#94a3b8
+            - $120/night  TEXT  "$120/night"  136x17  13px/600 lh17.3  bg:#cdff9b
+            - 120 USDT  TEXT  "120 USDT"  136x13  10px/400 lh13.3  bg:#94a3b8
+        - dest-1  160x203  bg:#131c2e  brd:#243249  r12  col gap8 pad[12,12,12,12]
+          - dest-img  RECTANGLE  136x100  bg:img:d80f9e9d618deedf066cbf843f74b15d4c81dff7  r8
+          - dest-info  136x71  col gap2
+            - The Soho House  TEXT  "The Soho House"  136x19  14px/700 lh18.6  bg:#ffffff
+            - Frame  63x16  row gap4 al:center
+              - star_filled  INSTANCE  12x12
+                - icon  VECTOR  10x9  bg:#1d1b20
+              - 4.9 (98)  TEXT  "4.9 (98)"  47x16  12px/400 lh16  bg:#94a3b8
+            - $195/night  TEXT  "$195/night"  136x17  13px/600 lh17.3  bg:#cdff9b
+            - 195 USDT  TEXT  "195 USDT"  136x13  10px/400 lh13.3  bg:#94a3b8
+  - bottom-tab-bar  390x89  col
+    - tabs  390x64  bg:#131c2e  brd:#243249  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#94a3b8
+        - label-Home  TEXT  "Home"  28x13  10px/600 lh13.3  bg:#94a3b8
+      - tab-Explore  64x39  col gap4 al:center
+        - compass  22x22
+          - Vector  VECTOR  18x18  brd:#cdff9b
+        - label-Explore  TEXT  "Explore"  34x13  10px/600 lh13.3  bg:#cdff9b
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmark  22x22
+          - Vector  VECTOR  12x16  brd:#94a3b8
+        - label-Bookmarks  TEXT  "Bookmarks"  52x13  10px/400 lh13.3  bg:#94a3b8
+      - tab-Profile  64x39  col gap4 al:center
+        - user  22x22
+          - Vector  VECTOR  12x16  brd:#94a3b8
+        - label-Profile  TEXT  "Profile"  29x13  10px/400 lh13.3  bg:#94a3b8
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 17-1600 — triply-accommodation-details (390x1015, bg #0f172a)
+
+- triply-accommodation-details  390x1015  bg:#0f172a  col ja:space_between
+  - scroll-content  390x864  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - results-header  390x63  bg:#131c2e  brd:#243249  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#1e293b  r16  row ja:center al:center
+        - arrow-left  16x16
+          - arrow_left  INSTANCE  9x9
+            - icon  VECTOR  1x3  bg:#1d1b20
+      - header-text  306x39  col gap2
+        - The Kensington Grand  TEXT  "The Kensington Grand"  306x21  16px/700 lh21.3  bg:#ffffff
+        - London, UK • Guest Rating 4.8  TEXT  "London, UK • Guest Rating 4.8"  306x16  12px/400 lh16  bg:#94a3b8
+    - hotel-hero  RECTANGLE  390x200  bg:img:d44aa7f3775adad7be8277c1f25c5a87f6956c9a
+    - details-content  390x557  col gap16 pad[20,20,20,20]
+      - title-ratings  350x52  col gap4
+        - The Kensington Grand  TEXT  "The Kensington Grand"  350x29  22px/800 lh29.3  bg:#ffffff
+        - Frame  286x19  row gap8 al:center
+          - star_filled  INSTANCE  14x14
+            - icon  VECTOR  11x11  bg:#1d1b20
+          - 4.8 (124 reviews)  TEXT  "4.8 (124 reviews)"  116x19  14px/400 lh18.6  bg:#f8fafc
+          - •  TEXT  "•"  5x19  14px/400 lh18.6  bg:#94a3b8
+          - Kensington, London  TEXT  "Kensington, London"  127x19  14px/600 lh18.6  bg:#cdff9b
+      - specs-row  350x64  row gap8
+        - spec-item  91x28  bg:#1e293b  brd:#243249  r8  row gap6 pad[6,10,6,10] al:center
+          - wifi  INSTANCE  14x14
+            - icon  VECTOR  14x9  bg:#1d1b20
+          - Free WiFi  TEXT  "Free WiFi"  51x16  12px/500 lh16  bg:#f8fafc
+        - spec-item  102x28  bg:#1e293b  brd:#243249  r8  row gap6 pad[6,10,6,10] al:center
+          - Droplet  INSTANCE  14x14
+            - Icon  VECTOR  9x11  brd:#1e1e1e
+          - Indoor Pool  TEXT  "Indoor Pool"  62x16  12px/500 lh16  bg:#f8fafc
+        - spec-item  108x28  bg:#1e293b  brd:#243249  r8  row gap6 pad[6,10,6,10] al:center
+          - dumbbell  14x14
+            - Vector  VECTOR  11x11  brd:#cdff9b
+          - Fitness Gym  TEXT  "Fitness Gym"  68x16  12px/500 lh16  bg:#f8fafc
+        - spec-item  82x28  bg:#1e293b  brd:#243249  r8  row gap6 pad[6,10,6,10] al:center
+          - car  14x14
+            - Vector  VECTOR  11x7  brd:#cdff9b
+          - Parking  TEXT  "Parking"  42x16  12px/500 lh16  bg:#f8fafc
+      - Line  LINE  350x0  brd:#243249
+      - room-types  350x213  col gap12
+        - Select Room Type  TEXT  "Select Room Type"  350x21  16px/700 lh21.3  bg:#ffffff
+        - Frame  350x84  bg:#131c2e  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+          - Rectangle  RECTANGLE  60x60  bg:img:1208b840abc70d2dc541df473c908ade00b48f6d  r8
+          - Frame  200x37  col gap2
+            - Standard Double Room  TEXT  "Standard Double Room"  200x19  14px/700 lh18.6  bg:#ffffff
+            - Max 2 Guests • 1 Double Bed  TEXT  "Max 2 Guests • 1 Double Bed"  200x16  12px/400 lh16  bg:#94a3b8
+          - Frame  42x34  col al:max
+            - $120  TEXT  "$120"  42x21  16px/800 lh21.3  bg:#cdff9b
+            - /night  TEXT  "/night"  28x13  10px/400 lh13.3  bg:#94a3b8
+        - Frame  350x84  bg:#131c2e  brd:#cdff9b  r12  row gap12 pad[12,12,12,12] al:center
+          - Rectangle  RECTANGLE  60x60  bg:img:035ad6fb4acffd2ced22e67b3fab84320c21c2b7  r8
+          - Frame  200x37  col gap2
+            - Deluxe King Suite  TEXT  "Deluxe King Suite"  200x19  14px/700 lh18.6  bg:#ffffff
+            - Max 3 Guests • 1 King Bed  TEXT  "Max 3 Guests • 1 King Bed"  200x16  12px/500 lh16  bg:#cdff9b
+          - Frame  42x34  col al:max
+            - $220  TEXT  "$220"  42x21  16px/800 lh21.3  bg:#cdff9b
+            - /night  TEXT  "/night"  28x13  10px/400 lh13.3  bg:#94a3b8
+      - Line  LINE  350x0  brd:#243249
+      - reviews-snippet  350x108  col gap8
+        - Guest Reviews  TEXT  "Guest Reviews"  350x19  14px/700 lh18.6  bg:#ffffff
+        - Frame  350x81  bg:#1e293b  r8  col gap8 pad[12,12,12,12]
+          - Amelia E.  TEXT  "Amelia E."  326x17  13px/700 lh17.3  bg:#ffffff
+          - "Beautiful room, impeccable service!securing my reservation on-chain was seamless."  TEXT  ""Beautiful room, impeccable service!securing my reservation on-chain was seamless.""  326x32  12px/400 lh16  bg:#f8fafc
+  - sticky-checkout-bar  390x151  bg:#131c2e  brd:#243249  col gap12 pad[12,20,0,20]
+    - summary-text-row  350x45  row ja:space_between al:center
+      - Frame  70x45  col gap2
+        - Total Price  TEXT  "Total Price"  70x16  12px/400 lh16  bg:#94a3b8
+        - $1,100  TEXT  "$1,100"  70x27  20px/800 lh26.6  bg:#ffffff
+      - usdt-pill  84x24  bg:#203da3  r4  row pad[4,8,4,8]
+        - 1,100 USDT  TEXT  "1,100 USDT"  68x16  12px/700 lh16  bg:#cdff9b
+    - search-cta  350x49  bg:#203da3  brd:#cdff9b  r12  row pad[14,0,14,0] ja:center al:center
+      - Book Now  TEXT  "Book Now"  75x21  16px/700 lh21.3  bg:#cdff9b
+    - home-indicator-container  350x21  row pad[8,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 17-1677 — triply-accommodation-confirmed (390x893, bg #0f172a)
+
+- triply-accommodation-confirmed  390x893  bg:#0f172a  col ja:space_between
+  - scroll-content  390x804  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - results-header  390x63  bg:#131c2e  brd:#243249  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#1e293b  r16  row ja:center al:center
+        - arrow-left  16x16
+          - arrow_left  INSTANCE  9x9
+            - icon  VECTOR  1x3  bg:#1d1b20
+      - header-text  306x39  col gap2
+        - Stay Confirmed  TEXT  "Stay Confirmed"  306x21  16px/700 lh21.3  bg:#ffffff
+        - RZ-STAY-82479  TEXT  "RZ-STAY-82479"  306x16  12px/400 lh16  bg:#94a3b8
+    - ticket-container  390x697  col gap16 pad[20,20,20,20]
+      - badge-header  350x74  bg:#10b981  brd:#10b981  r12  row gap12 pad[16,16,16,16] al:center
+        - success-badge  32x32  bg:#10b981  r16  row ja:center al:center
+          - check-circle  16x16
+            - check  13x13
+              - Vector  VECTOR  8x6  brd:#090d1a
+        - banner-text  274x42  col gap2
+          - Stay Confirmed!  TEXT  "Stay Confirmed!"  274x24  18px/800 lh23.9  bg:#ffffff
+          - Securely recorded on Arbitrum chain  TEXT  "Securely recorded on Arbitrum chain"  274x16  12px/400 lh16  bg:#94a3b8
+      - boarding-pass  350x457  bg:#131c2e  brd:#243249  r16  col
+        - airline-bar  350x56  bg:#090d1a  row pad[16,16,16,16] ja:space_between al:center
+          - airline  176x24  row gap8 al:center
+            - Ellipse  ELLIPSE  24x24  bg:#1e293b  brd:#243249
+            - The Kensington Grand  TEXT  "The Kensington Grand"  144x19  14px/700 lh18.6  bg:#ffffff
+          - HTL-KG7842  TEXT  "HTL-KG7842"  75x16  12px/600 lh16  bg:#94a3b8
+        - pass-pnr-row  350x64  row pad[16,16,8,16] ja:space_between
+          - passenger  102x39  col gap4
+            - Guest  TEXT  "Guest"  102x15  11px/500 lh14.6  bg:#94a3b8
+            - Amelia Earhart  TEXT  "Amelia Earhart"  102x20  15px/700 lh20  bg:#ffffff
+          - pnr  99x40  col gap4 al:max
+            - Reference  TEXT  "Reference"  99x15  11px/500 lh14.6  bg:#94a3b8
+            - HTL-KG7842  TEXT  "HTL-KG7842"  99x21  16px/800 lh21.3  bg:#cdff9b
+        - route-row  350x56  row pad[8,16,8,16] ja:space_between al:center
+          - dep  93x40  col
+            - Jan 15  TEXT  "Jan 15"  93x24  18px/800 lh23.9  bg:#ffffff
+            - Check-In (3 PM)  TEXT  "Check-In (3 PM)"  93x16  12px/400 lh16  bg:#94a3b8
+          - graphic  113x25  col gap4 al:center
+            - 5 Nights Stay  TEXT  "5 Nights Stay"  69x15  11px/400 lh14.6  bg:#94a3b8
+            - line-visual  100x6  row gap4 al:center
+              - Ellipse  ELLIPSE  6x6  bg:#cdff9b
+              - Line  LINE  80x0  brd:#243249
+              - Ellipse  ELLIPSE  6x6  bg:#94a3b8
+          - arr  112x40  col al:max
+            - Jan 20  TEXT  "Jan 20"  112x24  18px/800 lh23.9  bg:#ffffff
+            - Check-Out (11 AM)  TEXT  "Check-Out (11 AM)"  112x16  12px/400 lh16  bg:#94a3b8
+        - specs-grid  350x56  row pad[8,16,16,16] ja:space_between
+          - spec-item  104x32  col gap2
+            - Room Type  TEXT  "Room Type"  104x13  10px/400 lh13.3  bg:#94a3b8
+            - Deluxe King Suite  TEXT  "Deluxe King Suite"  104x17  13px/700 lh17.3  bg:#ffffff
+          - spec-item  73x32  col gap2 al:max
+            - Total Paid  TEXT  "Total Paid"  73x13  10px/400 lh13.3  bg:#94a3b8
+            - 1,100 USDT  TEXT  "1,100 USDT"  73x17  13px/700 lh17.3  bg:#cdff9b
+        - address-box  350x48  bg:#1e293b  row pad[16,16,16,16]
+          - Address: 150 Piccadilly, London W1J 9BR  TEXT  "Address: 150 Piccadilly, London W1J 9BR"  318x16  12px/400 lh16  bg:#f8fafc
+        - perforation-row  350x0  row gap4 al:center
+          - Ellipse  ELLIPSE  12x12  bg:#0f172a
+          - Line  LINE  350x0  brd:#243249
+          - Ellipse  ELLIPSE  12x12  bg:#0f172a
+        - barcode-section  350x177  bg:#090d1a  col gap12 pad[20,20,20,20] al:center
+          - qr-placeholder  110x110  r8  row pad[6,6,6,6] ja:center al:center
+            - Rectangle  RECTANGLE  98x98  bg:img:a2ffd41ff61cb2f01f1619269e064ab3aa87220a
+          - Scan at front desk for seamless check-in  TEXT  "Scan at front desk for seamless check-in"  310x15  11px/600 lh14.6  bg:#94a3b8
+      - action-pills  350x94  col gap8
+        - pills-row  350x43  row gap8
+          - pill-btn  171x43  bg:#131c2e  brd:#243249  r12  row pad[12,12,12,12] ja:center al:center
+            - Add to Calendar  TEXT  "Add to Calendar"  105x19  14px/700 lh18.6  bg:#ffffff
+          - pill-btn  171x43  bg:#131c2e  brd:#243249  r12  row pad[12,12,12,12] ja:center al:center
+            - Get Directions  TEXT  "Get Directions"  91x19  14px/700 lh18.6  bg:#ffffff
+        - share-btn  350x43  bg:#203da3  brd:#cdff9b  r12  row pad[12,12,12,12] ja:center al:center
+          - Share Booking  TEXT  "Share Booking"  93x19  14px/700 lh18.6  bg:#cdff9b
+  - bottom-tab-bar  390x89  col
+    - tabs  390x64  bg:#131c2e  brd:#243249  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#94a3b8
+        - label-Home  TEXT  "Home"  28x13  10px/600 lh13.3  bg:#94a3b8
+      - tab-Explore  64x39  col gap4 al:center
+        - compass  22x22
+          - Vector  VECTOR  18x18  brd:#94a3b8
+        - label-Explore  TEXT  "Explore"  34x13  10px/400 lh13.3  bg:#94a3b8
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmark  22x22
+          - Vector  VECTOR  12x16  brd:#cdff9b
+        - label-Bookmarks  TEXT  "Bookmarks"  52x13  10px/600 lh13.3  bg:#cdff9b
+      - tab-Profile  64x39  col gap4 al:center
+        - user  22x22
+          - Vector  VECTOR  12x16  brd:#94a3b8
+        - label-Profile  TEXT  "Profile"  29x13  10px/400 lh13.3  bg:#94a3b8
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 17-1775 — triply-car-rental-search (390x863, bg #0f172a)
+
+- triply-car-rental-search  390x863  bg:#0f172a  col ja:space_between
+  - scroll-content  390x774  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - header  390x59  row pad[12,20,12,20] ja:space_between al:center
+      - brand  TEXT  "Triply"  65x35  26px/800 lh34.6  bg:#ffffff
+      - currency-toggle  126x28  bg:#131c2e  brd:#243249  r20  row gap4 pad[6,12,6,12] al:center
+        - USD  TEXT  "USD"  24x16  12px/700 lh16  bg:#cdff9b
+        - / NGN / EUR  TEXT  " / NGN / EUR"  74x16  12px/400 lh16  bg:#94a3b8
+    - search-container  390x377  col pad[12,20,12,20]
+      - search-card  350x353  bg:#131c2e  brd:#243249  r16  col gap16 pad[18,18,18,18]
+        - Rent a Car  TEXT  "Rent a Car"  314x24  18px/800 lh23.9  bg:#ffffff
+        - input-field  314x60  bg:#1e293b  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+          - icon-frame  20x20
+            - Map pin  INSTANCE  15x16
+              - Icon  VECTOR  11x15  brd:#1e1e1e
+          - field-text  258x36  col gap2
+            - Pickup Location  TEXT  "Pickup Location"  258x15  11px/500 lh14.6  bg:#94a3b8
+            - London Heathrow (LHR)  TEXT  "London Heathrow (LHR)"  258x19  14px/600 lh18.6  bg:#ffffff
+        - input-field  314x60  bg:#1e293b  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+          - icon-frame  20x20
+            - Calendar  INSTANCE  15x16
+              - Icon  VECTOR  11x13  brd:#1e1e1e
+          - field-text  258x36  col gap2
+            - Pickup / Return Date & Time  TEXT  "Pickup / Return Date & Time"  258x15  11px/500 lh14.6  bg:#94a3b8
+            - Jan 15, 10:30 - Jan 20, 15:00  TEXT  "Jan 15, 10:30 - Jan 20, 15:00"  258x19  14px/600 lh18.6  bg:#ffffff
+        - input-field  314x60  bg:#1e293b  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+          - icon-frame  20x20
+            - Users  INSTANCE  15x16
+              - Icon  VECTOR  13x12  brd:#1e1e1e
+          - field-text  258x36  col gap2
+            - Driver's Age  TEXT  "Driver's Age"  258x15  11px/500 lh14.6  bg:#94a3b8
+            - 25+ Years  TEXT  "25+ Years"  258x19  14px/600 lh18.6  bg:#ffffff
+        - search-cta  314x49  bg:#203da3  brd:#cdff9b  r12  row pad[14,0,14,0] ja:center al:center
+          - Search Cars  TEXT  "Search Cars"  89x21  16px/700 lh21.3  bg:#cdff9b
+    - filter-section  390x49  row gap8 pad[4,20,12,20] al:center
+      - filter-pill  85x33  bg:#cdff9b  brd:#243249  r20  row pad[8,12,8,12] al:center
+        - Automatic  TEXT  "Automatic"  61x17  13px/600 lh17.3  bg:#203da3
+      - filter-pill  67x33  bg:#131c2e  brd:#243249  r20  row pad[8,12,8,12] al:center
+        - Manual  TEXT  "Manual"  43x17  13px/600 lh17.3  bg:#f8fafc
+      - filter-pill  50x33  bg:#131c2e  brd:#243249  r20  row pad[8,12,8,12] al:center
+        - SUV  TEXT  "SUV"  26x17  13px/600 lh17.3  bg:#f8fafc
+      - filter-pill  68x33  bg:#131c2e  brd:#243249  r20  row pad[8,12,8,12] al:center
+        - Electric  TEXT  "Electric"  44x17  13px/600 lh17.3  bg:#f8fafc
+    - popular-section  390x245  col gap12 pad[12,20,20,20]
+      - Popular Rentals  TEXT  "Popular Rentals"  350x21  16px/700 lh21.3  bg:#ffffff
+      - car-list  350x180  col gap12
+        - Frame  350x84  bg:#131c2e  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+          - Rectangle  RECTANGLE  80x60  bg:img:5ae75a8af8686b81eda1bd146052573b1eee7753  r8
+          - Frame  165x56  col gap2
+            - Kia Picanto  TEXT  "Kia Picanto"  165x19  14px/700 lh18.6  bg:#ffffff
+            - Compact • Automatic  TEXT  "Compact • Automatic"  165x16  12px/400 lh16  bg:#94a3b8
+            - $19 / day  TEXT  "$19 / day"  165x17  13px/600 lh17.3  bg:#cdff9b
+          - Frame  57x19  col al:max
+            - 19 USDT  TEXT  "19 USDT"  57x19  14px/700 lh18.6  bg:#cdff9b
+        - Frame  350x84  bg:#131c2e  brd:#243249  r12  row gap12 pad[12,12,12,12] al:center
+          - Rectangle  RECTANGLE  80x60  bg:img:79a9c34ae0d287dc2518473dc27f5b04f16bab67  r8
+          - Frame  165x56  col gap2
+            - Tesla Model 3  TEXT  "Tesla Model 3"  165x19  14px/700 lh18.6  bg:#ffffff
+            - Electric • Autopilot  TEXT  "Electric • Autopilot"  165x16  12px/400 lh16  bg:#94a3b8
+            - $89 / day  TEXT  "$89 / day"  165x17  13px/600 lh17.3  bg:#cdff9b
+          - Frame  57x19  col al:max
+            - 89 USDT  TEXT  "89 USDT"  57x19  14px/700 lh18.6  bg:#cdff9b
+  - bottom-tab-bar  390x89  col
+    - tabs  390x64  bg:#131c2e  brd:#243249  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#cdff9b
+        - label-Home  TEXT  "Home"  28x13  10px/600 lh13.3  bg:#cdff9b
+      - tab-Explore  64x39  col gap4 al:center
+        - compass  22x22
+          - Vector  VECTOR  18x18  brd:#94a3b8
+        - label-Explore  TEXT  "Explore"  34x13  10px/400 lh13.3  bg:#94a3b8
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmark  22x22
+          - Vector  VECTOR  12x16  brd:#94a3b8
+        - label-Bookmarks  TEXT  "Bookmarks"  52x13  10px/400 lh13.3  bg:#94a3b8
+      - tab-Profile  64x39  col gap4 al:center
+        - user  22x22
+          - Vector  VECTOR  12x16  brd:#94a3b8
+        - label-Profile  TEXT  "Profile"  29x13  10px/400 lh13.3  bg:#94a3b8
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 17-1863 — triply-car-rental-details (390x961, bg #0f172a)
+
+- triply-car-rental-details  390x961  bg:#0f172a  col ja:space_between
+  - scroll-content  390x810  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - results-header  390x63  bg:#131c2e  brd:#243249  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#1e293b  r16  row ja:center al:center
+        - arrow-left  16x16
+          - arrow_left  INSTANCE  9x9
+            - icon  VECTOR  1x3  bg:#1d1b20
+      - header-text  306x39  col gap2
+        - Kia Picanto  TEXT  "Kia Picanto"  306x21  16px/700 lh21.3  bg:#ffffff
+        - Compact • Automatic Transmission  TEXT  "Compact • Automatic Transmission"  306x16  12px/400 lh16  bg:#94a3b8
+    - car-hero  RECTANGLE  390x180  bg:img:95e4c8023941942d19e6f1e40d6289f43dea51a5
+    - car-detail-content  390x523  col gap16 pad[20,20,20,20]
+      - Frame  350x29  row ja:space_between al:center
+        - Kia Picanto  TEXT  "Kia Picanto"  112x29  22px/800 lh29.3  bg:#ffffff
+        - badge  63x23  bg:#1e293b  r6  row pad[4,8,4,8]
+          - Compact  TEXT  "Compact"  47x15  11px/700 lh14.6  bg:#cdff9b
+      - specs-row  350x64  row gap8
+        - spec-item  115x28  bg:#1e293b  brd:#243249  r8  row gap6 pad[6,10,6,10] al:center
+          - Users  INSTANCE  14x14
+            - Icon  VECTOR  12x10  brd:#1e1e1e
+          - 5 Passengers  TEXT  "5 Passengers"  75x16  12px/500 lh16  bg:#f8fafc
+        - spec-item  96x28  bg:#1e293b  brd:#243249  r8  row gap6 pad[6,10,6,10] al:center
+          - sliders-horizontal  14x14
+            - Vector  VECTOR  10x10  brd:#cdff9b
+          - Automatic  TEXT  "Automatic"  56x16  12px/500 lh16  bg:#f8fafc
+        - spec-item  71x28  bg:#1e293b  brd:#243249  r8  row gap6 pad[6,10,6,10] al:center
+          - fuel  14x14
+            - Vector  VECTOR  11x10  brd:#cdff9b
+          - Petrol  TEXT  "Petrol"  31x16  12px/500 lh16  bg:#f8fafc
+        - spec-item  62x28  bg:#1e293b  brd:#243249  r8  row gap6 pad[6,10,6,10] al:center
+          - Airplay  INSTANCE  14x14
+            - Icon  VECTOR  11x10  brd:#1e1e1e
+          - A/C  TEXT  "A/C"  22x16  12px/500 lh16  bg:#f8fafc
+      - Line  LINE  350x0  brd:#243249
+      - Frame  350x184  col gap12
+        - Pickup & Dropoff Details  TEXT  "Pickup & Dropoff Details"  350x19  14px/700 lh18.6  bg:#ffffff
+        - Frame  350x80  bg:#131c2e  brd:#243249  r12  col gap4 pad[12,12,12,12]
+          - PICKUP: Heathrow LHR Terminal 5  TEXT  "PICKUP: Heathrow LHR Terminal 5"  326x16  12px/700 lh16  bg:#cdff9b
+          - Jan 15, 10:30 AM  TEXT  "Jan 15, 10:30 AM"  326x17  13px/400 lh17.3  bg:#ffffff
+          - Open: 08:00 - 20:00  TEXT  "Open: 08:00 - 20:00"  326x15  11px/400 lh14.6  bg:#94a3b8
+        - Frame  350x61  bg:#131c2e  brd:#243249  r12  col gap4 pad[12,12,12,12]
+          - RETURN: Heathrow LHR Terminal 5  TEXT  "RETURN: Heathrow LHR Terminal 5"  326x16  12px/700 lh16  bg:#cdff9b
+          - Jan 20, 03:00 PM  TEXT  "Jan 20, 03:00 PM"  326x17  13px/400 lh17.3  bg:#ffffff
+      - Line  LINE  350x0  brd:#243249
+      - Frame  350x94  col gap8
+        - Price Breakdown  TEXT  "Price Breakdown"  350x19  14px/700 lh18.6  bg:#ffffff
+        - Frame  350x17  row ja:space_between
+          - 5 days Rental ($19.04/day)  TEXT  "5 days Rental ($19.04/day)"  167x17  13px/400 lh17.3  bg:#94a3b8
+          - $95.22  TEXT  "$95.22"  46x17  13px/400 lh17.3  bg:#ffffff
+        - Frame  350x17  row ja:space_between
+          - Basic Collision Cover  TEXT  "Basic Collision Cover"  123x17  13px/400 lh17.3  bg:#94a3b8
+          - $5.00  TEXT  "$5.00"  37x17  13px/400 lh17.3  bg:#ffffff
+        - Frame  350x17  row ja:space_between
+          - Local Airport Taxes  TEXT  "Local Airport Taxes"  114x17  13px/400 lh17.3  bg:#94a3b8
+          - $1.12  TEXT  "$1.12"  37x17  13px/400 lh17.3  bg:#ffffff
+      - Frame  350x16  row gap8 al:center
+        - Ellipse  ELLIPSE  8x8  bg:#10b981
+        - Free cancellation up to 24 hours before pickup  TEXT  "Free cancellation up to 24 hours before pickup"  334x16  12px/400 lh16  bg:#f8fafc
+  - sticky-checkout-bar  390x151  bg:#131c2e  brd:#243249  col gap12 pad[12,20,0,20]
+    - summary-text-row  350x45  row ja:space_between al:center
+      - Frame  83x45  col gap2
+        - Total Price  TEXT  "Total Price"  83x16  12px/400 lh16  bg:#94a3b8
+        - $101.34  TEXT  "$101.34"  83x27  20px/800 lh26.6  bg:#ffffff
+      - usdt-pill  73x24  bg:#203da3  r4  row pad[4,8,4,8]
+        - 101 USDT  TEXT  "101 USDT"  57x16  12px/700 lh16  bg:#cdff9b
+    - search-cta  350x49  bg:#203da3  brd:#cdff9b  r12  row pad[14,0,14,0] ja:center al:center
+      - Book This Car  TEXT  "Book This Car"  103x21  16px/700 lh21.3  bg:#cdff9b
+    - home-indicator-container  350x21  row pad[8,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 17-1937 — triply-car-rental-confirmed (390x908, bg #0f172a)
+
+- triply-car-rental-confirmed  390x908  bg:#0f172a  col ja:space_between
+  - scroll-content  390x819  col
+    - status-bar  390x44  row pad[0,24,0,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#f8fafc
+      - status-icons  80x18  row gap8
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#f8fafc
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#f8fafc
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#f8fafc
+    - results-header  390x63  bg:#131c2e  brd:#243249  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#1e293b  r16  row ja:center al:center
+        - arrow-left  16x16
+          - arrow_left  INSTANCE  9x9
+            - icon  VECTOR  1x3  bg:#1d1b20
+      - header-text  306x39  col gap2
+        - Rental Confirmed  TEXT  "Rental Confirmed"  306x21  16px/700 lh21.3  bg:#ffffff
+        - RZ-CAR-01294  TEXT  "RZ-CAR-01294"  306x16  12px/400 lh16  bg:#94a3b8
+    - ticket-container  390x712  col gap16 pad[20,20,20,20]
+      - badge-header  350x74  bg:#10b981  brd:#10b981  r12  row gap12 pad[16,16,16,16] al:center
+        - success-badge  32x32  bg:#10b981  r16  row ja:center al:center
+          - check-circle  16x16
+            - check  13x13
+              - Vector  VECTOR  8x6  brd:#090d1a
+        - banner-text  274x42  col gap2
+          - Car Rental Confirmed!  TEXT  "Car Rental Confirmed!"  274x24  18px/800 lh23.9  bg:#ffffff
+          - Your reservation is mint-verified on-chain  TEXT  "Your reservation is mint-verified on-chain"  274x16  12px/400 lh16  bg:#94a3b8
+      - boarding-pass  350x472  bg:#131c2e  brd:#243249  r16  col
+        - airline-bar  350x56  bg:#090d1a  row pad[16,16,16,16] ja:space_between al:center
+          - airline  103x24  row gap8 al:center
+            - Ellipse  ELLIPSE  24x24  bg:#1e293b  brd:#243249
+            - Kia Picanto  TEXT  "Kia Picanto"  71x19  14px/700 lh18.6  bg:#ffffff
+          - DTD-ABC123  TEXT  "DTD-ABC123"  76x16  12px/600 lh16  bg:#94a3b8
+        - pass-pnr-row  350x64  row pad[16,16,8,16] ja:space_between
+          - passenger  102x39  col gap4
+            - Lead Driver  TEXT  "Lead Driver"  102x15  11px/500 lh14.6  bg:#94a3b8
+            - Amelia Earhart  TEXT  "Amelia Earhart"  102x20  15px/700 lh20  bg:#ffffff
+          - pnr  101x40  col gap4 al:max
+            - Booking Ref  TEXT  "Booking Ref"  101x15  11px/500 lh14.6  bg:#94a3b8
+            - DTD-ABC123  TEXT  "DTD-ABC123"  101x21  16px/800 lh21.3  bg:#cdff9b
+        - route-row  350x55  row pad[8,16,8,16] ja:space_between al:center
+          - dep  97x39  col
+            - Jan 15  TEXT  "Jan 15"  97x24  18px/800 lh23.9  bg:#ffffff
+            - Pickup (10:30 AM)  TEXT  "Pickup (10:30 AM)"  97x15  11px/400 lh14.6  bg:#94a3b8
+          - graphic  125x25  col gap4 al:center
+            - 5 Days Rental  TEXT  "5 Days Rental"  70x15  11px/400 lh14.6  bg:#94a3b8
+            - line-visual  100x6  row gap4 al:center
+              - Ellipse  ELLIPSE  6x6  bg:#cdff9b
+              - Line  LINE  80x0  brd:#243249
+              - Ellipse  ELLIPSE  6x6  bg:#94a3b8
+          - arr  96x39  col al:max
+            - Jan 20  TEXT  "Jan 20"  96x24  18px/800 lh23.9  bg:#ffffff
+            - Return (03:00 PM)  TEXT  "Return (03:00 PM)"  96x15  11px/400 lh14.6  bg:#94a3b8
+        - specs-grid  350x56  row pad[8,16,16,16] ja:space_between
+          - spec-item  95x32  col gap2
+            - Category  TEXT  "Category"  95x13  10px/400 lh13.3  bg:#94a3b8
+            - Compact • Auto  TEXT  "Compact • Auto"  95x17  13px/700 lh17.3  bg:#ffffff
+          - spec-item  67x32  col gap2 al:max
+            - Amount Paid  TEXT  "Amount Paid"  67x13  10px/400 lh13.3  bg:#94a3b8
+            - 101 USDT  TEXT  "101 USDT"  67x17  13px/700 lh17.3  bg:#cdff9b
+        - address-box  350x64  bg:#1e293b  row pad[16,16,16,16]
+          - Pickup Location: Heathrow Airport (LHR) Terminal 5 Counter  TEXT  "Pickup Location: Heathrow Airport (LHR) Terminal 5 Counter"  318x32  12px/400 lh16  bg:#f8fafc
+        - perforation-row  350x0  row gap4 al:center
+          - Ellipse  ELLIPSE  12x12  bg:#0f172a
+          - Line  LINE  350x0  brd:#243249
+          - Ellipse  ELLIPSE  12x12  bg:#0f172a
+        - barcode-section  350x177  bg:#090d1a  col gap12 pad[20,20,20,20] al:center
+          - qr-placeholder  110x110  r8  row pad[6,6,6,6] ja:center al:center
+            - Rectangle  RECTANGLE  98x98  bg:img:67b5b9ccba5c2b31833b72d80cade3605e8a69f8
+          - Scan at kiosk for key collection  TEXT  "Scan at kiosk for key collection"  310x15  11px/600 lh14.6  bg:#94a3b8
+      - action-pills  350x94  col gap8
+        - pills-row  350x43  row gap8
+          - pill-btn  171x43  bg:#131c2e  brd:#243249  r12  row pad[12,12,12,12] ja:center al:center
+            - Add to Calendar  TEXT  "Add to Calendar"  105x19  14px/700 lh18.6  bg:#ffffff
+          - pill-btn  171x43  bg:#131c2e  brd:#243249  r12  row pad[12,12,12,12] ja:center al:center
+            - Get Directions  TEXT  "Get Directions"  91x19  14px/700 lh18.6  bg:#ffffff
+        - share-btn  350x43  bg:#203da3  brd:#cdff9b  r12  row pad[12,12,12,12] ja:center al:center
+          - Contact Supplier  TEXT  "Contact Supplier"  107x19  14px/700 lh18.6  bg:#cdff9b
+  - bottom-tab-bar  390x89  col
+    - tabs  390x64  bg:#131c2e  brd:#243249  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#94a3b8
+        - label-Home  TEXT  "Home"  28x13  10px/600 lh13.3  bg:#94a3b8
+      - tab-Explore  64x39  col gap4 al:center
+        - compass  22x22
+          - Vector  VECTOR  18x18  brd:#94a3b8
+        - label-Explore  TEXT  "Explore"  34x13  10px/400 lh13.3  bg:#94a3b8
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmark  22x22
+          - Vector  VECTOR  12x16  brd:#cdff9b
+        - label-Bookmarks  TEXT  "Bookmarks"  52x13  10px/600 lh13.3  bg:#cdff9b
+      - tab-Profile  64x39  col gap4 al:center
+        - user  22x22
+          - Vector  VECTOR  12x16  brd:#94a3b8
+        - label-Profile  TEXT  "Profile"  29x13  10px/400 lh13.3  bg:#94a3b8
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#94a3b8  r100
+
+## 17-2734 — triply-light-accommodations-search (390x844, bg #f8fafc)
+
+- triply-light-accommodations-search  390x844  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x676  col
+    - status-bar  390x37  row pad[12,24,6,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8 al:center
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#0f172a
+    - header  390x59  row pad[12,20,12,20] ja:space_between al:center
+      - brand  TEXT  "Triply Stays"  137x35  26px/800 lh34.6  bg:#0f172a
+      - currency-toggle  95x28  bg:#f1f5f9  brd:#e2e8f0  r20  row gap4 pad[6,12,6,12] al:center
+        - USD  TEXT  "USD"  24x16  12px/700 lh16  bg:#203da3
+        - / USDT  TEXT  " / USDT"  43x16  12px/400 lh16  bg:#64748b
+    - search-container  390x258  col pad[6,20,12,20]
+      - search-card  350x240  bg:#ffffff  brd:#e2e8f0  r16  col gap16 pad[18,18,18,18]
+        - input-destination  314x63  col gap4
+          - Destination  TEXT  "Destination"  68x15  11px/600 lh14.6  bg:#64748b
+          - input-field  314x44  bg:#f1f5f9  brd:#e2e8f0  r12  row gap10 pad[12,12,12,12] al:center
+            - Map pin  INSTANCE  16x16
+              - Icon  VECTOR  12x14  brd:#1e1e1e
+            - London, United Kingdom  TEXT  "London, United Kingdom"  169x20  15px/700 lh20  bg:#0f172a
+        - row-dates-guests  314x60  row gap12
+          - input-dates  151x60  col gap4
+            - Dates  TEXT  "Dates"  33x15  11px/600 lh14.6  bg:#64748b
+            - input-field  151x41  bg:#f1f5f9  brd:#e2e8f0  r12  row gap8 pad[12,12,12,12] al:center
+              - Calendar  INSTANCE  14x14
+                - Icon  VECTOR  10x11  brd:#1e1e1e
+              - Jan 15 - Jan 20  TEXT  "Jan 15 - Jan 20"  96x17  13px/700 lh17.3  bg:#0f172a
+          - input-guests  151x60  col gap4
+            - Guests  TEXT  "Guests"  40x15  11px/600 lh14.6  bg:#64748b
+            - input-field  151x41  bg:#f1f5f9  brd:#e2e8f0  r12  row gap8 pad[12,12,12,12] al:center
+              - Users  INSTANCE  14x14
+                - Icon  VECTOR  12x10  brd:#1e1e1e
+              - 2 Adults, 1 Room  TEXT  "2 Adults, 1 Room"  104x17  13px/700 lh17.3  bg:#0f172a
+        - search-cta  314x49  bg:#203da3  r12  row pad[14,0,14,0] ja:center al:center
+          - Search Stays  TEXT  "Search Stays"  95x21  16px/700 lh21.3  bg:#ffffff
+    - filter-pills  390x48  row gap8 pad[4,20,12,20]
+      - pill-active  63x32  bg:#cdff9b  brd:#203da3  r20  row pad[8,14,8,14]
+        - Hotels  TEXT  "Hotels"  35x16  12px/700 lh16  bg:#203da3
+      - pill  93x32  bg:#ffffff  brd:#e2e8f0  r20  row pad[8,14,8,14]
+        - Apartments  TEXT  "Apartments"  65x16  12px/600 lh16  bg:#0f172a
+      - pill  89x32  bg:#ffffff  brd:#e2e8f0  r20  row pad[8,14,8,14]
+        - Spa Resort  TEXT  "Spa Resort"  61x16  12px/600 lh16  bg:#0f172a
+    - trending-section  390x274  col gap12 pad[12,20,20,20]
+      - Trending Stays in London  TEXT  "Trending Stays in London"  185x21  16px/700 lh21.3  bg:#0f172a
+      - stays-carousel  350x209  row gap12
+        - stay-card-0  164x209  bg:#ffffff  brd:#e2e8f0  r16  col gap10 pad[12,12,12,12]
+          - stay-img  RECTANGLE  140x100  bg:img:ee274d8b67ab5f4f5bcfbfc2e6ba503b214f3fa9  r10
+          - stay-info  140x75  col gap4
+            - The Kensington Grand  TEXT  "The Kensington Grand"  144x19  14px/800 lh18.6  bg:#0f172a
+            - rating  95x15  row gap4 al:center
+              - star  INSTANCE  12x12
+                - icon  VECTOR  10x9  bg:#1d1b20
+              - 4.8  TEXT  "4.8"  17x15  11px/600 lh14.6  bg:#334155
+              - London, UK  TEXT  "London, UK"  58x15  11px/400 lh14.6  bg:#64748b
+            - price-block  67x33  col gap1
+              - $120/night  TEXT  "$120/night"  67x19  14px/700 lh18.6  bg:#203da3
+              - 120 USDT  TEXT  "120 USDT"  48x13  10px/600 lh13.3  bg:#64748b
+        - stay-card-1  164x209  bg:#ffffff  brd:#e2e8f0  r16  col gap10 pad[12,12,12,12]
+          - stay-img  RECTANGLE  140x100  bg:img:990cdb616d583d518c61881f440ce0ac6fb6b65f  r10
+          - stay-info  140x75  col gap4
+            - Shoreditch Loft & Spa  TEXT  "Shoreditch Loft & Spa"  141x19  14px/800 lh18.6  bg:#0f172a
+            - rating  95x15  row gap4 al:center
+              - star  INSTANCE  12x12
+                - icon  VECTOR  10x9  bg:#1d1b20
+              - 4.9  TEXT  "4.9"  17x15  11px/600 lh14.6  bg:#334155
+              - London, UK  TEXT  "London, UK"  58x15  11px/400 lh14.6  bg:#64748b
+            - price-block  67x33  col gap1
+              - $180/night  TEXT  "$180/night"  67x19  14px/700 lh18.6  bg:#203da3
+              - 180 USDT  TEXT  "180 USDT"  48x13  10px/600 lh13.3  bg:#64748b
+  - bottom-tab-bar  390x89  bg:#ffffff  brd:#e2e8f0  col
+    - tabs  390x64  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#203da3
+        - label-Home  TEXT  "Home"  28x13  10px/600 lh13.3  bg:#203da3
+      - tab-Explore  64x39  col gap4 al:center
+        - navigation  22x22
+          - Vector  VECTOR  17x17  brd:#64748b
+        - label-Explore  TEXT  "Explore"  34x13  10px/500 lh13.3  bg:#64748b
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmark  22x22
+          - Vector  VECTOR  12x16  brd:#64748b
+        - label-Bookmarks  TEXT  "Saved"  28x13  10px/500 lh13.3  bg:#64748b
+      - tab-Profile  64x39  col gap4 al:center
+        - user  22x22
+          - Vector  VECTOR  12x16  brd:#64748b
+        - label-Profile  TEXT  "Profile"  29x13  10px/500 lh13.3  bg:#64748b
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-2816 — triply-light-accommodation-details (390x844, bg #f8fafc)
+
+- triply-light-accommodation-details  390x844  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x690  col
+    - status-bar  390x37  row pad[12,24,6,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8 al:center
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#0f172a
+    - sub-header  390x56  bg:#ffffff  brd:#e2e8f0  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#f1f5f9  r16  row ja:center al:center
+        - arrow_left  INSTANCE  16x16
+          - icon  VECTOR  3x6  bg:#1d1b20
+      - The Kensington Grand  TEXT  "The Kensington Grand"  306x24  18px/800 lh23.9  bg:#0f172a
+    - hero-container  390x204  row pad[12,20,12,20]
+      - hero-img  RECTANGLE  350x180  bg:img:361f31ac6f5dc29296a1d66c41366fe60126acb5  r16
+    - details-card  390x393  col gap16 pad[20,20,20,20]
+      - hotel-meta  350x59  col gap6
+        - rating-row  350x24  row ja:space_between al:center
+          - rating-pill  100x24  bg:#cdff9b  r6  row pad[4,8,4,8]
+            - 4.8 ★ Superior  TEXT  "4.8 ★ Superior"  84x16  12px/700 lh16  bg:#203da3
+          - London Kensington  TEXT  "London Kensington"  106x16  12px/400 lh16  bg:#64748b
+        - The Kensington Grand  TEXT  "The Kensington Grand"  225x29  22px/800 lh29.3  bg:#0f172a
+      - amenities-summary  350x40  bg:#ffffff  brd:#e2e8f0  r12  row pad[12,12,12,12] ja:space_between
+        - amenity-item  47x16  row gap6 al:center
+          - wifi  INSTANCE  16x16
+            - icon  VECTOR  16x11  bg:#1d1b20
+          - wifi  TEXT  "wifi"  25x16  12px/600 lh16  bg:#334155
+        - amenity-item  54x16  row gap6 al:center
+          - circle-x  16x16
+            - Vector  VECTOR  13x13  brd:#203da3
+          - pool  TEXT  "pool"  32x16  12px/600 lh16  bg:#334155
+        - amenity-item  82x16  row gap6 al:center
+          - dumbbell  16x16
+            - Vector  VECTOR  13x13  brd:#203da3
+          - dumbbell  TEXT  "dumbbell"  60x16  12px/600 lh16  bg:#334155
+        - amenity-item  46x16  row gap6 al:center
+          - car  16x16
+            - Vector  VECTOR  13x8  brd:#203da3
+          - car  TEXT  "car"  24x16  12px/600 lh16  bg:#334155
+      - rooms-section  350x222  col gap12
+        - Available Room Options  TEXT  "Available Room Options"  163x20  15px/700 lh20  bg:#0f172a
+        - room-card-1  350x89  bg:#ffffff  brd:#e2e8f0  r12  row gap12 pad[14,14,14,14] al:center
+          - room-info  286x61  col gap4
+            - Standard Queen Room  TEXT  "Standard Queen Room"  147x19  14px/700 lh18.6  bg:#0f172a
+            - 1 Queen Bed • City View • WiFi  TEXT  "1 Queen Bed • City View • WiFi"  157x15  11px/400 lh14.6  bg:#64748b
+            - $120 / night  TEXT  "$120 / night"  78x19  14px/700 lh18.6  bg:#203da3
+          - select-indicator  24x24  bg:#203da3  r12  row ja:center al:center
+            - check  14x14
+              - Vector  VECTOR  9x6  brd:#ffffff
+        - room-card-2  350x89  bg:#ffffff  brd:#e2e8f0  r12  row gap12 pad[14,14,14,14] al:center
+          - room-info  286x61  col gap4
+            - Deluxe King Suite  TEXT  "Deluxe King Suite"  112x19  14px/700 lh18.6  bg:#0f172a
+            - 1 King Bed • Bath & Spa • Balcony  TEXT  "1 King Bed • Bath & Spa • Balcony"  173x15  11px/400 lh14.6  bg:#64748b
+            - $220 / night  TEXT  "$220 / night"  78x19  14px/700 lh18.6  bg:#0f172a
+          - select-indicator-empty  24x24  brd:#e2e8f0  r12  row ja:center al:center
+  - sticky-checkout-bar  390x104  bg:#ffffff  brd:#e2e8f0  col gap12 pad[12,20,12,20]
+    - checkout-row  350x43  row ja:space_between al:center
+      - price-display  130x42  col
+        - Total (5 Nights)  TEXT  "Total (5 Nights)"  94x15  11px/600 lh14.6  bg:#64748b
+        - $600 / 600 USDT  TEXT  "$600 / 600 USDT"  130x27  20px/800 lh26.6  bg:#0f172a
+      - book-now-cta  113x43  bg:#203da3  r12  row pad[12,24,12,24]
+        - Book Now  TEXT  "Book Now"  65x19  14px/700 lh18.6  bg:#ffffff
+    - home-indicator-container  350x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-2875 — triply-light-accommodation-confirmed (390x844, bg #f8fafc)
+
+- triply-light-accommodation-confirmed  390x844  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x709  col
+    - status-bar  390x37  row pad[12,24,6,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8 al:center
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#0f172a
+    - confirmed-header  390x160  col gap12 pad[24,0,16,0] al:center
+      - check-badge  56x48  bg:#10b981  r24  row ja:center al:center
+        - check  24x24
+          - Vector  VECTOR  15x10  brd:#10b981
+      - Stay Confirmed!  TEXT  "Stay Confirmed!"  164x29  22px/800 lh29.3  bg:#0f172a
+      - Your e-ticket and check-in details are ready  TEXT  "Your e-ticket and check-in details are ready"  283x19  14px/400 lh18.6  bg:#64748b
+    - ticket-container  390x376  row pad[0,20,0,20]
+      - boarding-pass  350x376  bg:#ffffff  brd:#e2e8f0  r16  col
+        - pass-upper  350x190  col gap16 pad[18,18,18,18]
+          - hotel-title-row  314x34  row ja:space_between al:center
+            - hotel-logo  176x34  row gap8 al:center
+              - logo  ELLIPSE  24x24  bg:#f1f5f9  brd:#e2e8f0
+              - hotel-text  144x34  col
+                - The Kensington Grand  TEXT  "The Kensington Grand"  144x19  14px/800 lh18.6  bg:#0f172a
+                - HTL-KG7842  TEXT  "HTL-KG7842"  69x15  11px/400 lh14.6  bg:#64748b
+          - Line  LINE  314x0  brd:#e2e8f0
+          - guest-ref  314x38  row ja:space_between al:center
+            - guest  95x38  col gap4
+              - Primary Guest  TEXT  "Primary Guest"  84x15  11px/400 lh14.6  bg:#64748b
+              - Amelia Earhart  TEXT  "Amelia Earhart"  95x19  14px/700 lh18.6  bg:#0f172a
+            - ref  71x38  col gap4 al:max
+              - Booking Ref  TEXT  "Booking Ref"  71x15  11px/400 lh14.6  bg:#64748b
+              - RZPNX8  TEXT  "RZPNX8"  53x19  14px/800 lh18.6  bg:#203da3
+          - stay-details-grid  314x34  row ja:space_between al:center
+            - dates  96x34  col gap2
+              - Dates  TEXT  "Dates"  29x15  11px/400 lh14.6  bg:#64748b
+              - Jan 15 - Jan 20  TEXT  "Jan 15 - Jan 20"  96x17  13px/600 lh17.3  bg:#0f172a
+            - room  66x34  col gap2 al:center
+              - Room Type  TEXT  "Room Type"  57x15  11px/400 lh14.6  bg:#64748b
+              - Queen Bed  TEXT  "Queen Bed"  66x17  13px/600 lh17.3  bg:#0f172a
+            - guests  50x34  col gap2 al:max
+              - Guests  TEXT  "Guests"  35x15  11px/400 lh14.6  bg:#64748b
+              - 2 Adults  TEXT  "2 Adults"  50x17  13px/600 lh17.3  bg:#0f172a
+        - perforated-divider  350x0  row ja:space_between al:center
+          - Ellipse  ELLIPSE  16x16  bg:#f8fafc  brd:#e2e8f0
+          - Line  LINE  350x0  brd:#e2e8f0
+          - Ellipse  ELLIPSE  16x16  bg:#f8fafc  brd:#e2e8f0
+        - pass-lower  350x186  col gap14 pad[18,18,18,18] al:center
+          - qr-code  RECTANGLE  120x120  bg:img:da4560f52a6fa5c59cf2563bb7bfa5cdc4d257e3
+          - Show at front desk for seamless entry  TEXT  "Show at front desk for seamless entry"  210x16  12px/400 lh16  bg:#64748b
+    - action-pills  390x136  col gap10 pad[20,20,20,20]
+      - btn-calendar  350x43  bg:#203da3  r12  row pad[12,0,12,0] ja:center
+        - Add to Calendar  TEXT  "Add to Calendar"  105x19  14px/700 lh18.6  bg:#ffffff
+      - btn-directions  350x43  bg:#ffffff  brd:#e2e8f0  r12  row pad[12,0,12,0] ja:center
+        - Get Directions  TEXT  "Get Directions"  91x19  14px/600 lh18.6  bg:#0f172a
+  - bottom-tab-bar  390x89  bg:#ffffff  brd:#e2e8f0  col
+    - tabs  390x64  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#203da3
+        - label-Home  TEXT  "Home"  28x13  10px/600 lh13.3  bg:#203da3
+      - tab-Explore  64x39  col gap4 al:center
+        - navigation  22x22
+          - Vector  VECTOR  17x17  brd:#64748b
+        - label-Explore  TEXT  "Explore"  34x13  10px/500 lh13.3  bg:#64748b
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmark  22x22
+          - Vector  VECTOR  12x16  brd:#64748b
+        - label-Bookmarks  TEXT  "Saved"  28x13  10px/500 lh13.3  bg:#64748b
+      - tab-Profile  64x39  col gap4 al:center
+        - user  22x22
+          - Vector  VECTOR  12x16  brd:#64748b
+        - label-Profile  TEXT  "Profile"  29x13  10px/500 lh13.3  bg:#64748b
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-2944 — triply-light-car-rental-search (390x844, bg #f8fafc)
+
+- triply-light-car-rental-search  390x844  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x676  col
+    - status-bar  390x37  row pad[12,24,6,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8 al:center
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#0f172a
+    - header  390x59  row pad[12,20,12,20] ja:space_between al:center
+      - brand  TEXT  "Triply Cars"  127x35  26px/800 lh34.6  bg:#0f172a
+      - currency-toggle  95x28  bg:#f1f5f9  brd:#e2e8f0  r20  row gap4 pad[6,12,6,12] al:center
+        - USD  TEXT  "USD"  24x16  12px/700 lh16  bg:#203da3
+        - / USDT  TEXT  " / USDT"  43x16  12px/400 lh16  bg:#64748b
+    - search-container  390x258  col pad[6,20,12,20]
+      - search-card  350x240  bg:#ffffff  brd:#e2e8f0  r16  col gap16 pad[18,18,18,18]
+        - input-pickup  314x63  col gap4
+          - Pickup Location  TEXT  "Pickup Location"  93x15  11px/600 lh14.6  bg:#64748b
+          - input-field  314x44  bg:#f1f5f9  brd:#e2e8f0  r12  row gap10 pad[12,12,12,12] al:center
+            - car  16x16
+              - Vector  VECTOR  13x8  brd:#203da3
+            - London Heathrow (LHR)  TEXT  "London Heathrow (LHR)"  165x20  15px/700 lh20  bg:#0f172a
+        - dates-times  314x60  row gap12
+          - input-pickup-time  151x60  col gap4
+            - Pickup Date  TEXT  "Pickup Date"  67x15  11px/600 lh14.6  bg:#64748b
+            - input-field  151x41  bg:#f1f5f9  brd:#e2e8f0  r12  row gap8 pad[12,12,12,12] al:center
+              - Jan 15, 10:30  TEXT  "Jan 15, 10:30"  85x17  13px/700 lh17.3  bg:#0f172a
+          - input-dropoff-time  151x60  col gap4
+            - Dropoff Date  TEXT  "Dropoff Date"  79x15  11px/600 lh14.6  bg:#64748b
+            - input-field  151x41  bg:#f1f5f9  brd:#e2e8f0  r12  row gap8 pad[12,12,12,12] al:center
+              - Jan 20, 15:00  TEXT  "Jan 20, 15:00"  85x17  13px/700 lh17.3  bg:#0f172a
+        - search-cta  314x49  bg:#203da3  r12  row pad[14,0,14,0] ja:center al:center
+          - Search Cars  TEXT  "Search Cars"  89x21  16px/700 lh21.3  bg:#ffffff
+    - filter-pills  390x48  row gap8 pad[4,20,12,20]
+      - pill-active  79x32  bg:#cdff9b  brd:#203da3  r20  row pad[8,14,8,14]
+        - Compact  TEXT  "Compact"  51x16  12px/700 lh16  bg:#203da3
+      - pill  52x32  bg:#ffffff  brd:#e2e8f0  r20  row pad[8,14,8,14]
+        - SUV  TEXT  "SUV"  24x16  12px/600 lh16  bg:#0f172a
+      - pill  69x32  bg:#ffffff  brd:#e2e8f0  r20  row pad[8,14,8,14]
+        - Electric  TEXT  "Electric"  41x16  12px/600 lh16  bg:#0f172a
+    - trending-section  390x274  col gap12 pad[12,20,20,20]
+      - Popular Car Rentals  TEXT  "Popular Car Rentals"  145x21  16px/700 lh21.3  bg:#0f172a
+      - stays-carousel  350x209  row gap12
+        - car-card-0  164x209  bg:#ffffff  brd:#e2e8f0  r16  col gap10 pad[12,12,12,12]
+          - stay-img  RECTANGLE  140x100  bg:img:297db95c1bf1701c4a8b87313c7192cbbfc30c1b  r10
+          - stay-info  140x75  col gap4
+            - Kia Picanto  TEXT  "Kia Picanto"  71x19  14px/800 lh18.6  bg:#0f172a
+            - rating  84x15  row gap4 al:center
+              - star  INSTANCE  12x12
+                - icon  VECTOR  10x9  bg:#1d1b20
+              - 4.7  TEXT  "4.7"  17x15  11px/600 lh14.6  bg:#334155
+              - Compact  TEXT  "Compact"  47x15  11px/400 lh14.6  bg:#64748b
+            - price-block  50x33  col gap1
+              - $19/day  TEXT  "$19/day"  50x19  14px/700 lh18.6  bg:#203da3
+              - 19 USDT  TEXT  "19 USDT"  41x13  10px/600 lh13.3  bg:#64748b
+        - car-card-1  164x209  bg:#ffffff  brd:#e2e8f0  r16  col gap10 pad[12,12,12,12]
+          - stay-img  RECTANGLE  140x100  bg:img:73f61f73ac862e89dd4529a6fa4aad4eda824ee5  r10
+          - stay-info  140x75  col gap4
+            - Tesla Model Y  TEXT  "Tesla Model Y"  89x19  14px/800 lh18.6  bg:#0f172a
+            - rating  74x15  row gap4 al:center
+              - star  INSTANCE  12x12
+                - icon  VECTOR  10x9  bg:#1d1b20
+              - 4.9  TEXT  "4.9"  17x15  11px/600 lh14.6  bg:#334155
+              - Electric  TEXT  "Electric"  37x15  11px/400 lh14.6  bg:#64748b
+            - price-block  50x33  col gap1
+              - $59/day  TEXT  "$59/day"  50x19  14px/700 lh18.6  bg:#203da3
+              - 59 USDT  TEXT  "59 USDT"  41x13  10px/600 lh13.3  bg:#64748b
+  - bottom-tab-bar  390x89  bg:#ffffff  brd:#e2e8f0  col
+    - tabs  390x64  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#203da3
+        - label-Home  TEXT  "Home"  28x13  10px/600 lh13.3  bg:#203da3
+      - tab-Explore  64x39  col gap4 al:center
+        - navigation  22x22
+          - Vector  VECTOR  17x17  brd:#64748b
+        - label-Explore  TEXT  "Explore"  34x13  10px/500 lh13.3  bg:#64748b
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmark  22x22
+          - Vector  VECTOR  12x16  brd:#64748b
+        - label-Bookmarks  TEXT  "Saved"  28x13  10px/500 lh13.3  bg:#64748b
+      - tab-Profile  64x39  col gap4 al:center
+        - user  22x22
+          - Vector  VECTOR  12x16  brd:#64748b
+        - label-Profile  TEXT  "Profile"  29x13  10px/500 lh13.3  bg:#64748b
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-3024 — triply-light-car-rental-details (390x844, bg #f8fafc)
+
+- triply-light-car-rental-details  390x844  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x617  col
+    - status-bar  390x37  row pad[12,24,6,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8 al:center
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#0f172a
+    - sub-header  390x56  bg:#ffffff  brd:#e2e8f0  row gap12 pad[12,20,12,20] al:center
+      - back-btn  32x32  bg:#f1f5f9  r16  row ja:center al:center
+        - arrow_left  INSTANCE  16x16
+          - icon  VECTOR  3x6  bg:#1d1b20
+      - Kia Picanto details  TEXT  "Kia Picanto details"  306x24  18px/800 lh23.9  bg:#0f172a
+    - hero-container  390x204  row pad[12,20,12,20]
+      - hero-img  RECTANGLE  350x180  bg:img:0efba7da13e5d29cc86bcb97f4bcd51e6ca07240  r16
+    - details-card  390x320  col gap16 pad[20,20,20,20]
+      - hotel-meta  350x59  col gap6
+        - rating-row  350x24  row ja:space_between al:center
+          - rating-pill  100x24  bg:#cdff9b  r6  row pad[4,8,4,8]
+            - Compact Class  TEXT  "Compact Class"  84x16  12px/700 lh16  bg:#203da3
+          - Sixt Rental London  TEXT  "Sixt Rental London"  104x16  12px/400 lh16  bg:#64748b
+        - Kia Picanto or similar  TEXT  "Kia Picanto or similar"  212x29  22px/800 lh29.3  bg:#0f172a
+      - specs-grid  350x40  bg:#ffffff  brd:#e2e8f0  r12  row pad[12,12,12,12] ja:space_between
+        - spec-item  60x16  row gap4 al:center
+          - Users  INSTANCE  14x14
+            - Icon  VECTOR  12x10  brd:#1e1e1e
+          - 5 Seats  TEXT  "5 Seats"  42x16  12px/600 lh16  bg:#334155
+        - spec-item  44x16  row gap4 al:center
+          - cog  14x14
+            - Vector  VECTOR  11x11  brd:#203da3
+          - Auto  TEXT  "Auto"  26x16  12px/600 lh16  bg:#334155
+        - spec-item  49x16  row gap4 al:center
+          - Droplet  INSTANCE  14x14
+            - Icon  VECTOR  9x11  brd:#1e1e1e
+          - Petrol  TEXT  "Petrol"  31x16  12px/600 lh16  bg:#334155
+        - spec-item  40x16  row gap4 al:center
+          - Thermometer  INSTANCE  14x14
+            - Icon  VECTOR  5x12  brd:#1e1e1e
+          - A/C  TEXT  "A/C"  22x16  12px/600 lh16  bg:#334155
+      - price-breakdown-card  350x149  bg:#ffffff  brd:#e2e8f0  r12  col gap12 pad[16,16,16,16]
+        - Price Breakdown  TEXT  "Price Breakdown"  107x19  14px/700 lh18.6  bg:#0f172a
+        - breakdown-row  318x17  row ja:space_between
+          - Base Rental (5 Days)  TEXT  "Base Rental (5 Days)"  124x17  13px/400 lh17.3  bg:#334155
+          - $95.22  TEXT  "$95.22"  46x17  13px/600 lh17.3  bg:#0f172a
+        - breakdown-row  318x17  row ja:space_between
+          - Full Insurance  TEXT  "Full Insurance"  81x17  13px/400 lh17.3  bg:#334155
+          - $5.00  TEXT  "$5.00"  37x17  13px/600 lh17.3  bg:#0f172a
+        - Line  LINE  318x0  brd:#e2e8f0
+        - free-cancellation  318x16  row gap6 al:center
+          - Ellipse  ELLIPSE  6x6  bg:#10b981
+          - Free Cancellation up to 24h before  TEXT  "Free Cancellation up to 24h before"  191x16  12px/600 lh16  bg:#10b981
+  - sticky-checkout-bar  390x104  bg:#ffffff  brd:#e2e8f0  col gap12 pad[12,20,12,20]
+    - checkout-row  350x43  row ja:space_between al:center
+      - price-display  161x42  col
+        - Est. Total Paid  TEXT  "Est. Total Paid"  83x15  11px/600 lh14.6  bg:#64748b
+        - $101.34 / 101 USDT  TEXT  "$101.34 / 101 USDT"  161x27  20px/800 lh26.6  bg:#0f172a
+      - book-now-cta  138x43  bg:#203da3  r12  row pad[12,24,12,24]
+        - Book This Car  TEXT  "Book This Car"  90x19  14px/700 lh18.6  bg:#ffffff
+    - home-indicator-container  350x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
+
+## 17-3080 — triply-light-car-rental-confirmed (390x844, bg #f8fafc)
+
+- triply-light-car-rental-confirmed  390x844  bg:#f8fafc  col ja:space_between
+  - scroll-content  390x709  col
+    - status-bar  390x37  row pad[12,24,6,24] ja:space_between al:center
+      - time  TEXT  "9:41"  31x19  14px/600 lh18.6  bg:#0f172a
+      - status-icons  80x18  row gap8 al:center
+        - ios-signal  18x18
+          - Vector  VECTOR  17x11  bg:#0f172a
+        - ios-wifi-signal  18x18
+          - Vector  VECTOR  15x11  bg:#0f172a
+        - ios-battery-full  28x18
+          - Vector  VECTOR  27x11  bg:#0f172a
+    - confirmed-header  390x160  col gap12 pad[24,0,16,0] al:center
+      - check-badge  56x48  bg:#10b981  r24  row ja:center al:center
+        - check  24x24
+          - Vector  VECTOR  15x10  brd:#10b981
+      - Car Rental Confirmed!  TEXT  "Car Rental Confirmed!"  225x29  22px/800 lh29.3  bg:#0f172a
+      - Your reservation ref and pickup instructions  TEXT  "Your reservation ref and pickup instructions"  278x19  14px/400 lh18.6  bg:#64748b
+    - ticket-container  390x376  row pad[0,20,0,20]
+      - boarding-pass  350x376  bg:#ffffff  brd:#e2e8f0  r16  col
+        - pass-upper  350x190  col gap16 pad[18,18,18,18]
+          - hotel-title-row  314x34  row ja:space_between al:center
+            - hotel-logo  167x34  row gap8 al:center
+              - logo  ELLIPSE  24x24  bg:#f1f5f9  brd:#e2e8f0
+              - hotel-text  135x34  col
+                - Kia Picanto or similar  TEXT  "Kia Picanto or similar"  135x19  14px/800 lh18.6  bg:#0f172a
+                - DTD-ABC123  TEXT  "DTD-ABC123"  70x15  11px/400 lh14.6  bg:#64748b
+          - Line  LINE  314x0  brd:#e2e8f0
+          - guest-ref  314x38  row ja:space_between al:center
+            - guest  95x38  col gap4
+              - Primary Driver  TEXT  "Primary Driver"  88x15  11px/400 lh14.6  bg:#64748b
+              - Amelia Earhart  TEXT  "Amelia Earhart"  95x19  14px/700 lh18.6  bg:#0f172a
+            - ref  66x38  col gap4 al:max
+              - Total Price  TEXT  "Total Price"  66x15  11px/400 lh14.6  bg:#64748b
+              - $101.34  TEXT  "$101.34"  58x19  14px/800 lh18.6  bg:#203da3
+          - stay-details-grid  314x34  row ja:space_between al:center
+            - dates  85x34  col gap2
+              - Pickup  TEXT  "Pickup"  33x15  11px/400 lh14.6  bg:#64748b
+              - Jan 15, 10:30  TEXT  "Jan 15, 10:30"  85x17  13px/600 lh17.3  bg:#0f172a
+            - room  70x34  col gap2 al:center
+              - Location  TEXT  "Location"  43x15  11px/400 lh14.6  bg:#64748b
+              - LHR Desk 4  TEXT  "LHR Desk 4"  70x17  13px/600 lh17.3  bg:#0f172a
+            - guests  87x34  col gap2 al:max
+              - Category  TEXT  "Category"  47x15  11px/400 lh14.6  bg:#64748b
+              - Compact Auto  TEXT  "Compact Auto"  87x17  13px/600 lh17.3  bg:#0f172a
+        - perforated-divider  350x0  row ja:space_between al:center
+          - Ellipse  ELLIPSE  16x16  bg:#f8fafc  brd:#e2e8f0
+          - Line  LINE  350x0  brd:#e2e8f0
+          - Ellipse  ELLIPSE  16x16  bg:#f8fafc  brd:#e2e8f0
+        - pass-lower  350x186  col gap14 pad[18,18,18,18] al:center
+          - qr-code  RECTANGLE  120x120  bg:img:2126b7aa79c268722d2c74ad457c3d8b265c36c1
+          - Scan at terminal counter for key collection  TEXT  "Scan at terminal counter for key collection"  234x16  12px/400 lh16  bg:#64748b
+    - action-pills  390x136  col gap10 pad[20,20,20,20]
+      - btn-calendar  350x43  bg:#203da3  r12  row pad[12,0,12,0] ja:center
+        - Add to Calendar  TEXT  "Add to Calendar"  105x19  14px/700 lh18.6  bg:#ffffff
+      - btn-directions  350x43  bg:#ffffff  brd:#e2e8f0  r12  row pad[12,0,12,0] ja:center
+        - Pickup Map  TEXT  "Pickup Map"  75x19  14px/600 lh18.6  bg:#0f172a
+  - bottom-tab-bar  390x89  bg:#ffffff  brd:#e2e8f0  col
+    - tabs  390x64  row pad[0,24,0,24] ja:space_between al:center
+      - tab-Home  64x39  col gap4 al:center
+        - home  22x22
+          - Vector  VECTOR  16x17  brd:#203da3
+        - label-Home  TEXT  "Home"  28x13  10px/600 lh13.3  bg:#203da3
+      - tab-Explore  64x39  col gap4 al:center
+        - navigation  22x22
+          - Vector  VECTOR  17x17  brd:#64748b
+        - label-Explore  TEXT  "Explore"  34x13  10px/500 lh13.3  bg:#64748b
+      - tab-Bookmarks  64x39  col gap4 al:center
+        - bookmark  22x22
+          - Vector  VECTOR  12x16  brd:#64748b
+        - label-Bookmarks  TEXT  "Saved"  28x13  10px/500 lh13.3  bg:#64748b
+      - tab-Profile  64x39  col gap4 al:center
+        - user  22x22
+          - Vector  VECTOR  12x16  brd:#64748b
+        - label-Profile  TEXT  "Profile"  29x13  10px/500 lh13.3  bg:#64748b
+    - home-indicator-container  390x25  row pad[12,0,8,0] ja:center
+      - indicator  RECTANGLE  134x5  bg:#64748b  r100
