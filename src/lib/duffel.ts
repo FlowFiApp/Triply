@@ -609,7 +609,31 @@ export async function geocode(query: string): Promise<{
   longitude: number;
   name: string;
 } | null> {
+  const googleKey = process.env.GOOGLE_MAPS_API_KEY;
   try {
+    if (googleKey) {
+      const res = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          query,
+        )}&key=${googleKey}`,
+      );
+      if (!res.ok) return null;
+      const json = (await res.json()) as {
+        status: string;
+        results: Array<{
+          geometry: { location: { lat: number; lng: number } };
+          formatted_address: string;
+        }>;
+      };
+      if (json.status !== "OK" || !json.results?.length) return null;
+      const loc = json.results[0].geometry.location;
+      return {
+        latitude: loc.lat,
+        longitude: loc.lng,
+        name: json.results[0].formatted_address,
+      };
+    }
+    // Fallback only when the Google key is not configured.
     const res = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(
         query,

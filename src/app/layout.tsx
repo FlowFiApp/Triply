@@ -7,6 +7,7 @@ import { WalletProvider } from "@/lib/wallet-state";
 import { PointsProvider } from "@/lib/points";
 import { OfflineBanner } from "@/components/ui/feedback";
 import OnboardingGate from "@/components/OnboardingGate";
+import ConfigBanner from "@/components/ConfigBanner";
 import PageTransition from "@/components/PageTransition";
 import "./globals.css";
 
@@ -30,6 +31,7 @@ export default function RootLayout({
               <WalletProvider>
                 <PointsProvider>
                   <OnboardingGate />
+                  <ConfigBanner />
                   <OfflineBanner />
                   <PageTransition>{children}</PageTransition>
                 </PointsProvider>

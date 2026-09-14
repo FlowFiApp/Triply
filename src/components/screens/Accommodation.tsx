@@ -29,9 +29,7 @@ import DateRangePicker, {
   formatDateLabel,
 } from "@/components/ui/date-range-picker";
 import ImageCarousel from "@/components/ui/image-carousel";
-import SuggestionsCombobox, {
-  type StaySuggestion,
-} from "@/components/ui/suggestions-combobox";
+import PlacesCombobox, { type PlaceSelection } from "@/components/ui/places-combobox";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { getStoredIdentity } from "@/lib/identity";

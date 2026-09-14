@@ -20,15 +20,17 @@ export default function GoogleMap({
   query,
   zoom = 14,
   className = "h-44 w-full",
+  markers,
 }: {
   center: LatLng;
   query: string;
   zoom?: number;
   className?: string;
+  markers?: LatLng[];
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
-  const markerRef = useRef<google.maps.Marker | null>(null);
+  const markerRefs = useRef<google.maps.Marker[]>([]);
   const { theme } = useTheme();
   const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const [status, setStatus] = useState<Status>(key ? "loading" : "fallback");
@@ -46,14 +48,7 @@ export default function GoogleMap({
           zoomControl: true,
           styles: theme === "dark" ? DARK_MAP_STYLES : LIGHT_MAP_STYLES,
         });
-        const marker = new google.maps.Marker({
-          position: center,
-          map,
-          title: query,
-          icon: makeMarkerIcon(),
-        });
         mapRef.current = map;
-        markerRef.current = marker;
         setStatus("ready");
       })
       .catch(() => {
@@ -65,13 +60,23 @@ export default function GoogleMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
-  // Re-center when the target location changes.
+  const points = markers && markers.length ? markers : [center];
+
   useEffect(() => {
-    if (!mapRef.current || !markerRef.current) return;
-    mapRef.current.panTo(center);
+    if (!mapRef.current) return;
+    markerRefs.current.forEach((m) => m.setMap(null));
+    markerRefs.current = [];
+    for (const p of points) {
+      const marker = new google.maps.Marker({
+        position: p,
+        map: mapRef.current,
+        icon: makeMarkerIcon(),
+      });
+      markerRefs.current.push(marker);
+    }
+    mapRef.current.panTo(points[0]);
     mapRef.current.setZoom(zoom);
-    markerRef.current.setPosition(center);
-  }, [center, zoom]);
+  }, [points[0].lat, points[0].lng, points.length, zoom]);
 
   // Re-style the map when the theme changes.
   useEffect(() => {

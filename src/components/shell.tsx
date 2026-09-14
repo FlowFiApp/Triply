@@ -15,7 +15,7 @@ import { useI18n } from "@/lib/i18n";
 export function MobileShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen w-full bg-card-2/40 dark:bg-black flex justify-center">
-      <div className="relative w-full max-w-[390px] min-h-screen bg-background shadow-2xl">
+      <div className="relative w-full max-w-[768px] min-h-screen bg-background shadow-2xl">
         {children}
       </div>
     </div>

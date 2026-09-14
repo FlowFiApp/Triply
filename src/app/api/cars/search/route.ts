@@ -28,6 +28,8 @@ pickup: r.pickup_location?.name ?? "",
     dropoffTime: r.dropoff_time ?? "",
     pickupLatitude: Number(r.pickup_location?.geographic_coordinates?.latitude ?? 0),
     pickupLongitude: Number(r.pickup_location?.geographic_coordinates?.longitude ?? 0),
+    dropoffLatitude: Number(r.dropoff_location?.geographic_coordinates?.latitude ?? 0),
+    dropoffLongitude: Number(r.dropoff_location?.geographic_coordinates?.longitude ?? 0),
   };
 }
 

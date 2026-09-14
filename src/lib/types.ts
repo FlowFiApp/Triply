@@ -98,6 +98,8 @@ export type CarOffer = {
   dropoffTime: string;
   pickupLatitude: number;
   pickupLongitude: number;
+  dropoffLatitude: number;
+  dropoffLongitude: number;
 };
 
 export type StayBooking = {
