@@ -38,13 +38,15 @@ function normalizeStay(b: any) {
 
 export async function GET() {
   try {
-    const [orders, stayBookings] = await Promise.all([
+    const [ordersRes, stayRes] = await Promise.allSettled([
       listOrders(),
       listStayBookings(),
     ]);
+    const orders = ordersRes.status === "fulfilled" ? ordersRes.value : [];
+    const stays = stayRes.status === "fulfilled" ? stayRes.value : [];
     const bookings = [
       ...(orders ?? []).map(normalizeOrder),
-      ...(stayBookings ?? []).map(normalizeStay),
+      ...(stays ?? []).map(normalizeStay),
     ];
     return Response.json({ bookings, live: true });
   } catch (err) {

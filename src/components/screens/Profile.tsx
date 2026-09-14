@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   BedDouble,
@@ -17,6 +18,9 @@ import {
 } from "@/components/shell";
 import { useTheme } from "@/lib/theme";
 import { useWalletState } from "@/lib/wallet-state";
+import { usePoints } from "@/lib/points";
+import { NimiqAmount } from "@/components/ui/Nimiq";
+import RedeemSheet from "@/components/screens/RedeemSheet";
 import { CHAINS } from "@/lib/wallet";
 
 function Row({
@@ -37,6 +41,8 @@ function Row({
 export default function Profile() {
   const { theme, setTheme } = useTheme();
   const { state, connect, disconnect } = useWalletState();
+  const { earned, available } = usePoints();
+  const [redeemOpen, setRedeemOpen] = useState(false);
   const short = state.address
     ? `${state.address.slice(0, 6)}…${state.address.slice(-4)}`
     : null;
@@ -102,6 +108,35 @@ export default function Profile() {
                 {state.connected ? "Disconnect" : "Connect"}
               </button>
             </Row>
+          </div>
+
+          <div className="flex flex-col gap-3 px-5 py-4">
+            <h2 className="text-[13px] font-bold uppercase tracking-wide text-muted">
+              Nimiq Points
+            </h2>
+            <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-semibold text-foreground">
+                  Points available
+                </span>
+                <span className="text-[18px] font-extrabold text-foreground">
+                  <NimiqAmount value={available} iconSize={18} />
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[12px] text-muted">Points earned</span>
+                <span className="text-[12px] font-semibold text-foreground">
+                  {earned.toLocaleString()} NIM
+                </span>
+              </div>
+              <button
+                onClick={() => setRedeemOpen(true)}
+                disabled={available <= 0}
+                className="tap flex h-11 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[14px] font-bold text-accent-2 disabled:opacity-50"
+              >
+                Redeem Points
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-col gap-3 px-5 py-4">
@@ -176,6 +211,8 @@ export default function Profile() {
 
         <BottomTabBar active="Profile" />
       </div>
+
+      <RedeemSheet open={redeemOpen} onClose={() => setRedeemOpen(false)} />
     </MobileShell>
   );
 }

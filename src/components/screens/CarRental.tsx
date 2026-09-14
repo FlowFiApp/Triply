@@ -30,6 +30,7 @@ import ImageCarousel from "@/components/ui/image-carousel";
 import DateRangePicker, { formatDateLabel } from "@/components/ui/date-range-picker";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
+import { usePoints } from "@/lib/points";
 import { share } from "@/lib/share";
 import { haptic } from "@/lib/haptics";
 import type { CarOffer, CarBooking } from "@/lib/types";
@@ -309,6 +310,7 @@ export function CarDetails() {
   const [car] = useState<CarOffer | null>(() => readFlow().car ?? null);
   const [booking, setBooking] = useState(false);
   const [error, setError] = useState("");
+  const { addPoints } = usePoints();
 
   if (!car) {
     return (
@@ -353,7 +355,8 @@ export function CarDetails() {
       });
       const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Booking failed");
-      writeFlow({ carBooking: d.booking as CarBooking });
+writeFlow({ carBooking: d.booking as CarBooking });
+      addPoints(Math.round(car.totalAmount));
       router.push("/car/confirmed");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Booking failed");

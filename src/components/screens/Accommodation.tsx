@@ -34,6 +34,7 @@ import SuggestionsCombobox, {
 } from "@/components/ui/suggestions-combobox";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
+import { usePoints } from "@/lib/points";
 import { share } from "@/lib/share";
 import { haptic } from "@/lib/haptics";
 import type { StayOffer, StayBooking } from "@/lib/types";
@@ -379,6 +380,7 @@ const [stay, setStay] = useState<StayOffer | null>(() => readFlow().stay ?? null
     { reviewer_name: string; score: number; text: string }[]
   >([]);
   const { toast } = useToast();
+  const { addPoints } = usePoints();
   const similar = (readFlow().stays ?? []).filter((s) => s.id !== stay?.id).slice(0, 6);
 
   useEffect(() => {
@@ -465,9 +467,10 @@ const [stay, setStay] = useState<StayOffer | null>(() => readFlow().stay ?? null
           },
         }),
       });
-      const d = await res.json();
+const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Booking failed");
       writeFlow({ stayBooking: d.booking as StayBooking });
+      addPoints(Math.round(stay.totalAmount));
       router.push("/stay/confirmed");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Booking failed";

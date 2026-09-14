@@ -8,6 +8,7 @@ import { MobileShell } from "@/components/shell";
 import { useQueryParam } from "@/lib/query";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
+import { usePoints } from "@/lib/points";
 import { CHAINS, type ChainId } from "@/lib/wallet";
 import type { OrderRecord } from "@/lib/types";
 
@@ -23,8 +24,9 @@ export default function Processing() {
   const [current, setCurrent] = useState<Step>("verify");
   const [sub, setSub] = useState("In Progress...");
   const [error, setError] = useState("");
-  const [booking, setBooking] = useState(false);
+const [booking, setBooking] = useState(false);
   const { toast } = useToast();
+  const { addPoints } = usePoints();
 
   useEffect(() => {
     const flow = readFlow();
@@ -72,7 +74,8 @@ export default function Processing() {
         if (!data.live) {
           throw new Error(data.error ?? "Duffel is not configured");
         }
-        writeFlow({ order: data.order as OrderRecord, txHash: tx, chain: chain.id });
+writeFlow({ order: data.order as OrderRecord, txHash: tx, chain: chain.id });
+        addPoints(Math.round(amount));
         toast("success", `Booking confirmed · ${data.order.bookingRef}`);
         router.push("/ticket");
       } catch (err) {
@@ -84,6 +87,7 @@ export default function Processing() {
     return () => {
       [...timers, bookingTimer].forEach(clearTimeout);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, amount, tx, chain.id, toast]);
 
   const stepIndex = ["verify", "settle", "issue"].indexOf(current);

@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/lib/theme";
 import { ToastProvider } from "@/lib/toast";
 import { I18nProvider } from "@/lib/i18n";
 import { WalletProvider } from "@/lib/wallet-state";
+import { PointsProvider } from "@/lib/points";
 import { OfflineBanner } from "@/components/ui/feedback";
 import OnboardingGate from "@/components/OnboardingGate";
 import PageTransition from "@/components/PageTransition";
@@ -27,9 +28,11 @@ export default function RootLayout({
           <I18nProvider>
             <ToastProvider>
               <WalletProvider>
-                <OnboardingGate />
-                <OfflineBanner />
-                <PageTransition>{children}</PageTransition>
+                <PointsProvider>
+                  <OnboardingGate />
+                  <OfflineBanner />
+                  <PageTransition>{children}</PageTransition>
+                </PointsProvider>
               </WalletProvider>
             </ToastProvider>
           </I18nProvider>
