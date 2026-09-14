@@ -18,7 +18,6 @@ type Step = "verify" | "settle" | "issue";
 export default function Processing() {
   const router = useRouter();
   const amount = Number(useQueryParam("amount", "0"));
-  const chainId = useQueryParam("chain", "polygon");
   const tx = useQueryParam("tx", "");
   const chain = CHAINS.polygon;
   const { state } = useWalletState();

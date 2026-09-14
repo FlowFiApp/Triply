@@ -1,5 +1,7 @@
 "use client";
 
+import { normalizeNimiqAddress } from "@/lib/nimiq";
+
 export type UserIdentity = {
   nimiqAddress?: string;
   evmAddress?: string;
@@ -13,7 +15,7 @@ export function getStoredIdentity(): UserIdentity {
   try {
     const wallet = JSON.parse(localStorage.getItem("triply-wallet") ?? "null");
     if (wallet && typeof wallet === "object") {
-      nimiqAddress = wallet.nimiqAddress;
+      nimiqAddress = normalizeNimiqAddress(wallet.nimiqAddress);
       evmAddress = wallet.evmAddress;
     }
   } catch {

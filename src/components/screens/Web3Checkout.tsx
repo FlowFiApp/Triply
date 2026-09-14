@@ -12,7 +12,7 @@ import { useQueryParam } from "@/lib/query";
 import { readFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { useWalletState } from "@/lib/wallet-state";
-import { CHAINS, type ChainId } from "@/lib/wallet";
+import { CHAINS } from "@/lib/wallet";
 import { clientConfig } from "@/lib/config";
 
 function BreakdownRow({
@@ -84,7 +84,6 @@ export default function Web3Checkout() {
   const [seconds, setSeconds] = useState(14 * 60 + 59);
   const { toast } = useToast();
   const { state, connect, disconnect, pay } = useWalletState();
-  const network: ChainId = "polygon";
   const treasuryOk = clientConfig().find(
     (c) => c.key === "NEXT_PUBLIC_TREASURY_WALLET_ADDRESS",
   )?.ok;

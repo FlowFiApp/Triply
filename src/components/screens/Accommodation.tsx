@@ -381,7 +381,6 @@ const [stay, setStay] = useState<StayOffer | null>(() => readFlow().stay ?? null
     { reviewer_name: string; score: number; text: string }[]
   >([]);
   const { toast } = useToast();
-  const { addPoints } = usePoints();
   const similar = (readFlow().stays ?? []).filter((s) => s.id !== stay?.id).slice(0, 6);
 
   useEffect(() => {
@@ -472,7 +471,6 @@ const res = await fetch("/api/stays/book", {
 const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Booking failed");
       writeFlow({ stayBooking: d.booking as StayBooking });
-      addPoints(Math.round(stay.totalAmount));
       router.push("/stay/confirmed");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Booking failed";

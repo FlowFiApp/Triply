@@ -48,7 +48,8 @@ export function PointsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    refresh();
+    const id = setTimeout(() => void refresh(), 0);
+    return () => clearTimeout(id);
   }, [refresh]);
 
   const redeem = useCallback(

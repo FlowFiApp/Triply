@@ -23,16 +23,16 @@ export async function POST(request: Request) {
       try {
         txHash = await sendNimReward({ recipient, amountNim: amount });
         status = "sent";
-      } catch (err) {
+      } catch {
         // ledger stays pending; client is told it will be paid out when funded/configured
         status = "pending";
       }
     }
 
     return Response.json({ ok: true, amount, txHash, status });
-  } catch (err) {
+} catch {
     return Response.json(
-      { ok: false, error: err instanceof Error ? err.message : "Redeem failed" },
+      { ok: false, error: "Redeem failed. Please try again." },
       { status: 500 },
     );
   }

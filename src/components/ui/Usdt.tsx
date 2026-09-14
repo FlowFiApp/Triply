@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { formatAmount } from "@/lib/nimiq";
 
 export function UsdtIcon({
   size = 14,
@@ -32,7 +33,7 @@ export function UsdtAmount({
 }) {
   return (
     <span className={`inline-flex items-center gap-1 ${className}`}>
-      {value.toFixed(2)}
+      {formatAmount(value, 2)}
       <UsdtIcon size={iconSize} />
     </span>
   );

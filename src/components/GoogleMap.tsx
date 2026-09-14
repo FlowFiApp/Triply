@@ -61,6 +61,7 @@ export default function GoogleMap({
   }, [key]);
 
   const points = markers && markers.length ? markers : [center];
+  const markerKey = `${points.length}:${points[0]?.lat ?? 0}:${points[0]?.lng ?? 0}`;
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -76,7 +77,8 @@ export default function GoogleMap({
     }
     mapRef.current.panTo(points[0]);
     mapRef.current.setZoom(zoom);
-  }, [points[0].lat, points[0].lng, points.length, zoom]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [markerKey, zoom]);
 
   // Re-style the map when the theme changes.
   useEffect(() => {

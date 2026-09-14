@@ -32,6 +32,7 @@ export async function sendNimReward({
 }): Promise<string> {
   if (!REWARD_KEY) throw new Error("NIMIQ_REWARD_PRIVATE_KEY is not configured");
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let Nimiq: any;
   try {
     Nimiq = await import("@nimiq/core");
@@ -60,6 +61,7 @@ export async function sendNimReward({
   );
   tx.sign(keyPair);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const raw = (tx as any).serialize().toHex();
   const hash = (await rpc("sendRawTransaction", [raw])) as string;
   return hash;

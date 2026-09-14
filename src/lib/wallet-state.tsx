@@ -8,8 +8,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { connectWallet, payUsdt, CHAINS, type ChainId } from "@/lib/wallet";
+import { connectWallet, payUsdt, type ChainId } from "@/lib/wallet";
 import type { PaymentResult } from "@/lib/wallet";
+import { normalizeNimiqAddress } from "@/lib/nimiq";
 
 export type WalletState = {
   connected: boolean;
@@ -59,7 +60,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     const { nimiqAddress, evmAddress, source } = await connectWallet();
     const next: WalletState = {
       connected: true,
-      nimiqAddress,
+      nimiqAddress: normalizeNimiqAddress(nimiqAddress),
       evmAddress,
       source,
       chain: "polygon",

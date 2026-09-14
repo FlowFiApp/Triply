@@ -362,7 +362,6 @@ const res = await fetch("/api/cars/book", {
       const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Booking failed");
 writeFlow({ carBooking: d.booking as CarBooking });
-      addPoints(Math.round(car.totalAmount));
       router.push("/car/confirmed");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Booking failed");

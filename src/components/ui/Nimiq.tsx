@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { formatAmount } from "@/lib/nimiq";
 
 export function NimiqIcon({
   size = 16,
