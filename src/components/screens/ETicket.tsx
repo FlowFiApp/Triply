@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Check, Download, Share2, Wallet } from "lucide-react";
+import { Calendar, Check, Download, Share2 } from "lucide-react";
 import { BottomTabBar, MobileShell } from "@/components/shell";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import BookingQR from "@/components/ui/booking-qr";
@@ -11,6 +11,7 @@ import { useQueryParam } from "@/lib/query";
 import { readFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { share } from "@/lib/share";
+import { downloadIcs } from "@/lib/calendar";
 import { CHAINS } from "@/lib/wallet";
 import type { OrderRecord } from "@/lib/types";
 
@@ -231,12 +232,28 @@ export default function ETicket() {
               </div>
             ) : null}
 
-            <div className="flex gap-2">
-              <button className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-card text-[12px] font-semibold text-foreground">
-                <Wallet size={14} className="text-accent-2" />
-                Apple Wallet
+<div className="flex gap-2">
+              <button
+                onClick={() =>
+                  downloadIcs({
+                    title: `${order?.airline ?? "Flight"} ${order?.flightNumber ?? ""}`,
+                    location: `${order?.depCity ?? ""} (${order?.depCode ?? ""})`,
+                    description: `Booking ${order?.bookingRef ?? ""} — ${order?.arrCity ?? ""} (${order?.arrCode ?? ""})`,
+                    start: order?.departureDate ?? new Date().toISOString().slice(0, 10),
+                  })
+                }
+                className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-card text-[12px] font-semibold text-foreground"
+              >
+                <Calendar size={14} className="text-accent-2" />
+                Add to Calendar
               </button>
-              <button className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-card text-[12px] font-semibold text-foreground">
+              <button
+                onClick={() => {
+                  toast("info", "Use your browser's Save as PDF to download.");
+                  window.print();
+                }}
+                className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-card text-[12px] font-semibold text-foreground"
+              >
                 <Download size={14} className="text-accent-2" />
                 Download PDF
               </button>

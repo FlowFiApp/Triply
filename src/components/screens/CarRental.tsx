@@ -37,6 +37,8 @@ import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { getStoredIdentity } from "@/lib/identity";
 import { share } from "@/lib/share";
+import { downloadIcs } from "@/lib/calendar";
+import { copyText } from "@/lib/nimiq";
 import { haptic } from "@/lib/haptics";
 import type { CarOffer, CarBooking } from "@/lib/types";
 
@@ -760,7 +762,18 @@ export function CarConfirmed() {
 
             <div className="flex flex-col gap-2">
               <div className="flex gap-2">
-                <button className="flex h-[43px] flex-1 items-center justify-center rounded-xl border border-border bg-card text-[14px] font-bold text-foreground">
+                <button
+                  onClick={() =>
+                    downloadIcs({
+                      title: `Car · ${booking.carName || "Rental"}`,
+                      location: booking.pickupLocation,
+                      description: `Booking ${booking.reference}`,
+                      start: booking.pickupDate,
+                      end: booking.dropoffDate,
+                    })
+                  }
+                  className="flex h-[43px] flex-1 items-center justify-center rounded-xl border border-border bg-card text-[14px] font-bold text-foreground"
+                >
                   Add to Calendar
                 </button>
                 <a
@@ -772,7 +785,18 @@ export function CarConfirmed() {
                   Get Directions
                 </a>
               </div>
-              <button className="flex h-[43px] w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[14px] font-bold text-accent-2">
+              <button
+                onClick={() => {
+                  const ok = copyText(`Triply booking ${booking.reference} · ${booking.carName}`);
+                  toast(
+                    ok ? "success" : "error",
+                    ok
+                      ? "Booking reference copied — quote it to the supplier."
+                      : "Copy failed.",
+                  );
+                }}
+                className="flex h-[43px] w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[14px] font-bold text-accent-2"
+              >
                 Contact Supplier
               </button>
               <button

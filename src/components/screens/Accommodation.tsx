@@ -36,6 +36,7 @@ import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { getStoredIdentity } from "@/lib/identity";
 import { share } from "@/lib/share";
+import { downloadIcs } from "@/lib/calendar";
 import { haptic } from "@/lib/haptics";
 import type { StayOffer, StayBooking } from "@/lib/types";
 
@@ -895,7 +896,18 @@ export function AccConfirmed() {
 
             <div className="flex flex-col gap-2">
               <div className="flex gap-2">
-                <button className="flex h-[43px] flex-1 items-center justify-center rounded-xl border border-border bg-card text-[14px] font-bold text-foreground">
+                <button
+                  onClick={() =>
+                    downloadIcs({
+                      title: `Stay · ${booking.accommodationName || "Accommodation"}`,
+                      location: booking.address,
+                      description: `Booking ${booking.reference}`,
+                      start: booking.checkIn,
+                      end: booking.checkOut,
+                    })
+                  }
+                  className="flex h-[43px] flex-1 items-center justify-center rounded-xl border border-border bg-card text-[14px] font-bold text-foreground"
+                >
                   Add to Calendar
                 </button>
                 <a

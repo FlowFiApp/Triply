@@ -8,7 +8,7 @@ import { MobileShell } from "@/components/shell";
 import { PassengerClassSheet } from "@/components/screens/sheets";
 import PhoneInput from "@/components/ui/phone-input";
 import { useQueryParam } from "@/lib/query";
-import { writeFlow } from "@/lib/store";
+import { readFlow, writeFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import type { PassengerInfo } from "@/lib/types";
 
@@ -138,7 +138,10 @@ export default function PassengerDetails() {
         <div className="w-full">
           <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-5 py-3">
             <button
-              onClick={() => router.back()}
+              onClick={() => {
+                const offerId = readFlow().offer?.id;
+                router.push(offerId ? `/flight?offer=${encodeURIComponent(offerId)}` : "/search");
+              }}
               className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
