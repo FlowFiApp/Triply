@@ -72,7 +72,7 @@ export default function Onboarding() {
                 {SLIDES.map((s) => (
                   <div
                     key={s.title}
-                    className="relative h-[388px] w-full shrink-0 bg-card-2"
+                    className="relative h-[300px] w-full shrink-0 bg-card-2"
                   >
                     <Image
                       src={s.img}

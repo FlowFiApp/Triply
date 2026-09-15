@@ -60,6 +60,22 @@ export default function Profile() {
     toast(ok ? "success" : "error", ok ? "Address copied." : "Copy failed.");
   };
 
+  const handleWalletAction = async () => {
+    if (state.connected) {
+      disconnect();
+      return;
+    }
+    try {
+      await connect();
+      toast("success", "Wallet connected.");
+    } catch (err) {
+      toast(
+        "error",
+        err instanceof Error ? err.message : "Could not connect your wallet.",
+      );
+    }
+  };
+
   return (
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
@@ -127,7 +143,7 @@ export default function Profile() {
                   </button>
                 ) : null}
                 <button
-                  onClick={() => (state.connected ? disconnect() : connect())}
+                  onClick={handleWalletAction}
                   className={`flex h-8 items-center gap-1.5 rounded-full px-3 text-[12px] font-bold ${
                     state.connected
                       ? "border border-border bg-card-2 text-foreground"

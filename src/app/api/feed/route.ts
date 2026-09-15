@@ -2,6 +2,7 @@ import {
   createMoment,
   dbErrorMessage,
   earnMomentPoints,
+  getUserProfile,
   listMoments,
   MOMENT_POST_REWARD,
 } from "@/lib/db";
@@ -44,9 +45,12 @@ export async function POST(request: Request) {
       return Response.json({ error: "Caption is too long." }, { status: 400 });
     }
 
+    // Snapshot the author's live profile (users → moments relationship).
+    const profile = await getUserProfile(userId);
     const created = await createMoment({
       userId,
-      authorName: body.authorName ? String(body.authorName).slice(0, 40) : undefined,
+      authorName: profile.username || (body.authorName ? String(body.authorName).slice(0, 40) : undefined),
+      authorAvatar: profile.avatar || (body.avatar ? String(body.avatar) : undefined),
       caption,
       location,
       images,

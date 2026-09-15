@@ -90,7 +90,19 @@ function MomentCard({
     <article className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-3.5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <Identicon seed={moment.userId} size={38} />
+          <span className="block h-[38px] w-[38px] shrink-0 overflow-hidden rounded-full">
+            {moment.authorAvatar ? (
+              <Image
+                src={moment.authorAvatar}
+                alt=""
+                width={38}
+                height={38}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <Identicon seed={moment.userId} size={38} />
+            )}
+          </span>
           <div className="flex flex-col gap-0.5">
             <span className="text-[13px] font-bold text-foreground">
               {moment.authorName} · {timeAgo(moment.createdAt)}
@@ -186,7 +198,7 @@ function CommentsSheet({
         ...prev,
         {
           id: String(Date.now()),
-          userKey: "me",
+          userKey: feedKey(),
           text: value,
           createdAt: new Date().toISOString(),
         },

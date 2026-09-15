@@ -322,11 +322,13 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
           </div>
 
           {destLoading ? (
-            <section className="flex flex-col gap-3 px-5 py-3">
-              <Skeleton className="h-5 w-40" />
-              <div className="flex gap-3 overflow-x-auto no-scrollbar">
+            <section className="flex flex-col gap-3 pb-3 pt-6">
+              <div className="px-5">
+                <Skeleton className="h-5 w-40" />
+              </div>
+              <div className="flex gap-3.5 overflow-hidden px-5">
                 {[0, 1, 2].map((i) => (
-                  <Skeleton key={i} className="h-[164px] w-[140px] shrink-0 rounded-xl" />
+                  <Skeleton key={i} className="h-[170px] w-[244px] shrink-0 rounded-2xl" />
                 ))}
               </div>
             </section>

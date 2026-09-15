@@ -2,12 +2,16 @@
 
 import type { FeedMoment } from "@/lib/feed";
 import { identityKey } from "@/lib/identity";
+import { getStoredProfile } from "@/lib/profile";
 
 export function feedKey(): string {
   return identityKey();
 }
 
 export function feedHandle(key: string): string {
+  // Relationship: prefer the user's saved profile username for their own handle.
+  const stored = getStoredProfile().username;
+  if (stored && key === feedKey()) return stored;
   const compact = key.replace(/^NQ[\d A-Z]+/i, "").replace(/[^0-9a-z]/gi, "").slice(-4);
   return `Traveler ${compact || "Trip"}`;
 }
@@ -41,6 +45,7 @@ export async function postMoment(input: {
     body: JSON.stringify({
       key: feedKey(),
       authorName: feedHandle(feedKey()),
+      avatar: getStoredProfile().avatar,
       caption: input.caption,
       location: input.location,
       images: input.images,

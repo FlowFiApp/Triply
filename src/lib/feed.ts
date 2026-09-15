@@ -11,6 +11,7 @@ export type FeedMoment = {
   id: string;
   userId: string;
   authorName: string;
+  authorAvatar?: string;
   caption: string;
   location?: string;
   images: string[];
@@ -23,10 +24,13 @@ export type FeedMoment = {
 };
 
 export function serializeMoment(m: MomentDoc, myKey: string): FeedMoment {
+  // Relationship: the author's live profile (users) overrides the snapshot.
+  const profile = m.author?.[0];
   return {
     id: m._id.toHexString(),
     userId: m.userId,
-    authorName: m.authorName || "Traveler",
+    authorName: profile?.username || m.authorName || "Traveler",
+    authorAvatar: profile?.avatar || m.authorAvatar || "",
     caption: m.caption,
     location: m.location,
     images: m.images ?? [],

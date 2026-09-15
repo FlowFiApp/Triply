@@ -1,10 +1,33 @@
 import "server-only";
 
-import { MongoClient, ObjectId } from "mongodb";
+import { MongoClient, ObjectId, type Db } from "mongodb";
 
 const URI = process.env.MONGODB_URI;
 
 let client: MongoClient | null = null;
+let indexesEnsured = false;
+
+/**
+ * Collection relationships:
+ *   users.key  ←  rewards.userId        (point ledger belongs to a user)
+ *   users.key  ←  moments.userId        (feed posts belong to a user)
+ *   users.key  ←  moments.comments[].userKey  (comments belong to a user)
+ *   users.key  ←  moments.likes[]       (likes are user keys)
+ * Indexes enforce uniqueness (users.key, rewards.bookingRef) and speed the
+ * lookups used by the feed join and points queries.
+ */
+async function ensureIndexes(db: Db): Promise<void> {
+  if (indexesEnsured) return;
+  await Promise.all([
+    db.collection("users").createIndex({ key: 1 }, { unique: true }),
+    db.collection("rewards").createIndex({ bookingRef: 1 }, { unique: true }),
+    db.collection("rewards").createIndex({ userId: 1 }),
+    db.collection("moments").createIndex({ userId: 1 }),
+    db.collection("moments").createIndex({ createdAt: -1 }),
+    db.collection("moments").createIndex({ likes: 1 }),
+  ]);
+  indexesEnsured = true;
+}
 
 async function getDb() {
   if (!URI) throw new Error("MONGODB_URI is not configured");
@@ -12,7 +35,9 @@ async function getDb() {
     client = new MongoClient(URI, { serverSelectionTimeoutMS: 8000 });
   }
   await client.connect();
-  return client.db("triply");
+  const db = client.db("triply");
+  await ensureIndexes(db);
+  return db;
 }
 
 /** Maps low-level driver/network failures to a friendly, actionable message. */
@@ -215,30 +240,43 @@ export type MomentComment = {
 
 export type MomentDoc = {
   _id: ObjectId;
-  userId: string; // identity key (nimiqAddress or deviceId)
+  userId: string; // identity key (nimiqAddress or deviceId) → users.key
   authorName?: string;
+  authorAvatar?: string;
   caption: string;
   location?: string;
   images: string[]; // Cloudinary URLs (1-2)
-  likes: string[]; // identity keys
-  comments: MomentComment[];
+  likes: string[]; // identity keys → users.key
+  comments: MomentComment[]; // comments[].userKey → users.key
   shareCount: number;
   createdAt: Date;
+  author?: Array<{ username?: string; avatar?: string }>; // joined from users ($lookup)
 };
 
 export async function listMoments(limit = 50): Promise<MomentDoc[]> {
   const db = await getDb();
-  return db
-    .collection<MomentDoc>("moments")
-    .find()
-    .sort({ createdAt: -1 })
-    .limit(limit)
+  const rows = await db
+    .collection("moments")
+    .aggregate([
+      { $sort: { createdAt: -1 } },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "key",
+          as: "author",
+        },
+      },
+    ])
     .toArray();
+  return rows as unknown as MomentDoc[];
 }
 
 export async function createMoment(input: {
   userId: string;
   authorName?: string;
+  authorAvatar?: string;
   caption: string;
   location?: string;
   images: string[];
@@ -248,6 +286,7 @@ export async function createMoment(input: {
     _id: new ObjectId(),
     userId: input.userId,
     authorName: input.authorName,
+    authorAvatar: input.authorAvatar,
     caption: input.caption,
     location: input.location,
     images: input.images,
