@@ -55,7 +55,7 @@ export function BrandHeader({
   subtitle?: string;
 }) {
   return (
-    <div className="sticky top-0 z-30 flex h-[60px] w-full items-center justify-between bg-background px-5 py-3">
+    <div className="sticky top-0 z-30 flex h-[60px] w-full items-center justify-between bg-background px-4 py-3">
       <div>
         <TriplyLogo size={30} />
         {subtitle ? (
@@ -78,7 +78,7 @@ export function BackHeader({
 }) {
   const router = usePathname();
   return (
-    <div className="sticky top-0 z-30 flex h-[60px] w-full items-center gap-3 bg-background px-5 py-3">
+    <div className="sticky top-0 z-30 flex h-[60px] w-full items-center gap-3 bg-background px-4 py-3">
       <Link
         href={onBack ? "#" : router.split("/").slice(0, -1).join("/") || "/"}
         onClick={onBack}
@@ -114,8 +114,8 @@ export function BottomTabBar({ active = "Home" }: { active?: string }) {
   return (
     <>
       <div aria-hidden className="h-[84px] w-full shrink-0" />
-      <div className="fixed bottom-0 left-1/2 z-40 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card pb-3 pb-safe">
-        <div className="flex h-16 w-full items-center justify-between px-6">
+      <div className="fixed bottom-0 left-1/2 z-40 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card pb-[calc(22px+env(safe-area-inset-bottom))]">
+        <div className="flex h-16 w-full items-center justify-between px-4">
           {TABS.map((tab) => {
             const label = t(tab.key);
             const isActive = active === label || pathname === tab.href;

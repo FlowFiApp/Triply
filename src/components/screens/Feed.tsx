@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, type CSSProperties } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   Bookmark,
@@ -213,7 +214,7 @@ function CommentsSheet({
 
   return (
     <Sheet open onClose={onClose} height="70vh">
-      <div className="flex flex-col px-5 pb-6 pt-1">
+      <div className="flex flex-col px-4 pb-6 pt-1">
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-[16px] font-extrabold text-foreground">Comments</h2>
         </div>
@@ -260,6 +261,7 @@ function CommentsSheet({
 }
 
 export default function Feed() {
+  const router = useRouter();
   const { toast } = useToast();
   const { refresh: refreshPoints } = usePoints();
   const [moments, setMoments] = useState<FeedMoment[]>([]);
@@ -343,9 +345,9 @@ export default function Feed() {
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center justify-between bg-background px-5">
+          <div className="sticky top-0 z-30 flex h-[60px] items-center justify-between bg-background px-4">
             <h1 className="text-[24px] font-extrabold leading-[35px] text-foreground">
-              Explore
+              Feeds
             </h1>
             <button
               onClick={() => setShareOpen(true)}
@@ -356,7 +358,27 @@ export default function Feed() {
             </button>
           </div>
 
-          <div className="flex gap-3.5 px-5 py-3">
+          <div className="flex gap-2 px-4 pb-1 pt-1">
+            {[
+              { key: "feeds", label: "Feeds", href: "/feed" },
+              { key: "stays", label: "Accommodations", href: "/stays" },
+              { key: "cars", label: "Cars", href: "/cars" },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => router.push(tab.href)}
+                className={`flex h-[32px] shrink-0 items-center rounded-full px-4 text-[13px] font-semibold transition ${
+                  tab.key === "feeds"
+                    ? "bg-accent text-accent-2"
+                    : "bg-card-2 text-muted"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex gap-3.5 px-4 py-3">
             <button
               onClick={() => setShareOpen(true)}
               className="flex w-[58px] shrink-0 flex-col items-center gap-1.5"
@@ -380,7 +402,7 @@ export default function Feed() {
             ))}
           </div>
 
-          <div className="flex flex-col gap-4 px-5 pb-6 pt-1">
+          <div className="flex flex-col gap-4 px-4 pb-6 pt-1">
             {loading ? (
               <SkeletonRows rows={3} height={360} />
             ) : error ? (
@@ -388,7 +410,7 @@ export default function Feed() {
                 {error}
               </p>
             ) : moments.length === 0 ? (
-              <div className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card px-6 py-10 text-center">
+              <div className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card px-4 py-10 text-center">
                 <p className="text-[15px] font-bold text-foreground">
                   No travel moments yet
                 </p>
@@ -397,7 +419,7 @@ export default function Feed() {
                 </p>
                 <button
                   onClick={() => setShareOpen(true)}
-                  className="flex h-10 items-center rounded-xl bg-accent px-5 text-[13px] font-bold text-accent-2"
+                  className="flex h-10 items-center rounded-xl bg-accent px-4 text-[13px] font-bold text-accent-2"
                 >
                   Share a Moment
                 </button>
@@ -441,7 +463,7 @@ export default function Feed() {
 
       {menuFor ? (
         <Sheet open onClose={() => setMenuFor(null)}>
-          <div className="flex flex-col px-5 pb-6 pt-1">
+          <div className="flex flex-col px-4 pb-6 pt-1">
             <h2 className="mb-2 text-[16px] font-extrabold text-foreground">
               Moment options
             </h2>

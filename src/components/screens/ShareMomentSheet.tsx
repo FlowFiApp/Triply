@@ -91,7 +91,7 @@ export default function ShareMomentSheet({
 
   return (
     <Sheet open={open} onClose={onClose}>
-      <div className="px-5 pb-6 pt-1">
+      <div className="px-4 pb-6 pt-1">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-[17px] font-extrabold text-foreground">
             Share Your Moment

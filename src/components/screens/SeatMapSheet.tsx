@@ -70,7 +70,7 @@ export default function SeatMapSheet({
 
   return (
     <Sheet open={open} onClose={onClose} height="72vh">
-      <div className="px-5 py-3">
+      <div className="px-4 py-3">
         <h2 className="text-[18px] font-extrabold text-foreground">
           Choose your seat
         </h2>
@@ -79,7 +79,7 @@ export default function SeatMapSheet({
         </p>
       </div>
 
-      <div className="px-5 pb-3">
+      <div className="px-4 pb-3">
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 size={24} className="animate-spin text-accent-2" />
@@ -110,7 +110,7 @@ export default function SeatMapSheet({
         ) : null}
       </div>
 
-      <div className="px-5 pb-4 pt-2">
+      <div className="px-4 pb-4 pt-2">
         <button
           disabled={!selected}
           onClick={() => selected && onSelect(selected)}

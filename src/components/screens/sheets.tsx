@@ -16,7 +16,7 @@ import { Sheet } from "@/components/ui";
 
 function SheetTitle({ children }: { children: ReactNode }) {
   return (
-    <div className="px-5 py-3">
+    <div className="px-4 py-3">
       <h2 className="text-[18px] font-extrabold leading-6 text-foreground">
         {children}
       </h2>
@@ -55,7 +55,7 @@ export function PassengerClassSheet({
   return (
     <Sheet open={open} onClose={onClose}>
       <SheetTitle>Passengers &amp; Cabin</SheetTitle>
-      <div className="flex flex-col gap-4 px-5 py-5">
+      <div className="flex flex-col gap-4 px-4 py-5">
         {rows.map((r) => (
           <div
             key={r.key}
@@ -95,7 +95,7 @@ export function PassengerClassSheet({
         ))}
       </div>
 
-      <div className="flex flex-col gap-3 px-5 pb-4">
+      <div className="flex flex-col gap-3 px-4 pb-4">
         <span className="text-[14px] font-bold text-muted">Cabin Class</span>
         <div className="flex flex-col gap-2">
           {cabins.map((c) => {
@@ -124,7 +124,7 @@ export function PassengerClassSheet({
         </div>
       </div>
 
-      <div className="px-5 pb-4 pt-2">
+      <div className="px-4 pb-4 pt-2">
         <button
           onClick={() => {
             onApply?.(counts, cabin);
@@ -175,7 +175,7 @@ export function FilterSortSheet({
     <Sheet open={open} onClose={onClose}>
       <SheetTitle>Filter &amp; Sort</SheetTitle>
 
-      <div className="flex flex-col gap-3 px-5 py-5">
+      <div className="flex flex-col gap-3 px-4 py-5">
         <div className="flex items-center justify-between">
           <span className="text-[14px] font-bold text-muted">Price Range</span>
           <span className="text-[14px] font-bold text-accent-2">
@@ -212,7 +212,7 @@ export function FilterSortSheet({
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 px-5 py-5">
+      <div className="flex flex-col gap-3 px-4 py-5">
         <span className="text-[14px] font-bold text-muted">Stops</span>
         <div className="flex gap-2">
           {["Non-stop", "1 Stop", "2+ Stops"].map((s) => (
@@ -231,7 +231,7 @@ export function FilterSortSheet({
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 px-5 py-5">
+      <div className="flex flex-col gap-3 px-4 py-5">
         <span className="text-[14px] font-bold text-muted">Airlines</span>
         <div className="flex flex-col gap-2">
           {list.map((a) => {
@@ -264,7 +264,7 @@ export function FilterSortSheet({
         </div>
       </div>
 
-      <div className="px-5 pb-4 pt-2">
+      <div className="px-4 pb-4 pt-2">
         <button
           onClick={apply}
           className="flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"
@@ -288,7 +288,7 @@ export function WalletConnectSheet({
   return (
     <Sheet open={open} onClose={onClose}>
       <SheetTitle>Select Wallet to Pay</SheetTitle>
-      <div className="flex flex-col gap-2 px-5 py-5">
+      <div className="flex flex-col gap-2 px-4 py-5">
         <button
           onClick={() => onSelect("Nimiq Pay")}
           className="flex h-[60px] items-center gap-3 rounded-xl border border-accent-2 bg-card p-3 text-left"
@@ -307,7 +307,7 @@ export function WalletConnectSheet({
           <ChevronRight size={14} className="text-muted" />
         </button>
       </div>
-      <div className="border-t border-border px-5 py-4 text-center">
+      <div className="border-t border-border px-4 py-4 text-center">
         <p className="text-[12px] text-muted">
           Powered by Web3 payment infrastructure. Zero setup required.
         </p>
@@ -359,7 +359,7 @@ export function FareRulesSheet({
   return (
     <Sheet open={open} onClose={onClose}>
       <SheetTitle>Fare Rules &amp; Refund Policy</SheetTitle>
-      <div className="flex flex-col gap-3 px-5 py-5">
+      <div className="flex flex-col gap-3 px-4 py-5">
         {rules.map((r) => {
           const Icon = r.icon;
           return (
@@ -385,7 +385,7 @@ export function FareRulesSheet({
           );
         })}
       </div>
-      <div className="px-5 pb-4 pt-2">
+      <div className="px-4 pb-4 pt-2">
         <button
           onClick={onClose}
           className="flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"

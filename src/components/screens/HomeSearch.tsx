@@ -165,7 +165,7 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
             }
           />
 
-          <div className="px-5 py-3">
+          <div className="px-4 py-3">
             <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-[18px]">
               <div className="flex items-center gap-1 rounded-[10px] bg-[#f1f5f9] p-[3px] dark:bg-[#090d1a]">
                 {TRIP_TYPES.map((t) => (
@@ -304,7 +304,7 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
             </div>
           </div>
 
-          <div className="flex gap-3 px-5 pt-1">
+          <div className="flex gap-3 px-4 pt-1">
             <Link
               href="/stays"
               className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl border border-border bg-card text-[13px] font-semibold text-foreground"
@@ -323,10 +323,10 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
 
           {destLoading ? (
             <section className="flex flex-col gap-3 pb-3 pt-6">
-              <div className="px-5">
+              <div className="px-4">
                 <Skeleton className="h-5 w-40" />
               </div>
-              <div className="flex gap-3.5 overflow-hidden px-5">
+              <div className="flex gap-3.5 overflow-hidden px-4">
                 {[0, 1, 2].map((i) => (
                   <Skeleton key={i} className="h-[170px] w-[244px] shrink-0 rounded-2xl" />
                 ))}
@@ -334,7 +334,7 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
             </section>
 ) : destinationsLive && destinations.length > 0 ? (
             <section className="flex flex-col gap-3 pb-3 pt-6">
-              <h2 className="px-5 text-[16px] font-bold leading-[21px] text-foreground">
+              <h2 className="px-4 text-[16px] font-bold leading-[21px] text-foreground">
                 Popular Destinations
               </h2>
               <PopularDestinations
@@ -351,7 +351,7 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
           ) : null}
 
           {recent.length > 0 ? (
-            <section className="flex flex-col gap-3 px-5 pb-5 pt-3">
+            <section className="flex flex-col gap-3 px-4 pb-5 pt-3">
               <h2 className="text-[16px] font-bold leading-[21px] text-foreground">
                 Recent Searches
               </h2>

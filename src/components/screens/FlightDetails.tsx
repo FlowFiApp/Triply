@@ -142,7 +142,7 @@ export default function FlightDetails() {
   if (loading) {
     return (
       <MobileShell>
-        <div className="px-5 py-5">
+        <div className="px-4 py-5">
           <SkeletonRows rows={2} height={220} />
         </div>
       </MobileShell>
@@ -159,7 +159,7 @@ export default function FlightDetails() {
           <p className="text-[13px] text-muted">{error}</p>
           <button
             onClick={() => router.push("/search")}
-            className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-5 text-[13px] font-bold text-accent-2"
+            className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-4 text-[13px] font-bold text-accent-2"
           >
             Browse Flights
           </button>
@@ -189,7 +189,7 @@ export default function FlightDetails() {
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-5 py-3">
+          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-4 py-3">
             <button
               onClick={() => router.push("/search")}
               className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground"
@@ -215,7 +215,7 @@ export default function FlightDetails() {
             </button>
           </div>
 
-          <div className="px-5 py-3">
+          <div className="px-4 py-3">
             <div className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-[18px]">
               <div className="flex gap-3">
                 <div className="flex w-12 flex-col">
@@ -294,7 +294,7 @@ export default function FlightDetails() {
           </div>
 
           {addons.length > 0 ? (
-            <section className="flex flex-col gap-3 px-5 pb-6 pt-3">
+            <section className="flex flex-col gap-3 px-4 pb-6 pt-3">
               <h2 className="text-[16px] font-bold text-foreground">
                 Baggage &amp; Extras
               </h2>
@@ -346,7 +346,7 @@ export default function FlightDetails() {
           ) : null}
 
           {similar.length > 0 ? (
-            <section className="flex flex-col gap-3 px-5 pb-6 pt-3">
+            <section className="flex flex-col gap-3 px-4 pb-6 pt-3">
               <h2 className="text-[16px] font-bold text-foreground">
                 Similar Flights
               </h2>
@@ -376,7 +376,7 @@ export default function FlightDetails() {
         </div>
 
         <div aria-hidden className="h-[84px] w-full shrink-0" />
-        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-5 pt-3 pb-safe">
+        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-4 pb-[calc(30px+env(safe-area-inset-bottom))] pt-3">
           <div className="flex flex-col items-center gap-1">
             <span className="text-[12px] text-muted">
               Total ({passengerCount} Passenger{passengerCount > 1 ? "s" : ""})

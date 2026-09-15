@@ -47,7 +47,7 @@ export default function RedeemSheet({
 
   return (
     <Sheet open={open} onClose={onClose}>
-      <div className="px-5 py-3">
+      <div className="px-4 py-3">
         <h2 className="text-[18px] font-extrabold text-foreground">Redeem Nimiq</h2>
         <p className="text-[12px] text-muted">Use your NIM rewards.</p>
       </div>
@@ -79,7 +79,7 @@ export default function RedeemSheet({
         ) : null}
       </div>
 
-      <div className="px-5 pb-4 pt-4">
+      <div className="px-4 pb-4 pt-4">
         <button
           onClick={onRedeem}
           disabled={available <= 0}

@@ -22,7 +22,7 @@ function ActionBar({ label, onApply }: { label: string; onApply: () => void }) {
   return (
     <>
       <div aria-hidden className="h-[84px] w-full shrink-0" />
-      <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-5 pt-5">
+      <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-4 pb-[30px] pt-5">
         <button
           onClick={onApply}
           className="flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"
@@ -36,7 +36,7 @@ function ActionBar({ label, onApply }: { label: string; onApply: () => void }) {
 
 function Title({ children }: { children: ReactNode }) {
   return (
-    <div className="px-5 py-3">
+    <div className="px-4 py-3">
       <h1 className="text-[18px] font-extrabold leading-6 text-foreground">
         {children}
       </h1>
@@ -55,7 +55,7 @@ function ClassContent() {
   return (
     <>
       <Title>Passengers &amp; Cabin</Title>
-      <div className="flex flex-col gap-4 px-5 py-5">
+      <div className="flex flex-col gap-4 px-4 py-5">
         {rows.map((r) => (
           <div
             key={r.key}
@@ -94,7 +94,7 @@ function ClassContent() {
           </div>
         ))}
       </div>
-      <div className="flex flex-col gap-3 px-5 py-5">
+      <div className="flex flex-col gap-3 px-4 py-5">
         <span className="text-[14px] font-bold text-muted">Cabin Class</span>
         <div className="flex flex-col gap-2">
           {["Economy", "Premium Economy", "Business", "First Class"].map(
@@ -137,7 +137,7 @@ function FilterContent() {
   return (
     <>
       <Title>Filter &amp; Sort</Title>
-      <div className="flex flex-col gap-3 px-5 py-5">
+      <div className="flex flex-col gap-3 px-4 py-5">
         <div className="flex items-center justify-between">
           <span className="text-[14px] font-bold text-muted">Price Range</span>
           <span className="text-[14px] font-bold text-accent-2">
@@ -151,7 +151,7 @@ function FilterContent() {
           <span className="absolute left-[63%] top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border border-accent-2 bg-accent" />
         </div>
       </div>
-      <div className="flex flex-col gap-3 px-5 py-5">
+      <div className="flex flex-col gap-3 px-4 py-5">
         <span className="text-[14px] font-bold text-muted">Stops</span>
         <div className="flex gap-2">
           {["Non-stop", "1 Stop", "2+ Stops"].map((s) => (
@@ -169,7 +169,7 @@ function FilterContent() {
           ))}
         </div>
       </div>
-      <div className="flex flex-col gap-3 px-5 py-5">
+      <div className="flex flex-col gap-3 px-4 py-5">
         <span className="text-[14px] font-bold text-muted">Airlines</span>
         <div className="flex flex-col gap-2">
           {[
@@ -214,7 +214,7 @@ function WalletContent() {
   return (
     <>
       <Title>Select Wallet to Pay</Title>
-      <div className="flex flex-col gap-2 px-5 py-5">
+      <div className="flex flex-col gap-2 px-4 py-5">
         <div className="flex h-[60px] items-center gap-3 rounded-xl border border-accent-2 bg-card p-3">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent">
             <Wallet size={16} className="text-accent-2" />
@@ -230,7 +230,7 @@ function WalletContent() {
           <ChevronRight size={14} className="text-muted" />
         </div>
       </div>
-      <div className="px-5 py-4 text-center">
+      <div className="px-4 py-4 text-center">
         <p className="text-[12px] text-muted">
           Powered by Web3 payment infrastructure. Zero setup required.
         </p>
@@ -269,7 +269,7 @@ function RulesContent() {
   return (
     <>
       <Title>Fare Rules &amp; Refund Policy</Title>
-      <div className="flex flex-col gap-3 px-5 py-5">
+      <div className="flex flex-col gap-3 px-4 py-5">
         {rules.map((r) => {
           const Icon = r.icon;
           return (

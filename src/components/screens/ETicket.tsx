@@ -81,7 +81,7 @@ export default function ETicket() {
           </p>
           <Link
             href="/search"
-            className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-5 text-[13px] font-bold text-accent-2"
+            className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-4 text-[13px] font-bold text-accent-2"
           >
             Search Flights
           </Link>
@@ -94,7 +94,7 @@ export default function ETicket() {
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-5 py-3">
+          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-4 py-3">
             <Link
               href="/trips"
               className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground"
@@ -112,7 +112,7 @@ export default function ETicket() {
             <h1 className="text-[18px] font-extrabold text-foreground">E-Ticket</h1>
           </div>
 
-          <div className="flex flex-col gap-4 px-5 py-5">
+          <div className="flex flex-col gap-4 px-4 py-5">
             <div className="flex items-center gap-3 rounded-xl bg-[#22c55e] px-3 py-3">
               <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#22c55e]">
                 <Check size={14} strokeWidth={3} className="text-white" />

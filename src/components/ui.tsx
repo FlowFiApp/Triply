@@ -177,7 +177,7 @@ export function Sheet({
         >
           <X size={16} />
         </button>
-        <div className="max-h-[70vh] overflow-y-auto pb-8 pt-4 no-scrollbar">
+        <div className="max-h-[70vh] overflow-y-auto overflow-x-hidden pb-8 pt-4 no-scrollbar">
           {children}
         </div>
       </div>

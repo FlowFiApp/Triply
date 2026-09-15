@@ -116,13 +116,13 @@ export default function Processing() {
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center bg-background px-5">
+          <div className="sticky top-0 z-30 flex h-[60px] items-center bg-background px-4">
             <h1 className="text-[18px] font-extrabold leading-6 text-foreground">
               Processing Booking
             </h1>
           </div>
 
-          <div className="flex flex-col items-center gap-8 px-5 py-5">
+          <div className="flex flex-col items-center gap-8 px-4 py-5">
             <div className="flex w-full flex-col gap-5 rounded-2xl border border-border bg-card p-4">
               {steps.map((s, i) => {
                 const done = i < stepIndex;
@@ -182,7 +182,7 @@ export default function Processing() {
                 <p className="text-[12px] text-muted">{error}</p>
                 <Link
                   href="/checkout"
-                  className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-5 text-[13px] font-bold text-accent-2"
+                  className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-4 text-[13px] font-bold text-accent-2"
                 >
                   Back to Checkout
                 </Link>

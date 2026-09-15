@@ -114,17 +114,17 @@ function GuestsRoomsSheet({
 
   return (
     <Sheet open={open} onClose={onClose}>
-      <div className="px-5 py-3">
+      <div className="px-4 py-3">
         <h2 className="text-[18px] font-extrabold text-foreground">
           Guests &amp; Rooms
         </h2>
       </div>
-      <div className="flex flex-col gap-4 px-5 py-5">
+      <div className="flex flex-col gap-4 px-4 py-5">
         {row("Adults", "Age 12 or above", adults, setAdults)}
         {row("Children", "Age 2 - 11", children, setChildren)}
         {row("Rooms", "Sleeping arrangements", rooms, setRooms)}
       </div>
-      <div className="px-5 pb-4 pt-2">
+      <div className="px-4 pb-4 pt-2">
         <button
           onClick={() => {
             onApply({ Adults: adults, Children: children, rooms });
@@ -203,7 +203,7 @@ export function AccSearch() {
         <div className="w-full">
           <BrandHeader right={<Avatar />} />
 
-          <div className="px-5 py-3">
+          <div className="px-4 py-3">
             <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-[18px]">
               <h2 className="text-[18px] font-extrabold text-foreground">
                 Book Accommodations
@@ -267,7 +267,7 @@ export function AccSearch() {
             </div>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto px-5 py-3 no-scrollbar">
+          <div className="flex gap-2 overflow-x-auto px-4 py-3 no-scrollbar">
             {["Price", "Rating", "Amenities", "Instant Book"].map((f, i) => (
               <span
                 key={f}
@@ -298,7 +298,7 @@ export function AccSearch() {
             </button>
           </div>
 
-          <section className="flex flex-col gap-3 px-5 py-5">
+          <section className="flex flex-col gap-3 px-4 py-5">
             <h2 className="text-[16px] font-bold text-foreground">
               {loading
                 ? "Searching stays…"
@@ -461,7 +461,7 @@ export function AccDetails() {
           <p className="text-[13px] text-muted">Select a stay first.</p>
           <button
             onClick={() => router.push("/stays")}
-            className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-5 text-[13px] font-bold text-accent-2"
+            className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-4 text-[13px] font-bold text-accent-2"
           >
             Search Stays
           </button>
@@ -514,7 +514,7 @@ export function AccDetails() {
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-card px-5 py-3">
+          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-card px-4 py-3">
             <button
               onClick={() => router.push("/stays")}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-card-2 text-foreground"
@@ -547,7 +547,7 @@ export function AccDetails() {
             className="h-[200px] w-full"
           />
 
-          <div className="flex flex-col gap-4 px-5 py-5">
+          <div className="flex flex-col gap-4 px-4 py-5">
             <div className="flex flex-col gap-1">
               <h2 className="text-[22px] font-extrabold leading-[29px] text-foreground">
                 {stay.name}
@@ -685,7 +685,7 @@ export function AccDetails() {
         </div>
 
         <div aria-hidden className="h-[84px] w-full shrink-0" />
-        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-5 pt-3 pb-safe">
+        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-4 pb-[calc(30px+env(safe-area-inset-bottom))] pt-3">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-0.5">
               <span className="text-[12px] text-muted">Total Price</span>
@@ -784,7 +784,7 @@ export function AccConfirmed() {
           </p>
           <button
             onClick={() => router.push("/stays")}
-            className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-5 text-[13px] font-bold text-accent-2"
+            className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-4 text-[13px] font-bold text-accent-2"
           >
             Search Stays
           </button>
@@ -797,7 +797,7 @@ export function AccConfirmed() {
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-card px-5 py-3">
+          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-card px-4 py-3">
             <button
               onClick={() => router.push("/trips")}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-card-2 text-foreground"
@@ -820,7 +820,7 @@ export function AccConfirmed() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 px-5 py-5">
+          <div className="flex flex-col gap-4 px-4 py-5">
             <div className="flex items-center gap-3 rounded-xl bg-[#10b981] px-4 py-4">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#10b981]">
                 <Check size={16} strokeWidth={3} className="text-[#090d1a]" />

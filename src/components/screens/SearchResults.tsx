@@ -196,7 +196,7 @@ return () => {
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-card px-5 py-3">
+          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-card px-4 py-3">
             <button
               onClick={() => router.push("/")}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-card-2 text-foreground"
@@ -223,7 +223,7 @@ return () => {
             </div>
           </div>
 
-          <div className="flex h-[60px] items-center gap-2 px-5 py-3">
+          <div className="flex h-[60px] items-center gap-2 px-4 py-3">
             <button
               onClick={() => setFilterOpen(true)}
               aria-label="Open filters"
@@ -249,7 +249,7 @@ return () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 px-5 pb-6">
+          <div className="flex flex-col gap-3 px-4 pb-6">
             {loading ? <SkeletonRows rows={3} height={176} /> : null}
 
             {!loading && error ? (
@@ -260,7 +260,7 @@ return () => {
                 action={
                   <button
                     onClick={() => router.push("/")}
-                    className="mt-3 flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-5 text-[13px] font-bold text-accent-2"
+                    className="mt-3 flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-4 text-[13px] font-bold text-accent-2"
                   >
                     New Search
                   </button>

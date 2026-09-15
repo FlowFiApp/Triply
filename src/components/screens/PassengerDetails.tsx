@@ -137,7 +137,7 @@ export default function PassengerDetails() {
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-5 py-3">
+          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-4 py-3">
             <button
               onClick={() => {
                 const offerId = readFlow().offer?.id;
@@ -167,7 +167,7 @@ export default function PassengerDetails() {
             </div>
           </div>
 
-          <div className="px-5 py-3">
+          <div className="px-4 py-3">
             <div className="flex items-center gap-2.5 rounded-xl bg-accent-2 p-3">
               <ShieldCheck size={20} className="shrink-0 text-accent" />
               <p className="text-[12px] font-semibold leading-[17px] text-accent">
@@ -177,7 +177,7 @@ export default function PassengerDetails() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 px-5 pb-6 pt-3">
+          <div className="flex flex-col gap-4 px-4 pb-6 pt-3">
             <div className="flex gap-3">
               <Field
                 className="flex-1"
@@ -273,7 +273,7 @@ export default function PassengerDetails() {
         </div>
 
         <div aria-hidden className="h-[84px] w-full shrink-0" />
-        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-5 pt-3 pb-safe">
+        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-4 pb-[calc(30px+env(safe-area-inset-bottom))] pt-3">
           <button
             onClick={continueTo}
             className="tap flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"

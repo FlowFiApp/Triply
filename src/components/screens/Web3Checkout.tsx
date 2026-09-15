@@ -147,7 +147,7 @@ export default function Web3Checkout() {
           </p>
           <Link
             href="/search"
-            className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-5 text-[13px] font-bold text-accent-2"
+            className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-4 text-[13px] font-bold text-accent-2"
           >
             Search Flights
           </Link>
@@ -160,7 +160,7 @@ export default function Web3Checkout() {
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-5 py-3">
+          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-4 py-3">
             <Link
               href="/passengers"
               className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground"
@@ -180,7 +180,7 @@ export default function Web3Checkout() {
             </h1>
           </div>
 
-          <div className="px-5 py-3">
+          <div className="px-4 py-3">
             <div className="flex items-center justify-between rounded-xl bg-accent-2 px-3 py-3">
               <span className="flex items-center gap-2.5">
                 <Clock size={20} className="text-accent" />
@@ -194,7 +194,7 @@ export default function Web3Checkout() {
             </div>
           </div>
 
-          <div className="px-5 py-3">
+          <div className="px-4 py-3">
             <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
               <span className="text-[14px] font-bold text-foreground">
                 Order Summary
@@ -214,7 +214,7 @@ export default function Web3Checkout() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 px-5 pb-6 pt-3">
+          <div className="flex flex-col gap-3 px-4 pb-6 pt-3">
             <h2 className="text-[15px] font-bold text-foreground">
               Payment Method
             </h2>
@@ -256,7 +256,7 @@ export default function Web3Checkout() {
         </div>
 
         <div aria-hidden className="h-[84px] w-full shrink-0" />
-        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-5 pt-3 pb-safe">
+        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-4 pb-[calc(30px+env(safe-area-inset-bottom))] pt-3">
           <div className="mb-3 flex flex-col items-center gap-0.5">
             <span className="text-[12px] text-muted">Total</span>
             <Price usd={amount} className="text-[18px] text-foreground" bold />

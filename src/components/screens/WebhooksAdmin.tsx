@@ -62,7 +62,7 @@ export default function WebhooksAdmin() {
   return (
     <MobileShell>
       <div className="flex min-h-screen flex-col">
-        <div className="sticky top-0 z-30 flex h-[60px] items-center justify-between bg-background px-5">
+        <div className="sticky top-0 z-30 flex h-[60px] items-center justify-between bg-background px-4">
           <h1 className="text-[18px] font-extrabold text-foreground">
             Webhooks
           </h1>
@@ -77,7 +77,7 @@ export default function WebhooksAdmin() {
           </button>
         </div>
 
-        <div className="flex flex-col gap-4 px-5 pb-6 pt-4">
+        <div className="flex flex-col gap-4 px-4 pb-6 pt-4">
           {loading ? <SkeletonRows rows={3} height={120} /> : null}
 
           {!loading && error ? (

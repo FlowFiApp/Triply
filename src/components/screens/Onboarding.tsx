@@ -53,7 +53,7 @@ export default function Onboarding() {
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] w-full items-center justify-between bg-background px-6">
+          <div className="sticky top-0 z-30 flex h-[60px] w-full items-center justify-between bg-background px-4">
             <TriplyLogo size={27} />
             <button
               onClick={finish}
@@ -63,7 +63,7 @@ export default function Onboarding() {
             </button>
           </div>
 
-          <div className="px-6 pt-3">
+          <div className="px-4 pt-3">
             <div className="overflow-hidden rounded-3xl border border-border">
               <div
                 className="flex transition-transform duration-300 ease-out"
@@ -89,7 +89,7 @@ export default function Onboarding() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6 px-6 pb-6 pt-6">
+        <div className="flex flex-col gap-6 px-4 pb-6 pt-6">
           <div className="flex flex-col gap-3">
             <h1 className="text-[26px] font-extrabold leading-9 text-foreground">
               {SLIDES[step].title}

@@ -294,13 +294,13 @@ export default function MyTrips() {
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center bg-background px-5">
+          <div className="sticky top-0 z-30 flex h-[60px] items-center bg-background px-4">
             <h1 className="text-[18px] font-extrabold text-foreground">
               My Bookings
             </h1>
           </div>
 
-          <div className="px-5 pt-1">
+          <div className="px-4 pt-1">
             <div className="flex items-center gap-1 rounded-[10px] bg-[#f1f5f9] p-[3px] dark:bg-[#090d1a]">
               {["Upcoming", variant === "b" ? `Past (${past.length})` : "Past"].map(
                 (t) => {
@@ -323,7 +323,7 @@ export default function MyTrips() {
             </div>
           </div>
 
-          <div className="px-5 pt-3">
+          <div className="px-4 pt-3">
             <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3">
               <Search size={16} className="text-muted" />
               <input
@@ -352,7 +352,7 @@ export default function MyTrips() {
             ) : null}
           </div>
 
-          <div className="flex flex-col gap-4 px-5 pb-5 pt-4">
+          <div className="flex flex-col gap-4 px-4 pb-5 pt-4">
             {loading ? <SkeletonRows rows={3} height={168} /> : null}
 
             {!loading && error ? (
@@ -371,7 +371,7 @@ export default function MyTrips() {
                 action={
                   <Link
                     href="/"
-                    className="mt-2 flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-5 text-[13px] font-bold text-accent-2"
+                    className="mt-2 flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-4 text-[13px] font-bold text-accent-2"
                   >
                     Start Booking
                   </Link>
@@ -413,7 +413,7 @@ export default function MyTrips() {
       <Sheet open={Boolean(changing)} onClose={() => setChanging(null)}>
         {changing ? (
           <>
-            <div className="px-5 py-3">
+            <div className="px-4 py-3">
               <h2 className="text-[18px] font-extrabold text-foreground">
                 Change Flight
               </h2>
@@ -421,7 +421,7 @@ export default function MyTrips() {
                 {changing.dep} → {changing.arr}
               </p>
             </div>
-            <div className="flex flex-col gap-3 px-5 py-4">
+            <div className="flex flex-col gap-3 px-4 py-4">
               <label className="flex flex-col gap-1.5">
                 <span className="text-[11px] font-semibold text-muted">
                   New departure date
@@ -443,7 +443,7 @@ export default function MyTrips() {
             </div>
 
             {changeOffers.length > 0 ? (
-              <div className="flex flex-col gap-2 px-5 pb-4">
+              <div className="flex flex-col gap-2 px-4 pb-4">
                 <span className="text-[12px] font-semibold text-muted">
                   Available changes
                 </span>

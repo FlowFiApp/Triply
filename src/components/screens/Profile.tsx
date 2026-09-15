@@ -80,7 +80,7 @@ export default function Profile() {
     <MobileShell>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <div className="flex flex-col items-center gap-2 px-5 pb-4 pt-8">
+          <div className="flex flex-col items-center gap-2 px-4 pb-4 pt-8">
             <Avatar size={80} href="/profile" />
             <h1 className="text-[20px] font-extrabold text-foreground">
               Triply Traveler
@@ -97,7 +97,7 @@ export default function Profile() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-3 px-5 py-4">
+          <div className="flex flex-col gap-3 px-4 py-4">
             <h2 className="text-[13px] font-bold uppercase tracking-wide text-muted">
               Appearance
             </h2>
@@ -127,7 +127,7 @@ export default function Profile() {
             </Row>
           </div>
 
-          <div className="flex flex-col gap-3 px-5 py-4">
+          <div className="flex flex-col gap-3 px-4 py-4">
             <h2 className="text-[13px] font-bold uppercase tracking-wide text-muted">
               Wallet
             </h2>
@@ -157,7 +157,7 @@ export default function Profile() {
             </Row>
           </div>
 
-          <div className="flex flex-col gap-3 px-5 py-4">
+          <div className="flex flex-col gap-3 px-4 py-4">
             <h2 className="text-[13px] font-bold uppercase tracking-wide text-muted">
               Nimiq Points
             </h2>
@@ -186,7 +186,7 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 px-5 py-4">
+          <div className="flex flex-col gap-3 px-4 py-4">
             <h2 className="text-[13px] font-bold uppercase tracking-wide text-muted">
               More
             </h2>
