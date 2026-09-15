@@ -26,7 +26,7 @@ function normalizeStay(r: any): StayOffer {
       ? `${acc.address?.line_one ?? ""}, ${city}`.replace(/^, /, "") || city
       : city,
     pricePerNight: nights ? amount / nights : amount,
-totalAmount: amount,
+    totalAmount: amount,
     currency: r.cheapest_rate_currency ?? "USD",
     image: acc.images?.[0]?.url ?? "",
     images: (acc.images ?? [])
@@ -36,6 +36,12 @@ totalAmount: amount,
     checkOut: r.check_out_date ?? "",
     latitude: Number(acc.coordinates?.latitude ?? 0),
     longitude: Number(acc.coordinates?.longitude ?? 0),
+    description: acc.description ?? "",
+    amenities: Array.isArray(acc.amenities) ? acc.amenities : [],
+    starRating: Number(acc.star_rating ?? 0),
+    supplierName: acc.supplier?.name ?? "",
+    checkInTime: acc.check_in_time ?? "",
+    checkOutTime: acc.check_out_time ?? "",
   };
 }
 

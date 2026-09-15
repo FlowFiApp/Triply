@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { MobileShell } from "@/components/shell";
 import TriplyLogo from "@/components/ui/triply-logo";
-import { useUpdateProfile } from "@/lib/api/hooks";
 import { haptic } from "@/lib/haptics";
 
 const SLIDES = [
@@ -33,13 +32,14 @@ const SLIDES = [
 
 export default function Onboarding() {
   const router = useRouter();
-  const updateProfile = useUpdateProfile();
   const [step, setStep] = useState(0);
   const last = step === SLIDES.length - 1;
 
   const finish = () => {
     haptic();
-    updateProfile.mutate({ onboarded: true });
+    if (typeof window !== "undefined") {
+      localStorage.setItem("triply-onboarded", "1");
+    }
     router.push("/");
   };
 
@@ -59,7 +59,7 @@ export default function Onboarding() {
               Skip
             </button>
           </div></>}>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
                  <div className="px-4 pt-3">
             <div className="overflow-hidden rounded-3xl border border-border">

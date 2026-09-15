@@ -117,7 +117,7 @@ export default function PassengersManager() {
             <Plus size={16} />
           </button>
         </div></>}>
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-full flex-col">
                <div className="flex flex-col gap-3 px-4 py-3">
           {isLoading ? (
             <SkeletonRows rows={3} height={72} />

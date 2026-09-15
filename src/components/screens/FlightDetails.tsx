@@ -65,7 +65,7 @@ export default function FlightDetails() {
   if (!offer) {
     return (
       <MobileShell>
-        <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-10 text-center">
+        <div className="flex min-h-full flex-col items-center justify-center gap-3 px-10 text-center">
           <p className="text-[16px] font-bold text-foreground">
             Flight Details
           </p>
@@ -124,7 +124,7 @@ export default function FlightDetails() {
               Fare rules
             </button>
           </div></>}>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
                  <div className="px-4 py-3">
             <div className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-[18px]">
@@ -201,6 +201,44 @@ export default function FlightDetails() {
                   </span>
                 </div>
               </div>
+
+              {(offer.aircraft ||
+                offer.cabin ||
+                offer.seatsRemaining ||
+                offer.totalBaggages) ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {offer.aircraft ? (
+                    <span className="rounded-full bg-card-2 px-2.5 py-1 text-[11px] font-medium text-foreground">
+                      ✈ {offer.aircraft}
+                    </span>
+                  ) : null}
+                  {offer.cabin ? (
+                    <span className="rounded-full bg-card-2 px-2.5 py-1 text-[11px] font-medium text-foreground">
+                      {offer.cabin}
+                    </span>
+                  ) : null}
+                  {offer.seatsRemaining ? (
+                    <span className="rounded-full bg-card-2 px-2.5 py-1 text-[11px] font-medium text-foreground">
+                      {offer.seatsRemaining} seats left
+                    </span>
+                  ) : null}
+                  {offer.totalBaggages ? (
+                    <span className="rounded-full bg-card-2 px-2.5 py-1 text-[11px] font-medium text-foreground">
+                      {offer.totalBaggages} bag{offer.totalBaggages > 1 ? "s" : ""} included
+                    </span>
+                  ) : null}
+                  {offer.amenities?.length ? (
+                    offer.amenities.slice(0, 3).map((a) => (
+                      <span
+                        key={a}
+                        className="rounded-full bg-card-2 px-2.5 py-1 text-[11px] font-medium text-muted"
+                      >
+                        {a}
+                      </span>
+                    ))
+                  ) : null}
+                </div>
+              ) : null}
             </div>
           </div>
 

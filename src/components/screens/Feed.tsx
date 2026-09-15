@@ -23,6 +23,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { motion } from "framer-motion";
 import ShareMomentSheet from "@/components/screens/ShareMomentSheet";
+import PointsChip from "@/components/ui/points-chip";
 import { useToast } from "@/lib/toast";
 import { share } from "@/lib/share";
 import { compactCount, feedHandle, feedKey, timeAgo } from "@/lib/feed-client";
@@ -310,15 +311,18 @@ export default function Feed() {
             <h1 className="text-[24px] font-extrabold leading-[35px] text-foreground">
               Feeds
             </h1>
-            <button
-              onClick={() => setShareOpen(true)}
-              aria-label="Share a moment"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-card-2 text-foreground"
-            >
-              <SquarePen size={18} className="text-accent-fg" />
-            </button>
+            <div className="flex items-center gap-2">
+              <PointsChip />
+              <button
+                onClick={() => setShareOpen(true)}
+                aria-label="Share a moment"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-card-2 text-foreground"
+              >
+                <SquarePen size={18} className="text-accent-fg" />
+              </button>
+            </div>
           </div></>}>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
                  <div className="flex gap-2 px-4 pb-1 pt-1">
             {[

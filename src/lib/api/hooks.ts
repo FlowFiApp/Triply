@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { FeedMoment } from "@/lib/feed";
 import type { FlightOffer, StayOffer, CarOffer } from "@/lib/types";
 import { identityKey, loadDeviceId } from "@/lib/identity";
+import { useWalletState } from "@/lib/wallet-state";
 
 export type Profile = { username: string; avatar: string; onboarded: boolean };
 
@@ -43,13 +44,28 @@ export async function ensureIdentity(): Promise<string> {
   return identityKey();
 }
 
+/**
+ * Reactive identity key: the connected Nimiq address takes precedence over the
+ * anonymous server-issued device id. When the wallet connects/disconnects the
+ * key changes, so identity-scoped queries refetch against the right user.
+ */
+export function useIdentityKey(): string {
+  const { state } = useWalletState();
+  const { data: deviceId } = useQuery({
+    queryKey: ["deviceId"],
+    queryFn: loadDeviceId,
+  });
+  return state.nimiqAddress ?? deviceId ?? "anonymous";
+}
+
 // ---- Feed ----------------------------------------------------------------
 
 export function useFeed() {
+  const key = useIdentityKey();
   return useQuery({
-    queryKey: ["feed"],
+    queryKey: ["feed", key],
+    enabled: Boolean(key && key !== "anonymous"),
     queryFn: async () => {
-      const key = await ensureIdentity();
       const d = await getJson<{ moments: FeedMoment[]; live: boolean; error?: string }>(
         `/api/feed?key=${encodeURIComponent(key)}`,
       );
@@ -131,12 +147,11 @@ export function useUploadFeedImage() {
 // ---- Profile -------------------------------------------------------------
 
 export function useProfile() {
+  const key = useIdentityKey();
   return useQuery({
-    queryKey: ["profile"],
-    queryFn: async () => {
-      const key = await ensureIdentity();
-      return getJson<Profile>(`/api/profile?key=${encodeURIComponent(key)}`);
-    },
+    queryKey: ["profile", key],
+    enabled: Boolean(key && key !== "anonymous"),
+    queryFn: () => getJson<Profile>(`/api/profile?key=${encodeURIComponent(key)}`),
   });
 }
 
@@ -182,10 +197,11 @@ export function useSender() {
 // ---- Saved passengers ----------------------------------------------------
 
 export function usePassengers() {
+  const key = useIdentityKey();
   return useQuery({
-    queryKey: ["passengers"],
+    queryKey: ["passengers", key],
+    enabled: Boolean(key && key !== "anonymous"),
     queryFn: async () => {
-      const key = await ensureIdentity();
       const d = await getJson<{ passengers: SavedPassenger[] }>(
         `/api/passengers?key=${encodeURIComponent(key)}`,
       );

@@ -4,12 +4,11 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
-  useState,
   type ReactNode,
 } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { identityKey, loadDeviceId } from "@/lib/identity";
+import { loadDeviceId } from "@/lib/identity";
+import { useWalletState } from "@/lib/wallet-state";
 
 type PointsContextValue = {
   earned: number;
@@ -34,17 +33,12 @@ export function usePoints() {
 
 export function PointsProvider({ children }: { children: ReactNode }) {
   const qc = useQueryClient();
-  const [key, setKey] = useState("");
-
-  useEffect(() => {
-    let alive = true;
-    loadDeviceId().then(() => {
-      if (alive) setKey(identityKey());
-    });
-    return () => {
-      alive = false;
-    };
-  }, []);
+  const { state } = useWalletState();
+  const { data: deviceId } = useQuery({
+    queryKey: ["deviceId"],
+    queryFn: loadDeviceId,
+  });
+  const key = state.nimiqAddress ?? deviceId ?? "";
 
   const { data } = useQuery({
     queryKey: ["points", key],
@@ -65,8 +59,8 @@ export function PointsProvider({ children }: { children: ReactNode }) {
 
   const redeem = useCallback(
     async (amount: number, recipient?: string) => {
-      const k = identityKey();
-      if (!k || k === "anonymous") {
+      const k = state.nimiqAddress ?? deviceId ?? "";
+      if (!k) {
         return { ok: false, message: "Identity unavailable." };
       }
       try {
@@ -85,7 +79,7 @@ export function PointsProvider({ children }: { children: ReactNode }) {
         return { ok: false, message: "Redeem failed." };
       }
     },
-    [refresh],
+    [refresh, state.nimiqAddress, deviceId],
   );
 
   return (

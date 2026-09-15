@@ -189,7 +189,7 @@ export default function PassengerDetails() {
               </p>
             </div>
           </div></>}>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
                  <div className="px-4 py-3">
             <div className="flex items-center gap-2.5 rounded-xl bg-accent-2 p-3">

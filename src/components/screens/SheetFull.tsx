@@ -325,7 +325,7 @@ export default function SheetFull({ kind }: { kind: SheetKind }) {
   const cfg = CONFIG[kind] ?? CONFIG.class;
   return (
     <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
           <div className="flex h-6 items-center justify-center pt-2.5">
             <span className="h-1 w-10 rounded-full bg-card-3" />

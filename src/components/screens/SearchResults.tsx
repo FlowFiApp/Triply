@@ -36,7 +36,14 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
             <span className="text-[11px] text-muted">
               Flight {offer.airlineCode}
               {offer.flightNumber}
+              {offer.cabin ? ` · ${offer.cabin}` : ""}
             </span>
+            {(offer.aircraft || offer.totalBaggages) ? (
+              <span className="text-[10px] text-muted">
+                {offer.aircraft}
+                {offer.totalBaggages ? ` · ${offer.totalBaggages} bag${offer.totalBaggages > 1 ? "s" : ""}` : ""}
+              </span>
+            ) : null}
           </div>
         </div>
 <div className="flex flex-col items-end">
@@ -194,7 +201,7 @@ export default function SearchResults() {
               </p>
             </div>
           </div></>}>
-<div className="flex min-h-screen flex-col justify-between">
+<div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
 
 <div className="flex h-[60px] items-center gap-2 py-3">
@@ -204,7 +211,7 @@ export default function SearchResults() {
               className={`ml-4 flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-accent-2 ${
                 filters.price || filters.airlines?.length
                   ? "bg-accent-2 text-accent"
-                  : "bg-accent text-accent-fg"
+                  : "bg-accent text-accent-2"
               }`}
             >
               <SlidersHorizontal size={16} />

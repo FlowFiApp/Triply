@@ -99,7 +99,7 @@ export default function SeatMapSheet({
                   !s.available
                     ? "cursor-not-allowed bg-card-2 text-muted/50"
                     : picked === s.id
-                      ? "bg-accent text-accent-fg"
+                      ? "bg-accent text-accent-2"
                       : "bg-accent-2 text-accent"
                 }`}
               >

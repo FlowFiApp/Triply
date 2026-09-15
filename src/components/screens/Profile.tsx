@@ -108,7 +108,7 @@ export default function Profile() {
 
   return (
     <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
           <div className="flex flex-col items-center gap-2 px-4 pb-4 pt-8">
             <button
@@ -116,7 +116,7 @@ export default function Profile() {
               aria-label="Edit profile"
               className="relative"
             >
-              <span className="block h-20 w-20 overflow-hidden rounded-full border border-accent-2">
+              <span className="block h-20 w-20 overflow-hidden rounded-full">
                 {avatar ? (
                   <Image
                     src={avatar}

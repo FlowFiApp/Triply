@@ -71,7 +71,7 @@ useEffect(() => {
   if (!order) {
     return (
       <MobileShell>
-        <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-10 text-center">
+        <div className="flex min-h-full flex-col items-center justify-center gap-3 px-10 text-center">
           <p className="text-[16px] font-bold text-foreground">E-Ticket</p>
           <p className="text-[13px] text-muted">
             {error || "No issued ticket yet. Complete a booking to generate one."}
@@ -105,7 +105,7 @@ useEffect(() => {
             </Link>
             <h1 className="text-[18px] font-extrabold text-foreground">E-Ticket</h1>
           </div></>}>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
                  <div className="flex flex-col gap-4 px-4 py-5">
             <div className="flex items-center gap-3 rounded-xl bg-[#22c55e] px-3 py-3">

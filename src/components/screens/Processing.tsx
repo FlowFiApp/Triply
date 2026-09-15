@@ -117,7 +117,7 @@ export default function Processing() {
               Processing Booking
             </h1>
           </div></>}>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
                  <div className="flex flex-col items-center gap-8 px-4 py-5">
             <div className="flex w-full flex-col gap-5 rounded-2xl border border-border bg-card p-4">

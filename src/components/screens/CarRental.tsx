@@ -26,6 +26,7 @@ import {
 import { directionsUrl } from "@/components/MapEmbed";
 import GoogleMap from "@/components/GoogleMap";
 import ExploreTabs from "@/components/ui/explore-tabs";
+import PointsChip from "@/components/ui/points-chip";
 import LocationMapSheet from "@/components/ui/location-map-sheet";
 import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
@@ -144,8 +145,8 @@ export function CarSearch() {
   };
 
   return (
-    <MobileShell header={<BrandHeader right={<Avatar />} />}>
-      <div className="flex min-h-screen flex-col justify-between">
+    <MobileShell header={<BrandHeader right={<div className="flex items-center gap-2"><PointsChip /><Avatar /></div>} />}>
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
           <ExploreTabs active="cars" />
 
@@ -340,6 +341,13 @@ export function CarSearch() {
                         {c.category || "Car"} • {c.transmission || "—"}
                         {c.supplier ? ` • ${c.supplier}` : ""}
                       </span>
+                      <span className="flex flex-wrap gap-1 text-[10px] text-muted">
+                        {c.seats ? <span>• {c.seats} seats</span> : null}
+                        {c.doors ? <span>• {c.doors} doors</span> : null}
+                        {c.luggage ? <span>• {c.luggage} bags</span> : null}
+                        {c.fuel ? <span>• {c.fuel}</span> : null}
+                        {c.airCon ? <span>• A/C</span> : null}
+                      </span>
                       <span className="text-[13px] font-semibold text-accent-fg">
                         <UsdtAmount value={c.pricePerDay} /> / day
                       </span>
@@ -393,7 +401,7 @@ export function CarDetails() {
   if (!car) {
     return (
       <MobileShell>
-        <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-10 text-center">
+        <div className="flex min-h-full flex-col items-center justify-center gap-3 px-10 text-center">
           <p className="text-[16px] font-bold text-foreground">Car Rental</p>
           <p className="text-[13px] text-muted">Select a car first.</p>
           <button
@@ -468,7 +476,7 @@ export function CarDetails() {
               </p>
             </div>
           </div></>}>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
                  <ImageCarousel
             images={car.image ? [car.image] : []}
@@ -492,6 +500,16 @@ export function CarDetails() {
                   <Users size={14} /> {car.seats} Passengers
                 </span>
               ) : null}
+              {car.doors ? (
+                <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
+                  <Settings size={14} className="text-accent-fg" /> {car.doors} doors
+                </span>
+              ) : null}
+              {car.luggage ? (
+                <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
+                  🧳 {car.luggage} bags
+                </span>
+              ) : null}
               <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
                 <Settings size={14} className="text-accent-fg" />{" "}
                 {car.transmission || "Automatic"}
@@ -501,10 +519,41 @@ export function CarDetails() {
                   <Fuel size={14} className="text-accent-fg" /> {car.fuel}
                 </span>
               ) : null}
-              <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
-                <AirVent size={14} /> A/C
-              </span>
+              {car.airCon ? (
+                <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
+                  <AirVent size={14} /> A/C
+                </span>
+              ) : null}
+              {car.gps ? (
+                <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
+                  GPS
+                </span>
+              ) : null}
+              {car.bluetooth ? (
+                <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
+                  Bluetooth
+                </span>
+              ) : null}
+              {car.usb ? (
+                <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
+                  USB
+                </span>
+              ) : null}
             </div>
+
+            {(car.mileage || car.fuelPolicy || car.insuranceIncluded || car.additionalDriver) ? (
+              <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3">
+                <h3 className="text-[14px] font-bold text-foreground">
+                  Rental terms
+                </h3>
+                <div className="flex flex-col gap-1.5 text-[12px] text-foreground">
+                  {car.mileage ? <span>• Mileage: {car.mileage}</span> : null}
+                  {car.fuelPolicy ? <span>• Fuel: {car.fuelPolicy}</span> : null}
+                  {car.insuranceIncluded ? <span>• Insurance included</span> : null}
+                  {car.additionalDriver ? <span>• Additional driver included</span> : null}
+                </div>
+              </div>
+            ) : null}
 
             <div className="h-px w-full bg-border" />
 
@@ -671,7 +720,7 @@ export function CarConfirmed() {
   if (!booking) {
     return (
       <MobileShell>
-        <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-10 text-center">
+        <div className="flex min-h-full flex-col items-center justify-center gap-3 px-10 text-center">
           <p className="text-[16px] font-bold text-foreground">
             Rental Confirmed
           </p>
@@ -691,7 +740,7 @@ export function CarConfirmed() {
 
   return (
     <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
           <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-card px-4 py-3">
             <button

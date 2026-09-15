@@ -15,6 +15,7 @@ import Identicon from "@/components/ui/identicon";
 import TriplyLogo from "@/components/ui/triply-logo";
 import { useI18n } from "@/lib/i18n";
 import { useWalletState } from "@/lib/wallet-state";
+import { useProfile } from "@/lib/api/hooks";
 import { getDeviceId } from "@/lib/identity";
 
 export function MobileShell({
@@ -50,10 +51,28 @@ export function Avatar({
   seed?: string;
 }) {
   const { state } = useWalletState();
+  const { data: profile } = useProfile();
   const seedValue = seed ?? state.nimiqAddress ?? (getDeviceId() || "triply");
+  const avatarSrc = profile?.avatar;
   return (
     <Link href={href} aria-label="Profile">
-      <Identicon seed={seedValue} size={size} />
+      <span
+        className="block overflow-hidden rounded-full"
+        style={{ width: size, height: size }}
+      >
+        {avatarSrc ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={avatarSrc}
+            alt="Avatar"
+            width={size}
+            height={size}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <Identicon seed={seedValue} size={size} />
+        )}
+      </span>
     </Link>
   );
 }
@@ -139,9 +158,9 @@ export function BottomTabBar({ active = "Home" }: { active?: string }) {
                   className="relative -top-4 flex w-16 flex-col items-center gap-1"
                 >
                   <span className="flex h-[48px] w-[48px] items-center justify-center rounded-full bg-accent shadow-[0_4px_8px_rgba(0,0,0,0.20)]">
-                    <Icon size={22} className="text-accent-fg" />
+                    <Icon size={22} className="text-accent-2" />
                   </span>
-                  <span className="text-[10px] leading-[13px] font-semibold text-accent-fg">
+                  <span className="text-[10px] leading-[13px] font-semibold text-accent-2">
                     {label}
                   </span>
                 </Link>

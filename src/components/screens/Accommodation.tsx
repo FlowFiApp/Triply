@@ -25,6 +25,7 @@ import { Sheet } from "@/components/ui";
 import { directionsUrl } from "@/components/MapEmbed";
 import GoogleMap from "@/components/GoogleMap";
 import ExploreTabs from "@/components/ui/explore-tabs";
+import PointsChip from "@/components/ui/points-chip";
 import LocationMapSheet from "@/components/ui/location-map-sheet";
 import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
@@ -199,8 +200,8 @@ export function AccSearch() {
   };
 
   return (
-    <MobileShell header={<BrandHeader right={<Avatar />} />}>
-      <div className="flex min-h-screen flex-col justify-between">
+    <MobileShell header={<BrandHeader right={<div className="flex items-center gap-2"><PointsChip /><Avatar /></div>} />}>
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
           <ExploreTabs active="stays" />
 
@@ -357,8 +358,13 @@ export function AccSearch() {
                       ) : null}
                     </div>
                     <div className="flex flex-1 flex-col gap-0.5">
-                      <span className="text-[14px] font-bold text-foreground">
+                      <span className="flex items-center gap-1 text-[14px] font-bold text-foreground">
                         {s.name}
+                        {s.starRating ? (
+                          <span className="flex text-[11px] text-accent-fg">
+                            {"★".repeat(Math.min(s.starRating, 5))}
+                          </span>
+                        ) : null}
                       </span>
                       <span className="flex items-center gap-1 text-[12px] text-muted">
                         <Star
@@ -481,7 +487,7 @@ export function AccDetails() {
   if (!stay) {
     return (
       <MobileShell>
-        <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-10 text-center">
+        <div className="flex min-h-full flex-col items-center justify-center gap-3 px-10 text-center">
           <p className="text-[16px] font-bold text-foreground">Accommodation</p>
           <p className="text-[13px] text-muted">Select a stay first.</p>
           <button
@@ -561,7 +567,7 @@ export function AccDetails() {
               </p>
             </div>
           </div></>}>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
                  <ImageCarousel
             images={
@@ -588,7 +594,42 @@ export function AccDetails() {
                   {stay.location}
                 </span>
               </div>
+              {stay.starRating ? (
+                <span className="text-[12px] font-semibold text-accent-fg">
+                  {"★".repeat(Math.min(stay.starRating, 5))} {stay.starRating}-star
+                </span>
+              ) : null}
+              {stay.description ? (
+                <p className="mt-1 text-[13px] leading-5 text-muted">
+                  {stay.description}
+                </p>
+              ) : null}
             </div>
+
+            {(stay.amenities?.length ||
+              stay.checkInTime ||
+              stay.supplierName) ? (
+              <div className="flex flex-wrap gap-1.5">
+                {stay.amenities?.slice(0, 6).map((a) => (
+                  <span
+                    key={a}
+                    className="rounded-full bg-card-2 px-2.5 py-1 text-[11px] font-medium text-foreground"
+                  >
+                    {a}
+                  </span>
+                ))}
+                {stay.checkInTime ? (
+                  <span className="rounded-full bg-card-2 px-2.5 py-1 text-[11px] font-medium text-muted">
+                    Check-in {stay.checkInTime}
+                  </span>
+                ) : null}
+                {stay.supplierName ? (
+                  <span className="rounded-full bg-card-2 px-2.5 py-1 text-[11px] font-medium text-muted">
+                    by {stay.supplierName}
+                  </span>
+                ) : null}
+              </div>
+            ) : null}
 
             <div className="h-px w-full bg-border" />
 
@@ -799,7 +840,7 @@ export function AccConfirmed() {
   if (!booking) {
     return (
       <MobileShell>
-        <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-10 text-center">
+        <div className="flex min-h-full flex-col items-center justify-center gap-3 px-10 text-center">
           <p className="text-[16px] font-bold text-foreground">
             Stay Confirmed
           </p>
@@ -819,7 +860,7 @@ export function AccConfirmed() {
 
   return (
     <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
           <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-card px-4 py-3">
             <button

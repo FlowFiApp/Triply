@@ -11,6 +11,7 @@ function normalizeCar(r: any): CarOffer {
       86400000,
   ));
   const total = testPrice(Number(r.total_amount ?? 0));
+  const features = Array.isArray(car.features) ? car.features : [];
   return {
     id: r.id ?? r.rate_id,
     name: car.name ?? car.category ?? "Car",
@@ -23,7 +24,7 @@ function normalizeCar(r: any): CarOffer {
     currency: r.total_currency ?? "USD",
     supplier: r.supplier?.name ?? "",
     image: car.image_url ?? "",
-pickup: r.pickup_location?.name ?? "",
+    pickup: r.pickup_location?.name ?? "",
     dropoff: r.dropoff_location?.name ?? "",
     pickupTime: r.pickup_time ?? "",
     dropoffTime: r.dropoff_time ?? "",
@@ -31,6 +32,20 @@ pickup: r.pickup_location?.name ?? "",
     pickupLongitude: Number(r.pickup_location?.geographic_coordinates?.longitude ?? 0),
     dropoffLatitude: Number(r.dropoff_location?.geographic_coordinates?.latitude ?? 0),
     dropoffLongitude: Number(r.dropoff_location?.geographic_coordinates?.longitude ?? 0),
+    doors: Number(car.doors ?? 0),
+    luggage: Number(car.luggage_capacity ?? 0),
+    airCon: features.includes("air_conditioning"),
+    gps: features.includes("gps"),
+    bluetooth: features.includes("bluetooth"),
+    usb: features.includes("usb"),
+    mileage: r.mileage?.unlimited
+      ? "Unlimited"
+      : r.mileage?.free_km
+        ? `${r.mileage.free_km} km`
+        : "",
+    fuelPolicy: r.fuel_policy ?? "",
+    insuranceIncluded: Boolean(r.insurance?.included),
+    additionalDriver: Boolean(r.additional_driver?.included),
   };
 }
 

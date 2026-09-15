@@ -24,12 +24,10 @@ import {
 import AirportCombobox from "@/components/ui/airport-combobox";
 import DateRangePicker, { formatDateLabel } from "@/components/ui/date-range-picker";
 import { PassengerClassSheet } from "@/components/screens/sheets";
-import RedeemSheet from "@/components/screens/RedeemSheet";
-import { NimiqAmount } from "@/components/ui/Nimiq";
+import PointsChip from "@/components/ui/points-chip";
 import PopularDestinations from "@/components/ui/popular-destinations";
 import AnimatedTabs from "@/components/ui/animated-tabs";
 import { Skeleton } from "@/components/ui/feedback";
-import { usePoints } from "@/lib/points";
 import { addRecentSearch, getRecentSearches, type SearchIntent } from "@/lib/store";
 import { useFlow } from "@/lib/flow-context";
 import { useI18n } from "@/lib/i18n";
@@ -63,8 +61,6 @@ export default function HomeSearch() {
 const [range, setRange] = useState({ start: "2026-10-24", end: "2026-11-08" });
   const [dateOpen, setDateOpen] = useState(false);
   const [paxOpen, setPaxOpen] = useState(false);
-  const [redeemOpen, setRedeemOpen] = useState(false);
-  const { available } = usePoints();
   const [pax, setPax] = useState({ Adults: 2, Children: 0, Infants: 0 });
   const [cabin, setCabin] = useState("Economy");
   const [extraLegs, setExtraLegs] = useState<
@@ -159,19 +155,14 @@ return (
         <BrandHeader
           right={
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => setRedeemOpen(true)}
-                className="flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-[13px] font-bold text-foreground"
-              >
-                <NimiqAmount value={available} />
-              </button>
+              <PointsChip />
               <Avatar />
             </div>
           }
         />
       }
     >
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
 
           <div className="px-4 py-3">
@@ -182,7 +173,7 @@ return (
                   value={tripType}
                   onChange={(v) => setTripType(v as (typeof TRIP_TYPES)[number])}
                   activeClassName="bg-accent"
-                  selectedTextClassName="text-accent-fg"
+                  selectedTextClassName="text-accent-2"
                 />
 
               <div className="flex items-center gap-4">
@@ -412,7 +403,6 @@ return (
         }}
       />
 
-      <RedeemSheet open={redeemOpen} onClose={() => setRedeemOpen(false)} />
     </MobileShell>
   );
 }

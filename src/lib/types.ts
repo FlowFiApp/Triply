@@ -39,6 +39,13 @@ export type FlightOffer = {
   direct: boolean;
   services: OfferService[];
   conditions?: OfferConditions;
+  aircraft?: string;
+  cabin?: string;
+  seatsRemaining?: number;
+  amenities?: string[];
+  totalBaggages?: number;
+  partialRefundable?: boolean;
+  partialChangeable?: boolean;
 };
 
 export type PassengerInfo = {
@@ -93,6 +100,12 @@ export type StayOffer = {
   rateId?: string;
   latitude: number;
   longitude: number;
+  description?: string;
+  amenities?: string[];
+  starRating?: number;
+  supplierName?: string;
+  checkInTime?: string;
+  checkOutTime?: string;
 };
 
 export type CarOffer = {
@@ -115,6 +128,16 @@ export type CarOffer = {
   pickupLongitude: number;
   dropoffLatitude: number;
   dropoffLongitude: number;
+  doors?: number;
+  luggage?: number;
+  airCon?: boolean;
+  gps?: boolean;
+  bluetooth?: boolean;
+  usb?: boolean;
+  mileage?: string;
+  fuelPolicy?: string;
+  insuranceIncluded?: boolean;
+  additionalDriver?: boolean;
 };
 
 export type StayBooking = {

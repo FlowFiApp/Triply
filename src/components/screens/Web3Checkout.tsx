@@ -136,7 +136,7 @@ export default function Web3Checkout() {
   if (!offer) {
     return (
       <MobileShell>
-        <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-10 text-center">
+        <div className="flex min-h-full flex-col items-center justify-center gap-3 px-10 text-center">
           <p className="text-[16px] font-bold text-foreground">Checkout</p>
           <p className="text-[13px] text-muted">
             No offer selected. Choose a flight first to see your order summary.
@@ -172,7 +172,7 @@ export default function Web3Checkout() {
               Checkout
             </h1>
           </div></>}>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
                  <div className="px-4 py-3">
             <div className="flex items-center justify-between rounded-xl bg-accent-2 px-3 py-3">

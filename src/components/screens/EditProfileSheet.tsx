@@ -68,7 +68,7 @@ export default function EditProfileSheet({
 
         <div className="flex flex-col items-center gap-3">
           <button onClick={pick} className="relative" aria-label="Change avatar">
-            <span className="block h-24 w-24 overflow-hidden rounded-full border-2 border-accent-2">
+            <span className="block h-24 w-24 overflow-hidden rounded-full">
               {avatar ? (
                 <Image
                   src={avatar}

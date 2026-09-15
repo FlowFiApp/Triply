@@ -10,6 +10,7 @@ import { EmptyState, SkeletonRows, Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import { Sheet } from "@/components/ui";
 import AnimatedTabs from "@/components/ui/animated-tabs";
+import PointsChip from "@/components/ui/points-chip";
 import { useFlow } from "@/lib/flow-context";
 import { useBookings } from "@/lib/api/hooks";
 import { useQueryClient } from "@tanstack/react-query";
@@ -75,7 +76,7 @@ function BookingCard({
     <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#5b7cfa] text-accent-fg">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#5b7cfa] text-accent-2">
             <Icon size={16} />
           </span>
           <div className="flex flex-col">
@@ -282,12 +283,13 @@ export default function MyTrips() {
   const visible = lookedUp ? [lookedUp] : tab === "Upcoming" ? upcoming : past;
 
   return (
-    <MobileShell header={<><div className="flex h-[60px] items-center bg-background px-4">
+    <MobileShell header={<><div className="flex h-[60px] items-center justify-between bg-background px-4">
             <h1 className="text-[18px] font-extrabold text-foreground">
               My Bookings
             </h1>
+            <PointsChip />
           </div></>}>
-      <div className="flex min-h-screen flex-col justify-between">
+      <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
                  <div className="px-4 pt-1">
             <AnimatedTabs
@@ -296,7 +298,7 @@ export default function MyTrips() {
               value={tab === "Upcoming" ? "Upcoming" : `Past (${past.length})`}
               onChange={(v) => setTab(v.startsWith("Upcoming") ? "Upcoming" : "Past")}
               activeClassName="bg-accent"
-              selectedTextClassName="text-accent-fg"
+              selectedTextClassName="text-accent-2"
             />
           </div>
 

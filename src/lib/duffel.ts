@@ -137,6 +137,13 @@ export async function searchFlights(
       duration: formatDuration(slice.duration),
       stops: stopsCount === 0 ? "Direct" : `${stopsCount} Stop${stopsCount > 1 ? "s" : ""}`,
       direct: stopsCount === 0,
+      aircraft: seg.aircraft?.name ?? seg.aircraft?.code ?? "",
+      cabin: offer.passengers?.[0]?.cabin_class_marketing ?? "Economy",
+      seatsRemaining: Number(offer.seats_remaining ?? 0),
+      amenities: Array.isArray(offer.amenities) ? offer.amenities : [],
+      totalBaggages: Number(offer.total_baggages ?? 0),
+      partialRefundable: Boolean(offer.partial_refundable),
+      partialChangeable: Boolean(offer.partial_changeable),
       services: (offer.available_services ?? []).map((s: any) => ({
         id: s.id,
         name: s.name,

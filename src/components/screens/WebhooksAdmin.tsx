@@ -74,7 +74,7 @@ export default function WebhooksAdmin() {
             <RefreshCw size={14} /> Refresh
           </button>
         </div></>}>
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-full flex-col">
                <div className="flex flex-col gap-4 px-4 pb-6 pt-4">
           {loading ? <SkeletonRows rows={3} height={120} /> : null}
 
