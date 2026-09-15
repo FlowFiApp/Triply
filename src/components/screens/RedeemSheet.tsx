@@ -46,7 +46,20 @@ export default function RedeemSheet({
   };
 
   return (
-    <Sheet open={open} onClose={onClose}>
+    <Sheet
+      open={open}
+      onClose={onClose}
+      footer={
+        <button
+          onClick={onRedeem}
+          disabled={available <= 0}
+          className="tap flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
+        >
+          <NimiqIcon size={16} />
+          Redeem {formatNim(available)} NIM
+        </button>
+      }
+    >
       <div className="px-4 py-3">
         <h2 className="text-[18px] font-extrabold text-foreground">Redeem Nimiq</h2>
         <p className="text-[12px] text-muted">Use your NIM rewards.</p>
@@ -77,17 +90,6 @@ export default function RedeemSheet({
             it is fixed.
           </p>
         ) : null}
-      </div>
-
-      <div className="px-4 pb-4 pt-4">
-        <button
-          onClick={onRedeem}
-          disabled={available <= 0}
-          className="tap flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
-        >
-          <NimiqIcon size={16} />
-          Redeem {formatNim(available)} NIM
-        </button>
       </div>
     </Sheet>
   );

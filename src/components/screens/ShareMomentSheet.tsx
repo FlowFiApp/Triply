@@ -9,6 +9,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Sheet } from "@/components/ui";
 import PlacesCombobox from "@/components/ui/places-combobox";
+import { NimiqIcon } from "@/components/ui/Nimiq";
 import { useToast } from "@/lib/toast";
 import { compressImage } from "@/lib/image";
 import { useCreateMoment, useUploadFeedImage } from "@/lib/api/hooks";
@@ -87,8 +88,37 @@ export default function ShareMomentSheet({
   };
 
   return (
-    <Sheet open={open} onClose={onClose}>
-      <div className="px-4 pb-6 pt-1">
+    <Sheet
+      open={open}
+      onClose={onClose}
+      height="92vh"
+      footer={
+        <>
+          <div className="mb-2 flex items-center justify-between rounded-xl bg-accent-2/20 px-3 py-2">
+            <span className="text-[12px] font-semibold text-foreground">
+              You&apos;ll earn
+            </span>
+            <span className="flex items-center gap-1 text-[12px] font-bold text-accent-2">
+              +2 <NimiqIcon size={13} />
+            </span>
+          </div>
+          <button
+            onClick={post}
+            disabled={posting || images.length < 1}
+            className="tap flex h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
+          >
+            {posting ? (
+              <>
+                <Loader2 size={18} className="animate-spin" /> Posting…
+              </>
+            ) : (
+              "Post Moment"
+            )}
+          </button>
+        </>
+      }
+    >
+      <div className="px-4 pb-2">
         <h2 className="mb-4 text-[17px] font-extrabold text-foreground">
           Share Your Moment
         </h2>
@@ -175,20 +205,6 @@ export default function ShareMomentSheet({
             placeholder="Add Location"
           />
         </div>
-
-        <button
-          onClick={post}
-          disabled={posting || images.length < 1}
-          className="tap mt-5 flex h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
-        >
-          {posting ? (
-            <>
-              <Loader2 size={18} className="animate-spin" /> Posting…
-            </>
-          ) : (
-            "Post Moment"
-          )}
-        </button>
       </div>
     </Sheet>
   );

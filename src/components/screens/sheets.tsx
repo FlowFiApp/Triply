@@ -53,7 +53,21 @@ export function PassengerClassSheet({
   const cabins = ["Economy", "Premium Economy", "Business", "First Class"];
 
   return (
-    <Sheet open={open} onClose={onClose}>
+    <Sheet
+      open={open}
+      onClose={onClose}
+      footer={
+        <button
+          onClick={() => {
+            onApply?.(counts, cabin);
+            onClose();
+          }}
+          className="flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"
+        >
+          Apply Selection
+        </button>
+      }
+    >
       <SheetTitle>Passengers &amp; Cabin Class</SheetTitle>
       <div className="flex flex-col gap-4 px-4 py-5">
         {rows.map((r) => (
@@ -122,18 +136,6 @@ export function PassengerClassSheet({
             );
           })}
         </div>
-      </div>
-
-      <div className="px-4 pb-4 pt-2">
-        <button
-          onClick={() => {
-            onApply?.(counts, cabin);
-            onClose();
-          }}
-          className="flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"
-        >
-          Apply Selection
-        </button>
       </div>
     </Sheet>
   );

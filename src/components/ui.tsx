@@ -150,12 +150,14 @@ export function Sheet({
   open,
   onClose,
   children,
-  height = "auto",
+  height,
+  footer,
 }: {
   open: boolean;
   onClose: () => void;
   children: ReactNode;
   height?: string;
+  footer?: ReactNode;
 }) {
   if (!open) return null;
   return (
@@ -166,10 +168,10 @@ export function Sheet({
         onClick={onClose}
       />
       <div
-        className="relative z-10 w-full max-w-[768px] rounded-t-2xl border-t border-border bg-card animate-sheet-up"
-        style={{ height }}
+        className="relative z-10 flex max-h-[90vh] w-full max-w-[768px] flex-col rounded-t-2xl border-t border-border bg-card animate-sheet-up"
+        style={height ? { height } : undefined}
       >
-        <div className="mx-auto mt-2.5 h-1 w-10 rounded-full bg-muted/50" />
+        <div className="mx-auto mt-2.5 h-1 w-10 shrink-0 rounded-full bg-muted/50" />
         <button
           onClick={onClose}
           aria-label="Close sheet"
@@ -177,9 +179,15 @@ export function Sheet({
         >
           <X size={16} />
         </button>
-        <div className="max-h-[70vh] overflow-y-auto overflow-x-hidden pb-8 pt-4 no-scrollbar">
+        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pt-4 no-scrollbar">
           {children}
+          {footer ? null : <div className="h-8 w-full" />}
         </div>
+        {footer ? (
+          <div className="shrink-0 border-t border-border px-4 py-3 pb-[max(env(safe-area-inset-bottom),12px)]">
+            {footer}
+          </div>
+        ) : null}
       </div>
     </div>
   );

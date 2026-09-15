@@ -173,8 +173,20 @@ export default function PassengersManager() {
         </div>
       </div>
 
-      <Sheet open={open} onClose={() => setOpen(false)}>
-        <div className="px-4 pb-6 pt-1">
+      <Sheet
+        open={open}
+        onClose={() => setOpen(false)}
+        footer={
+          <button
+            onClick={submit}
+            disabled={savePassenger.isPending}
+            className="tap flex h-[48px] w-full items-center justify-center rounded-xl bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
+          >
+            Save Passenger
+          </button>
+        }
+      >
+        <div className="px-4 pb-2">
           <h2 className="mb-4 text-[17px] font-extrabold text-foreground">
             {draft.id ? "Edit Passenger" : "Add Passenger"}
           </h2>
@@ -214,13 +226,6 @@ export default function PassengersManager() {
             </div>
             <Field label="Passport Number" value={draft.passport ?? ""} onChange={set("passport")} placeholder="A00123456" />
           </div>
-          <button
-            onClick={submit}
-            disabled={savePassenger.isPending}
-            className="tap mt-5 flex h-[48px] w-full items-center justify-center rounded-xl bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
-          >
-            Save Passenger
-          </button>
         </div>
       </Sheet>
     </MobileShell>

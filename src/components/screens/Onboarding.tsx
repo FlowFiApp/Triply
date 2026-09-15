@@ -19,8 +19,8 @@ const SLIDES = [
     img: "/usdt.png",
   },
   {
-    title: "Your Ticket, Saved Locally",
-    body: "No login needed to access your bookings. Your e-tickets and boarding passes are saved securely on your device.",
+    title: "Your Bookings, Everywhere",
+    body: "No login needed. Your e-tickets and bookings are saved to your Triply account and follow you across devices — see them anytime in My Bookings.",
     img: "https://images.unsplash.com/photo-1503220317375-aaad61436b1b?auto=format&fit=crop&w=800&q=70",
   },
   {

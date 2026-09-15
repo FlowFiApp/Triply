@@ -60,8 +60,20 @@ export default function EditProfileSheet({
   };
 
   return (
-    <Sheet open={open} onClose={onClose}>
-      <div className="px-4 pb-6 pt-1">
+    <Sheet
+      open={open}
+      onClose={onClose}
+      footer={
+        <button
+          onClick={save}
+          disabled={saving}
+          className="tap flex h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
+        >
+          {saving ? <Loader2 size={18} className="animate-spin" /> : null} Save Profile
+        </button>
+      }
+    >
+      <div className="px-4 pb-2">
         <h2 className="mb-4 text-[17px] font-extrabold text-foreground">
           Edit Profile
         </h2>
@@ -112,14 +124,6 @@ export default function EditProfileSheet({
             className="h-[43px] w-full rounded-[10px] border border-border bg-card px-3 text-[16px] text-foreground outline-none placeholder:text-muted"
           />
         </label>
-
-        <button
-          onClick={save}
-          disabled={saving}
-          className="tap mt-5 flex h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
-        >
-          {saving ? <Loader2 size={18} className="animate-spin" /> : null} Save Profile
-        </button>
       </div>
     </Sheet>
   );
