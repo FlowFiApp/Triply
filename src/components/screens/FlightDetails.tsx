@@ -10,6 +10,7 @@ import SeatMapSheet from "@/components/screens/SeatMapSheet";
 import Identicon from "@/components/ui/identicon";
 import { Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
+import { NimiqIcon } from "@/components/ui/Nimiq";
 import { useFlow } from "@/lib/flow-context";
 import type { FlightOffer, OfferService } from "@/lib/types";
 
@@ -262,7 +263,7 @@ export default function FlightDetails() {
               <h2 className="text-[16px] font-bold text-foreground">
                 Similar Flights
               </h2>
-              <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
+              <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 no-scrollbar">
                 {similar.map((s, i) => (
                   <button
                     key={s.id}
@@ -299,6 +300,10 @@ export default function FlightDetails() {
               className="text-[20px] leading-6 text-foreground"
               bold
             />
+            <span className="flex items-center gap-1 text-[12px] font-bold text-accent-2">
+              You earn +{Math.round(total * 2)}
+              <NimiqIcon size={13} />
+            </span>
           </div>
           <button
             onClick={proceed}

@@ -357,7 +357,7 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
               <h2 className="text-[16px] font-bold leading-[21px] text-foreground">
                 Recent Searches
               </h2>
-              <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+              <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 no-scrollbar">
                 {recent.map((r) => (
                   <button
                     key={r}

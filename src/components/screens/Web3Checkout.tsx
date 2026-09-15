@@ -8,6 +8,7 @@ import { MobileShell } from "@/components/shell";
 import { WalletConnectSheet } from "@/components/screens/sheets";
 import { Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
+import { NimiqIcon } from "@/components/ui/Nimiq";
 import { useToast } from "@/lib/toast";
 import { useWalletState } from "@/lib/wallet-state";
 import { useFlow } from "@/lib/flow-context";
@@ -205,6 +206,15 @@ export default function Web3Checkout() {
                 ) : null}
                 <div className="h-px w-full bg-border" />
                 <BreakdownRow label="Total Payable" amount={amount} bold />
+              </div>
+              <div className="flex items-center justify-between rounded-lg bg-accent-2/20 px-3 py-2">
+                <span className="text-[12px] font-semibold text-foreground">
+                  Points you&apos;ll earn
+                </span>
+                <span className="flex items-center gap-1 text-[12px] font-bold text-accent-2">
+                  +{Math.round(amount * 2)}
+                  <NimiqIcon size={13} />
+                </span>
               </div>
             </div>
           </div>

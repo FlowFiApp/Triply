@@ -615,7 +615,7 @@ export function AccDetails() {
                 <h3 className="text-[14px] font-bold text-foreground">
                   Similar stays
                 </h3>
-                <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
+                <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 no-scrollbar">
                   {similar.map((s, i) => (
                     <button
                       key={s.id}
@@ -941,7 +941,7 @@ export function AccConfirmed() {
           </div>
         </div>
 
-        <BottomTabBar active="Bookmarks" />
+        <BottomTabBar active="Bookings" />
       </div>
     </MobileShell>
   );

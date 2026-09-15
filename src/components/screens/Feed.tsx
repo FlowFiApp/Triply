@@ -386,7 +386,7 @@ export default function Feed() {
             ))}
           </div>
 
-          <div className="flex gap-3.5 px-4 py-3">
+          <div className="flex gap-3.5 overflow-x-auto px-4 py-3 no-scrollbar">
             <button
               onClick={() => setShareOpen(true)}
               className="flex w-[58px] shrink-0 flex-col items-center gap-1.5"

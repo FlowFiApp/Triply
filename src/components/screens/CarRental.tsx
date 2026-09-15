@@ -819,7 +819,7 @@ export function CarConfirmed() {
           </div>
         </div>
 
-        <BottomTabBar active="Bookmarks" />
+        <BottomTabBar active="Bookings" />
       </div>
     </MobileShell>
   );

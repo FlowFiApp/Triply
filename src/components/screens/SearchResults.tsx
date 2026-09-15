@@ -210,11 +210,11 @@ return () => {
             </div>
           </div>
 
-          <div className="flex h-[60px] items-center gap-2 px-4 py-3">
+<div className="flex h-[60px] items-center gap-2 py-3">
             <button
               onClick={() => setFilterOpen(true)}
               aria-label="Open filters"
-              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-accent-2 ${
+              className={`ml-4 flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-accent-2 ${
                 filters.price || filters.airlines?.length
                   ? "bg-accent-2 text-accent"
                   : "bg-accent text-accent-2"
@@ -222,7 +222,7 @@ return () => {
             >
               <SlidersHorizontal size={16} />
             </button>
-            <div className="flex gap-2 overflow-x-auto no-scrollbar">
+            <div className="flex gap-2 overflow-x-auto pr-4 no-scrollbar">
               {FILTERS.map((f) => (
                 <Chip key={f} active={active === f} onClick={() => setActive(f)}>
                   {f}

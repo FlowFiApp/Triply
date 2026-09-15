@@ -401,7 +401,7 @@ export default function MyTrips() {
           </div>
         </div>
 
-        <BottomTabBar active="Bookmarks" />
+        <BottomTabBar active="Bookings" />
       </div>
 
       <Sheet open={Boolean(changing)} onClose={() => setChanging(null)}>
