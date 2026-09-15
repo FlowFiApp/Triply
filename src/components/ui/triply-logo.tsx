@@ -10,7 +10,7 @@ export default function TriplyLogo({
     <span className={`inline-flex items-center gap-1.5 ${className}`}>
       <svg
         width={width}
-        height={size}
+        height={"fit-content"}
         viewBox="0 0 704 470"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +38,12 @@ export default function TriplyLogo({
             <rect width="704" height="470" fill="white" />
           </clipPath>
           <clipPath id="triply-logo-clip1">
-            <rect width="480" height="480" fill="white" transform="translate(67.3457 95.1436) rotate(-12)" />
+            <rect
+              width="480"
+              height="480"
+              fill="white"
+              transform="translate(67.3457 95.1436) rotate(-12)"
+            />
           </clipPath>
         </defs>
       </svg>
