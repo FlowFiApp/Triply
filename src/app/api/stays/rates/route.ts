@@ -1,5 +1,5 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
-import { duffelErrorMessage, getStayRates } from "@/lib/duffel";
+import { duffelErrorMessage } from "@/lib/duffel";
 import { testPrice } from "@/lib/pricing";
 import mockData from "@/lib/data.json";
 

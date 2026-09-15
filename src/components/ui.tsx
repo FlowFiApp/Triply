@@ -159,7 +159,7 @@ export function Sheet({
 }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-40 flex items-end justify-center">
+    <div className="fixed inset-0 z-[60] flex items-end justify-center">
       <button
         aria-label="Close"
         className="absolute inset-0 bg-black/60 animate-fade-in"

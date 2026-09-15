@@ -1,4 +1,5 @@
-import { createCarBooking, duffelErrorMessage, ensureCustomerUser } from "@/lib/duffel";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { duffelErrorMessage } from "@/lib/duffel";
 import type { CarBooking } from "@/lib/types";
 import { testPrice } from "@/lib/pricing";
 import mockData from "@/lib/data.json";
@@ -6,7 +7,6 @@ import mockData from "@/lib/data.json";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const driver = body.driver;
 
     // NOTE: Cars are served from the bundled local dataset (Duffel Cars is
     // not enabled on this token). The live Duffel booking + customer-user calls

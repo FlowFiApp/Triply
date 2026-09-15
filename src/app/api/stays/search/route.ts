@@ -1,5 +1,5 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
-import { duffelErrorMessage, geocode, searchStays } from "@/lib/duffel";
+import { duffelErrorMessage } from "@/lib/duffel";
 import type { StayOffer } from "@/lib/types";
 import { testPrice } from "@/lib/pricing";
 import mockData from "@/lib/data.json";
@@ -50,13 +50,6 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const testMode = Boolean(body.test);
-    const query = body.destination ?? "London, UK";
-    // Duffel Test Hotels only appear in Test Mode at these exact coordinates.
-    const place = testMode
-      ? { latitude: -24.38, longitude: -128.32 }
-      : body.latitude
-        ? { latitude: body.latitude, longitude: body.longitude }
-        : await geocode(query);
 
     // NOTE: The Stays product is not enabled on this Duffel token
     // (Duffel returns "This Duffel token does not have access to this product").

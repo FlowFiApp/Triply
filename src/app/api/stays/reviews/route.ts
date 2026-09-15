@@ -1,4 +1,4 @@
-import { duffelErrorMessage, getAccommodationReviews } from "@/lib/duffel";
+import { duffelErrorMessage } from "@/lib/duffel";
 
 const LOCAL_REVIEWS = [
   { reviewer_name: "Olivia M.", rating: 5, title: "Outstanding stay", body: "Gorgeous property, spotless rooms and a very attentive team. Would happily return." },

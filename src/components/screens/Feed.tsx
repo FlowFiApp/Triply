@@ -32,6 +32,7 @@ import {
   useDeleteMoment,
   useFeed,
   useLikeMoment,
+  useProfile,
   useShareMoment,
 } from "@/lib/api/hooks";
 import type { FeedMoment } from "@/lib/feed";
@@ -189,6 +190,7 @@ function CommentsSheet({
 }) {
   const { toast } = useToast();
   const commentMoment = useCommentMoment();
+  const { data: profile } = useProfile();
   const [text, setText] = useState("");
   const [comments, setComments] = useState(moment?.comments ?? []);
 
@@ -227,17 +229,32 @@ function CommentsSheet({
               No comments yet. Be the first!
             </p>
           ) : (
-            comments.map((c) => (
-              <div key={c.id} className="flex items-start gap-2.5">
-                <Identicon seed={c.userKey} size={30} />
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-[12px] font-bold text-foreground">
-                    {c.userKey === "me" ? "You" : feedHandle(c.userKey)}
+            comments.map((c) => {
+              const mine = c.userKey === feedKey();
+              return (
+                <div key={c.id} className="flex items-start gap-2.5">
+                  <span className="block h-[30px] w-[30px] shrink-0 overflow-hidden rounded-full">
+                    {mine && profile?.avatar ? (
+                      <Image
+                        src={profile.avatar}
+                        alt=""
+                        width={30}
+                        height={30}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <Identicon seed={c.userKey} size={30} />
+                    )}
                   </span>
-                  <p className="text-[13px] leading-5 text-foreground">{c.text}</p>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[12px] font-bold text-foreground">
+                      {mine ? "You" : feedHandle(c.userKey)}
+                    </span>
+                    <p className="text-[13px] leading-5 text-foreground">{c.text}</p>
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
