@@ -22,6 +22,7 @@ import {
   MobileShell,
 } from "@/components/shell";
 import { Sheet } from "@/components/ui";
+import { AuthActionButton } from "@/components/ui/auth-action";
 import { directionsUrl } from "@/components/MapEmbed";
 import GoogleMap from "@/components/GoogleMap";
 import ExploreTabs from "@/components/ui/explore-tabs";
@@ -765,8 +766,8 @@ export function AccDetails() {
               <UsdtAmount value={stay.totalAmount} />
             </span>
           </div>
-          <button
-            onClick={() => {
+          <AuthActionButton
+            onAction={() => {
               haptic();
               book();
             }}
@@ -780,7 +781,7 @@ export function AccDetails() {
             ) : (
               "Book Now"
             )}
-          </button>
+          </AuthActionButton>
         </div>
       </div>
     </MobileShell>

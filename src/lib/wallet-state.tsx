@@ -36,7 +36,7 @@ export type AuthState =
 type WalletContextValue = {
   state: WalletState;
   authState: AuthState;
-  connectIdentity: () => Promise<WalletState>;
+  connectIdentity: () => Promise<{ state: WalletState; authenticated: boolean }>;
   connectEvm: () => Promise<string | undefined>;
   disconnect: () => void;
   pay: (amount: number, from?: string) => Promise<PaymentResult>;
@@ -82,27 +82,31 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     );
   }, [state]);
 
-  const runSignIn = useCallback(async (address: string) => {
+  const runSignIn = useCallback(async (address: string): Promise<boolean> => {
     const sign = signerRef.current;
     if (!sign) {
       setAuthState("unauthenticated");
-      return;
+      return false;
     }
     const existing = await getSession();
     if (existing.authenticated && existing.address === address) {
       setAuthState("authenticated");
-      return;
+      return true;
     }
     setAuthState("authenticating");
     const ok = await signInWithNimiq(address, sign);
     setAuthState(ok ? "authenticated" : "unauthenticated");
+    return ok;
   }, []);
 
-  const connectIdentity = useCallback(async (): Promise<WalletState> => {
+  const connectIdentity = useCallback(async (): Promise<{
+    state: WalletState;
+    authenticated: boolean;
+  }> => {
     const identity = await connectNimiqIdentity();
     if (!identity) {
       setAuthState("unauthenticated");
-      return { connected: false };
+      return { state: { connected: false }, authenticated: false };
     }
     signerRef.current = identity.sign;
     const next: WalletState = {
@@ -112,8 +116,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       source: "Nimiq Pay",
     };
     setState(next);
-    await runSignIn(identity.address);
-    return next;
+    const authenticated = await runSignIn(identity.address);
+    return { state: next, authenticated };
   }, [runSignIn]);
 
   const connectEvm = useCallback(async () => {

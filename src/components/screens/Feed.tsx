@@ -43,7 +43,13 @@ function MomentImages({ images, alt }: { images: string[]; alt: string }) {
   return (
     <div className="relative aspect-[4/5] w-full overflow-hidden bg-card-2">
       {list.length === 1 ? (
-        <Image src={list[0]} alt={alt} fill sizes="700px" className="object-cover" />
+        <Image
+          src={list[0]}
+          alt={alt}
+          fill
+          sizes="700px"
+          className="object-cover"
+        />
       ) : (
         <Swiper
           modules={[Pagination]}
@@ -62,7 +68,13 @@ function MomentImages({ images, alt }: { images: string[]; alt: string }) {
           {list.map((src) => (
             <SwiperSlide key={src} className="!h-full">
               <div className="relative h-full w-full">
-                <Image src={src} alt={alt} fill sizes="700px" className="object-cover" />
+                <Image
+                  src={src}
+                  alt={alt}
+                  fill
+                  sizes="700px"
+                  className="object-cover"
+                />
               </div>
             </SwiperSlide>
           ))}
@@ -120,7 +132,10 @@ function MomentCard({
         </button>
       </div>
 
-      <MomentImages images={moment.images} alt={moment.caption || "Travel moment"} />
+      <MomentImages
+        images={moment.images}
+        alt={moment.caption || "Travel moment"}
+      />
 
       <div className="flex items-center justify-between px-3.5">
         <div className="flex items-center gap-4">
@@ -168,7 +183,9 @@ function MomentCard({
 
       <div className="flex flex-col gap-1 px-3.5 pb-3.5">
         {moment.caption ? (
-          <p className="text-[13px] leading-5 text-foreground">{moment.caption}</p>
+          <p className="text-[13px] leading-5 text-foreground">
+            {moment.caption}
+          </p>
         ) : null}
         {moment.commentCount > 0 ? (
           <button
@@ -244,7 +261,9 @@ function CommentsSheet({
     >
       <div className="flex flex-col px-4 pb-2">
         <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-[16px] font-extrabold text-foreground">Comments</h2>
+          <h2 className="text-[16px] font-extrabold text-foreground">
+            Comments
+          </h2>
         </div>
 
         <div className="flex flex-1 flex-col gap-3 overflow-y-auto overflow-x-hidden">
@@ -274,7 +293,9 @@ function CommentsSheet({
                     <span className="text-[12px] font-bold text-foreground">
                       {mine ? "You" : feedHandle(c.userKey)}
                     </span>
-                    <p className="text-[13px] leading-5 text-foreground">{c.text}</p>
+                    <p className="text-[13px] leading-5 text-foreground">
+                      {c.text}
+                    </p>
                   </div>
                 </div>
               );
@@ -312,7 +333,11 @@ export default function Feed() {
     });
     toast(
       result === "shared" ? "success" : "info",
-      result === "shared" ? "Shared!" : result === "copied" ? "Link copied." : "Sharing unavailable.",
+      result === "shared"
+        ? "Shared!"
+        : result === "copied"
+          ? "Link copied."
+          : "Sharing unavailable.",
     );
   };
 
@@ -323,7 +348,10 @@ export default function Feed() {
       await deleteMoment.mutateAsync(m.id);
       toast("success", "Moment deleted.");
     } catch (err) {
-      toast("error", err instanceof Error ? err.message : "Could not delete this moment.");
+      toast(
+        "error",
+        err instanceof Error ? err.message : "Could not delete this moment.",
+      );
     }
   };
 
@@ -334,7 +362,10 @@ export default function Feed() {
   ).slice(0, 3);
 
   return (
-    <MobileShell header={<><div className="flex h-[60px] items-center justify-between bg-background px-4">
+    <MobileShell
+      header={
+        <>
+          <div className="flex h-[60px] items-center justify-between bg-background px-4">
             <h1 className="text-[24px] font-extrabold leading-[35px] text-foreground">
               Feeds
             </h1>
@@ -348,10 +379,13 @@ export default function Feed() {
                 <SquarePen size={18} className="text-accent-fg" />
               </button>
             </div>
-          </div></>}>
+          </div>
+        </>
+      }
+    >
       <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
-                 <div className="flex gap-2 px-4 pb-1 pt-1">
+          <div className="flex gap-2 px-4 pb-1 pt-1">
             {[
               { key: "story", label: "Story", href: "/feed" },
               { key: "stays", label: "Accommodations", href: "/stays" },
@@ -390,12 +424,13 @@ export default function Feed() {
                   <Identicon seed={feedKey()} size={58} />
                 )}
               </span>
-              <span className="text-[11px] text-muted">
-                {myName || "You"}
-              </span>
+              <span className="text-[11px] text-muted">{myName || "You"}</span>
             </button>
             {storyAuthors.map((m) => (
-              <div key={m.userId} className="flex w-[58px] shrink-0 flex-col items-center gap-1.5">
+              <div
+                key={m.userId}
+                className="flex w-[58px] shrink-0 flex-col items-center gap-1.5"
+              >
                 <span className="rounded-full border-2 border-accent p-0.5">
                   <Identicon seed={m.userId} size={52} />
                 </span>
@@ -446,10 +481,7 @@ export default function Feed() {
         <BottomTabBar active="Feed" />
       </div>
 
-      <ShareMomentSheet
-        open={shareOpen}
-        onClose={() => setShareOpen(false)}
-      />
+      <ShareMomentSheet open={shareOpen} onClose={() => setShareOpen(false)} />
       <CommentsSheet
         key={commentsFor?.id ?? "none"}
         moment={commentsFor}

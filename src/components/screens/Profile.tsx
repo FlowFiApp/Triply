@@ -98,8 +98,13 @@ export default function Profile() {
       return;
     }
     try {
-      await connectIdentity();
-      toast("success", "Signed in with Nimiq.");
+      const result = await connectIdentity();
+      toast(
+        "success",
+        result.authenticated
+          ? "Signed in with Nimiq."
+          : "Open Triply inside Nimiq Pay to sign in.",
+      );
     } catch (err) {
       toast(
         "error",

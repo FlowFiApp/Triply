@@ -29,6 +29,7 @@ import ExploreTabs from "@/components/ui/explore-tabs";
 import PointsChip from "@/components/ui/points-chip";
 import LocationMapSheet from "@/components/ui/location-map-sheet";
 import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
+import { AuthActionButton } from "@/components/ui/auth-action";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import ImageCarousel from "@/components/ui/image-carousel";
 import DateRangePicker, {
@@ -648,8 +649,8 @@ export function CarDetails() {
               <UsdtAmount value={car.totalAmount} />
             </span>
           </div>
-          <button
-            onClick={() => {
+          <AuthActionButton
+            onAction={() => {
               haptic();
               book();
             }}
@@ -663,7 +664,7 @@ export function CarDetails() {
             ) : (
               "Book This Car"
             )}
-          </button>
+          </AuthActionButton>
         </div>
       </div>
     </MobileShell>

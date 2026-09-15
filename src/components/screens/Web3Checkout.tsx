@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Clock, Copy, RadioReceiver, Wallet } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { WalletConnectSheet } from "@/components/screens/sheets";
+import { AuthActionButton } from "@/components/ui/auth-action";
 import { Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import { NimiqIcon } from "@/components/ui/Nimiq";
@@ -270,9 +271,9 @@ export default function Web3Checkout() {
             <span className="text-[12px] text-muted">Total</span>
             <Price usd={amount} className="text-[18px] text-foreground" bold />
           </div>
-          <button
+          <AuthActionButton
             disabled={connecting || !treasuryOk}
-            onClick={() => setSheetOpen(true)}
+            onAction={() => setSheetOpen(true)}
             className="tap flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-60"
           >
             {connecting ? (
@@ -288,7 +289,7 @@ export default function Web3Checkout() {
                 Connect Wallet to Pay
               </>
             )}
-          </button>
+          </AuthActionButton>
         </div>
       </div>
 

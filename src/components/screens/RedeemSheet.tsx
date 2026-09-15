@@ -2,6 +2,7 @@
 
 import { Gift } from "lucide-react";
 import { Sheet } from "@/components/ui";
+import { AuthActionButton } from "@/components/ui/auth-action";
 import { NimiqIcon, NimiqAmount } from "@/components/ui/Nimiq";
 import { usePoints } from "@/lib/points";
 import { useWalletState } from "@/lib/wallet-state";
@@ -51,14 +52,14 @@ export default function RedeemSheet({
       onClose={onClose}
       zIndex="z-[95]"
       footer={
-        <button
-          onClick={onRedeem}
+        <AuthActionButton
+          onAction={onRedeem}
           disabled={available <= 0}
           className="tap flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
         >
           <NimiqIcon size={16} />
           Redeem {formatNim(available)} NIM
-        </button>
+        </AuthActionButton>
       }
     >
       <div className="px-4 py-3">

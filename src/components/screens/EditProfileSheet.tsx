@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { Camera, Loader2 } from "lucide-react";
 import { Sheet } from "@/components/ui";
+import { AuthActionButton } from "@/components/ui/auth-action";
 import Identicon from "@/components/ui/identicon";
 import { useToast } from "@/lib/toast";
 import { compressImage } from "@/lib/image";
@@ -64,13 +65,13 @@ export default function EditProfileSheet({
       open={open}
       onClose={onClose}
       footer={
-        <button
-          onClick={save}
+        <AuthActionButton
+          onAction={save}
           disabled={saving}
           className="tap flex h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
         >
           {saving ? <Loader2 size={18} className="animate-spin" /> : null} Save Profile
-        </button>
+        </AuthActionButton>
       }
     >
       <div className="px-4 pb-2">

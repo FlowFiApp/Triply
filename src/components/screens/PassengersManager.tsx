@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronLeft, Pencil, Plus, Trash2, UserRound } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { Sheet } from "@/components/ui";
+import { AuthActionButton } from "@/components/ui/auth-action";
 import PhoneInput from "@/components/ui/phone-input";
 import { SkeletonRows } from "@/components/ui/feedback";
 import { useToast } from "@/lib/toast";
@@ -177,13 +178,13 @@ export default function PassengersManager() {
         open={open}
         onClose={() => setOpen(false)}
         footer={
-          <button
-            onClick={submit}
+          <AuthActionButton
+            onAction={submit}
             disabled={savePassenger.isPending}
             className="tap flex h-[48px] w-full items-center justify-center rounded-xl bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
           >
             Save Passenger
-          </button>
+          </AuthActionButton>
         }
       >
         <div className="px-4 pb-2">
