@@ -281,6 +281,20 @@ export async function incrementMomentShare(momentId: string): Promise<void> {
     .updateOne({ _id: new ObjectId(momentId) }, { $inc: { shareCount: 1 } });
 }
 
+/** Deletes a moment only when the requester owns it. Returns the deleted images. */
+export async function deleteMoment(
+  momentId: string,
+  userKey: string,
+): Promise<{ deleted: boolean; images: string[] }> {
+  const db = await getDb();
+  const doc = await db
+    .collection<MomentDoc>("moments")
+    .findOne({ _id: new ObjectId(momentId), userId: userKey });
+  if (!doc) return { deleted: false, images: [] };
+  await db.collection<MomentDoc>("moments").deleteOne({ _id: new ObjectId(momentId) });
+  return { deleted: true, images: doc.images ?? [] };
+}
+
 export async function getPoints(userKey: string) {
   const user = await getUser(userKey);
   return user
