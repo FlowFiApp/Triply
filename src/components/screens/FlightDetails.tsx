@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { ElementType } from "react";
 import { useRouter } from "next/navigation";
 import { Luggage, MonitorPlay } from "lucide-react";
@@ -10,10 +10,7 @@ import SeatMapSheet from "@/components/screens/SeatMapSheet";
 import Identicon from "@/components/ui/identicon";
 import { Price, SkeletonRows } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
-import { useQueryParam } from "@/lib/query";
-import { readFlow, writeFlow } from "@/lib/store";
-import { formatDuration } from "@/lib/format";
-import { testPrice } from "@/lib/pricing";
+import { useFlow } from "@/lib/flow-context";
 import type { FlightOffer, OfferService } from "@/lib/types";
 
 const SERVICE_ICON: Record<string, ElementType> = {
@@ -22,49 +19,6 @@ const SERVICE_ICON: Record<string, ElementType> = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function normalizeOffer(raw: any): FlightOffer {
-  const slice = raw.slices?.[0] ?? {};
-  const seg = slice.segments?.[0] ?? {};
-  const tax = testPrice(Number(raw.tax_amount ?? 0));
-  const total = testPrice(Number(raw.total_amount ?? 0));
-  const fmt = (iso: string) => {
-    if (!iso) return "--:--";
-    const d = new Date(iso);
-    return `${String(d.getHours()).padStart(2, "0")}:${String(
-      d.getMinutes(),
-    ).padStart(2, "0")}`;
-  };
-  const stops = (slice.segments?.length ?? 1) - 1;
-  return {
-    id: raw.id,
-    airline: seg.marketing_carrier?.name ?? "",
-    airlineCode: seg.marketing_carrier?.iata_code ?? "",
-    flightNumber: seg.marketing_carrier_flight_number ?? "",
-    price: total,
-    currency: raw.total_currency ?? "USD",
-    baseAmount: Math.max(0, total - tax),
-    taxAmount: tax,
-    depTime: fmt(seg.departing_at),
-    arrTime: fmt(seg.arriving_at),
-    origin: seg.origin?.iata_code ?? "",
-    destination: seg.destination?.iata_code ?? "",
-    depDate: (seg.departing_at ?? "").slice(0, 10),
-    arrDate: (seg.arriving_at ?? "").slice(0, 10),
-    duration: formatDuration(slice.duration),
-    stops: stops === 0 ? "Direct" : `${stops} Stop${stops > 1 ? "s" : ""}`,
-    direct: stops === 0,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    services: (raw.available_services ?? []).map((s: any) => ({
-      id: s.id,
-      name: s.name,
-      type: s.type,
-      totalAmount: testPrice(Number(s.total_amount ?? 0)),
-      currency: s.total_currency ?? "USD",
-    })),
-    conditions: raw.conditions ?? undefined,
-  };
-}
-
 function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
   return (
     <button
@@ -82,60 +36,32 @@ function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
 
 export default function FlightDetails() {
   const router = useRouter();
-  const offerId = useQueryParam("offer", "");
-  const [rulesOpen, setRulesOpen] = useState(
-    useQueryParam("sheet", "") === "rules",
-  );
+  const { flow, setFlow } = useFlow();
+  const [rulesOpen, setRulesOpen] = useState(false);
   const [offer, setOffer] = useState<FlightOffer | null>(
-    () => readFlow().offer ?? null,
+    () => flow.offer ?? null,
   );
-  const [loading, setLoading] = useState(Boolean(offerId));
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(
-    offerId ? "" : "No offer selected. Search for a flight first.",
+    flow.offer ? "" : "No offer selected. Search for a flight first.",
   );
   const [selected, setSelected] = useState<Record<string, boolean>>(() => {
-    const ids = readFlow().selectedServiceIds ?? [];
+    const ids = flow.selectedServiceIds ?? [];
     return Object.fromEntries(ids.map((id) => [id, true]));
   });
   const [seatOpen, setSeatOpen] = useState(false);
   const [chosenSeat, setChosenSeat] = useState<string | null>(
-    () => readFlow().seat ?? null,
+    () => flow.seat ?? null,
   );
-  const similar = (readFlow().offers ?? [])
+  const similar = (flow.offers ?? [])
     .filter((o) => o.id !== offer?.id)
     .slice(0, 6);
-
-  useEffect(() => {
-    if (!offerId) return;
-    let ignore = false;
-    fetch(`/api/flights/offers/${encodeURIComponent(offerId)}`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (ignore) return;
-        if (d.offer) {
-          const o = normalizeOffer(d.offer);
-          setOffer(o);
-          writeFlow({ offer: o });
-        } else {
-          setError(d.error ?? "Offer could not be loaded.");
-        }
-      })
-      .catch(() => {
-        if (!ignore) setError("Failed to load the offer.");
-      })
-      .finally(() => {
-        if (!ignore) setLoading(false);
-      });
-    return () => {
-      ignore = true;
-    };
-  }, [offerId]);
 
   const selectSimilar = (o: FlightOffer) => {
     setOffer(o);
     setSelected({});
     setChosenSeat(null);
-    writeFlow({ offer: o, amount: o.price, selectedServiceIds: [], seat: undefined });
+    setFlow({ offer: o, amount: o.price, selectedServiceIds: [], seat: undefined });
     window.scrollTo({ top: 0 });
   };
 
@@ -174,10 +100,10 @@ export default function FlightDetails() {
   const selectedServices: OfferService[] = addons.filter((a) => selected[a.id]);
   const total =
     offer.price + selectedServices.reduce((sum, s) => sum + s.totalAmount, 0);
-  const passengerCount = readFlow().passengers ?? 1;
+  const passengerCount = flow.passengers ?? 1;
 
   const proceed = () => {
-    writeFlow({
+    setFlow({
       offer: { ...offer, services: addons },
       amount: total,
       passengers: passengerCount,

@@ -25,14 +25,12 @@ function Cell({ label, value }: { label: string; value: string }) {
 }
 
 export default function ETicket() {
-  const orderId = useQueryParam("order", "");
-  const [order, setOrder] = useState<OrderRecord | null>(() => {
-    const flow = readFlow();
-    return flow.order ?? null;
-  });
+  const { flow } = useFlow();
+  const [order, setOrder] = useState<OrderRecord | null>(
+    () => flow.order ?? null,
+  );
   const [error, setError] = useState("");
   const { toast } = useToast();
-  const flow = readFlow();
   const txHash = flow.txHash ?? "";
   const chain = CHAINS.polygon;
 

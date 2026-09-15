@@ -8,10 +8,9 @@ import { MobileShell } from "@/components/shell";
 import { WalletConnectSheet } from "@/components/screens/sheets";
 import { Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
-import { useQueryParam } from "@/lib/query";
-import { readFlow } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { useWalletState } from "@/lib/wallet-state";
+import { useFlow } from "@/lib/flow-context";
 import { CHAINS } from "@/lib/wallet";
 import { clientConfig } from "@/lib/config";
 import { copyNimiqAddress, copyText } from "@/lib/nimiq";
@@ -90,13 +89,12 @@ function WalletStatusBar({
 
 export default function Web3Checkout() {
   const router = useRouter();
-  const [sheetOpen, setSheetOpen] = useState(
-    useQueryParam("sheet", "") === "wallet",
-  );
+  const [sheetOpen, setSheetOpen] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [seconds, setSeconds] = useState(14 * 60 + 59);
   const { toast } = useToast();
   const { state, connect, disconnect, pay } = useWalletState();
+  const { flow, setFlow } = useFlow();
   const treasuryOk = clientConfig().find(
     (c) => c.key === "NEXT_PUBLIC_TREASURY_WALLET_ADDRESS",
   )?.ok;
@@ -106,7 +104,6 @@ export default function Web3Checkout() {
     return () => clearInterval(t);
   }, []);
 
-  const flow = readFlow();
   const offer = flow.offer;
   const amount = flow.amount ?? offer?.price ?? 0;
   const base = offer ? offer.price - offer.taxAmount : amount;
@@ -119,12 +116,10 @@ export default function Web3Checkout() {
     setSheetOpen(false);
     setConnecting(true);
     try {
-      const wallet = await connect();
+      await connect();
       const res = await pay(amount);
-      const from = wallet.evmAddress ?? "";
-      router.push(
-        `/processing?amount=${amount}&chain=${res.chain}&tx=${res.hash}&from=${from}`,
-      );
+      setFlow({ amount, txHash: res.hash, chain: res.chain });
+      router.push("/processing");
     } catch (err) {
       toast(
         "error",

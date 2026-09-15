@@ -7,8 +7,7 @@ import { ChevronDown, ShieldCheck } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { PassengerClassSheet } from "@/components/screens/sheets";
 import PhoneInput from "@/components/ui/phone-input";
-import { useQueryParam } from "@/lib/query";
-import { readFlow, writeFlow } from "@/lib/store";
+import { useFlow } from "@/lib/flow-context";
 import { useToast } from "@/lib/toast";
 import type { PassengerInfo } from "@/lib/types";
 
@@ -85,11 +84,10 @@ const empty: PassengerInfo = {
 
 export default function PassengerDetails() {
   const router = useRouter();
-  const [classOpen, setClassOpen] = useState(
-    useQueryParam("sheet", "") === "class",
-  );
-  const next = useQueryParam("next", "");
-  const passengerCount = readFlow().passengers ?? 1;
+  const { flow, setFlow } = useFlow();
+  const [classOpen, setClassOpen] = useState(false);
+  const next = flow.next ?? "";
+  const passengerCount = flow.passengers ?? 1;
   const [forms, setForms] = useState<PassengerInfo[]>(() =>
     Array.from({ length: passengerCount }, () => ({ ...empty })),
   );
@@ -132,7 +130,7 @@ export default function PassengerDetails() {
       );
       return;
     }
-    writeFlow({ passenger: forms[0], passengersList: forms });
+    setFlow({ passenger: forms[0], passengersList: forms });
     router.push(next || "/checkout");
   };
 
@@ -143,9 +141,7 @@ export default function PassengerDetails() {
           <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-4 py-3">
             <button
               onClick={() => {
-                const offerId = readFlow().offer?.id;
-                const backTo =
-                  next || (offerId ? `/flight?offer=${encodeURIComponent(offerId)}` : "/search");
+                const backTo = next || (flow.offer ? "/flight" : "/search");
                 router.push(backTo);
               }}
               className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground"

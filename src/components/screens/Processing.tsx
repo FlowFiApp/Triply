@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Check, Copy, ExternalLink } from "lucide-react";
 import { MobileShell } from "@/components/shell";
-import { useQueryParam } from "@/lib/query";
-import { readFlow, writeFlow } from "@/lib/store";
+import { useFlow } from "@/lib/flow-context";
 import { useToast } from "@/lib/toast";
 import { useWalletState } from "@/lib/wallet-state";
 import { getStoredIdentity } from "@/lib/identity";
@@ -17,8 +16,9 @@ type Step = "verify" | "settle" | "issue";
 
 export default function Processing() {
   const router = useRouter();
-  const amount = Number(useQueryParam("amount", "0"));
-  const tx = useQueryParam("tx", "");
+  const { flow, setFlow } = useFlow();
+  const amount = flow.amount ?? 0;
+  const tx = flow.txHash ?? "";
   const chain = CHAINS.polygon;
   const { state } = useWalletState();
 
@@ -33,7 +33,6 @@ export default function Processing() {
     if (ran.current) return;
     ran.current = true;
 
-    const flow = readFlow();
     const offerId = flow.offer?.id ?? "";
     const payer = state.evmAddress ?? "";
 
@@ -82,7 +81,7 @@ export default function Processing() {
       if (!data.live) {
         throw new Error(data.error ?? "Duffel is not configured");
       }
-      writeFlow({ order: data.order as OrderRecord, txHash: tx, chain: chain.id });
+      setFlow({ order: data.order as OrderRecord, txHash: tx, chain: chain.id });
       toast("success", `Booking confirmed · ${data.order.bookingRef}`);
       router.push("/ticket");
     };

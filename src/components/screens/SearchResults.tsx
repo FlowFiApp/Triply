@@ -11,17 +11,17 @@ import { Chip } from "@/components/ui";
 import Identicon from "@/components/ui/identicon";
 import { FilterSortSheet } from "@/components/screens/sheets";
 import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
-import { useQueryParam } from "@/lib/query";
-import { writeFlow } from "@/lib/store";
+import { useFlow } from "@/lib/flow-context";
 import type { FlightOffer } from "@/lib/types";
 
 const FILTERS = ["Cheapest", "Fastest", "Non-stop", "Earliest"] as const;
 
 function FlightCard({ offer }: { offer: FlightOffer }) {
   const router = useRouter();
+  const { setFlow } = useFlow();
   const select = () => {
-    writeFlow({ offer });
-    router.push(`/flight?offer=${encodeURIComponent(offer.id)}`);
+    setFlow({ offer });
+    router.push("/flight");
   };
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25)]">
