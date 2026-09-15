@@ -219,7 +219,7 @@ function CommentsSheet({
           <h2 className="text-[16px] font-extrabold text-foreground">Comments</h2>
         </div>
 
-        <div className="flex flex-1 flex-col gap-3 overflow-y-auto">
+        <div className="flex flex-1 flex-col gap-3 overflow-y-auto overflow-x-hidden">
           {comments.length === 0 ? (
             <p className="py-8 text-center text-[13px] text-muted">
               No comments yet. Be the first!
