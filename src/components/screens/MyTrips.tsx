@@ -9,6 +9,7 @@ import { BottomTabBar, MobileShell } from "@/components/shell";
 import { EmptyState, SkeletonRows, Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import { Sheet } from "@/components/ui";
+import AnimatedTabs from "@/components/ui/animated-tabs";
 import { useFlow } from "@/lib/flow-context";
 import { useToast } from "@/lib/toast";
 import { readFlow } from "@/lib/store";
@@ -306,26 +307,14 @@ export default function MyTrips() {
           </div>
 
           <div className="px-4 pt-1">
-            <div className="flex items-center gap-1 rounded-[10px] bg-card-2 p-[3px]">
-              {["Upcoming", `Past (${past.length})`].map(
-                (t) => {
-                  const key = t.startsWith("Upcoming") ? "Upcoming" : "Past";
-                  return (
-                    <button
-                      key={t}
-                      onClick={() => setTab(key)}
-                      className={`flex h-[33px] flex-1 items-center justify-center rounded-lg text-[13px] leading-[17px] transition ${
-                        tab === key
-                          ? "bg-accent font-semibold text-accent-2"
-                          : "font-medium text-muted"
-                      }`}
-                    >
-                      {t}
-                    </button>
-                  );
-                },
-              )}
-            </div>
+            <AnimatedTabs
+              id="trips"
+              options={["Upcoming", `Past (${past.length})`]}
+              value={tab === "Upcoming" ? "Upcoming" : `Past (${past.length})`}
+              onChange={(v) => setTab(v.startsWith("Upcoming") ? "Upcoming" : "Past")}
+              activeClassName="bg-accent"
+              selectedTextClassName="text-accent-2"
+            />
           </div>
 
           <div className="px-4 pt-3">

@@ -54,7 +54,7 @@ export function PassengerClassSheet({
 
   return (
     <Sheet open={open} onClose={onClose}>
-      <SheetTitle>Passengers &amp; Cabin</SheetTitle>
+      <SheetTitle>Passengers &amp; Cabin Class</SheetTitle>
       <div className="flex flex-col gap-4 px-4 py-5">
         {rows.map((r) => (
           <div

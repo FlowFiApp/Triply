@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   ArrowLeftRight,
   BedDouble,
@@ -26,6 +27,7 @@ import { PassengerClassSheet } from "@/components/screens/sheets";
 import RedeemSheet from "@/components/screens/RedeemSheet";
 import { NimiqAmount } from "@/components/ui/Nimiq";
 import PopularDestinations from "@/components/ui/popular-destinations";
+import AnimatedTabs from "@/components/ui/animated-tabs";
 import { Skeleton } from "@/components/ui/feedback";
 import { usePoints } from "@/lib/points";
 import { addRecentSearch, getRecentSearches, type SearchIntent } from "@/lib/store";
@@ -143,10 +145,12 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
     setExtraLegs((prev) => prev.map((l, idx) => (idx === i ? { ...l, ...patch } : l)));
   const removeLeg = (i: number) => setExtraLegs((prev) => prev.filter((_, idx) => idx !== i));
 
+  const [swapRot, setSwapRot] = useState(0);
   const swap = () => {
     const tmp = from;
     setFrom(to);
     setTo(tmp);
+    setSwapRot((r) => r + 180);
   };
 
   return (
@@ -168,22 +172,15 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
           />
 
           <div className="px-4 py-3">
-            <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-[18px]">
-              <div className="flex items-center gap-1 rounded-[10px] bg-card-2 p-[3px]">
-                {TRIP_TYPES.map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setTripType(t)}
-                    className={`flex h-[33px] flex-1 items-center justify-center rounded-lg text-[13px] leading-[17px] transition ${
-                      tripType === t
-                        ? "bg-accent font-semibold text-accent-2"
-                        : "font-medium text-muted"
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
+<div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-[18px]">
+                <AnimatedTabs
+                  id="trip-type"
+                  options={[...TRIP_TYPES]}
+                  value={tripType}
+                  onChange={(v) => setTripType(v as (typeof TRIP_TYPES)[number])}
+                  activeClassName="bg-accent"
+                  selectedTextClassName="text-accent-2"
+                />
 
               <div className="flex items-center gap-4">
                 <div className="flex flex-1 flex-col gap-1">
@@ -191,13 +188,16 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
                   <AirportCombobox key={`from-${from}`} value={from} onChange={setFrom} placeholder="IATA" />
                 </div>
 
-                <button
+                <motion.button
                   onClick={swap}
                   aria-label="Swap origin and destination"
+                  animate={{ rotate: swapRot }}
+                  transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                  whileTap={{ scale: 0.9 }}
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-accent-2 bg-accent text-accent-2"
                 >
                   <ArrowLeftRight size={16} strokeWidth={2.5} />
-                </button>
+                </motion.button>
 
                 <div className="flex flex-1 flex-col items-end gap-1 text-right">
                   <span className="text-[11px] font-medium text-muted">

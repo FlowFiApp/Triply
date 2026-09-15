@@ -21,6 +21,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import { motion } from "framer-motion";
 import ShareMomentSheet from "@/components/screens/ShareMomentSheet";
 import { usePoints } from "@/lib/points";
 import { useToast } from "@/lib/toast";
@@ -125,19 +126,29 @@ function MomentCard({
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button
+          <motion.button
             onClick={() => onLike(moment)}
             aria-label="Like"
+            whileTap={{ scale: 0.7 }}
             className="flex items-center gap-1"
           >
-            <Heart
-              size={20}
-              className={moment.likedByMe ? "fill-red-500 text-red-500" : "text-foreground"}
-            />
+            <motion.span
+              animate={{ scale: moment.likedByMe ? [1, 1.35, 1] : 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Heart
+                size={20}
+                className={
+                  moment.likedByMe
+                    ? "fill-red-500 text-red-500"
+                    : "text-foreground"
+                }
+              />
+            </motion.span>
             <span className="text-[13px] font-semibold text-foreground">
               {compactCount(moment.likeCount)}
             </span>
-          </button>
+          </motion.button>
           <button
             onClick={() => onComments(moment)}
             aria-label="Comment"

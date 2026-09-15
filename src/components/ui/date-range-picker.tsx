@@ -148,10 +148,10 @@ export default function DateRangePicker({
     <div className="fixed inset-0 z-50 flex items-end justify-center">
       <button
         aria-label="Close"
-        className="absolute inset-0 bg-black/50 animate-fade-in"
+        className="absolute inset-0 bg-black/60 animate-fade-in"
         onClick={onClose}
       />
-      <div className="relative z-10 w-full max-w-[768px] rounded-t-2xl border-t border-border bg-background p-5 pb-7 animate-sheet-up">
+      <div className="relative z-10 w-full max-w-[768px] rounded-t-2xl border-t border-border bg-card p-5 pb-7 animate-sheet-up">
         <div className="mb-3 flex items-center justify-between">
           <button
             onClick={prev}

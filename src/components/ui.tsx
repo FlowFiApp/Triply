@@ -162,11 +162,11 @@ export function Sheet({
     <div className="fixed inset-0 z-40 flex items-end justify-center">
       <button
         aria-label="Close"
-        className="absolute inset-0 bg-black/50 animate-fade-in"
+        className="absolute inset-0 bg-black/60 animate-fade-in"
         onClick={onClose}
       />
       <div
-        className="relative z-10 w-full max-w-[768px] rounded-t-2xl border-t border-border bg-background animate-sheet-up"
+        className="relative z-10 w-full max-w-[768px] rounded-t-2xl border-t border-border bg-card animate-sheet-up"
         style={{ height }}
       >
         <div className="mx-auto mt-2.5 h-1 w-10 rounded-full bg-muted/50" />

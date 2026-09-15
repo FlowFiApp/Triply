@@ -7,9 +7,7 @@ import {
   Car,
   ChevronRight,
   Copy,
-  Moon,
   Plane,
-  Sun,
   Wallet,
 } from "lucide-react";
 import {
@@ -17,7 +15,6 @@ import {
   BottomTabBar,
   MobileShell,
 } from "@/components/shell";
-import { useTheme } from "@/lib/theme";
 import { useWalletState } from "@/lib/wallet-state";
 import { usePoints } from "@/lib/points";
 import { useToast } from "@/lib/toast";
@@ -42,7 +39,6 @@ function Row({
 }
 
 export default function Profile() {
-  const { theme, setTheme } = useTheme();
   const { state, connect, disconnect } = useWalletState();
   const { earned, available } = usePoints();
   const { toast } = useToast();
@@ -95,36 +91,6 @@ export default function Profile() {
                 "No wallet connected"
               )}
             </p>
-          </div>
-
-          <div className="flex flex-col gap-3 px-4 py-4">
-            <h2 className="text-[13px] font-bold uppercase tracking-wide text-muted">
-              Appearance
-            </h2>
-            <Row label="Theme">
-              <div className="flex items-center gap-1 rounded-full border border-border bg-card-2 p-1">
-                <button
-                  onClick={() => setTheme("light")}
-                  className={`flex h-7 items-center gap-1 rounded-full px-3 text-[12px] font-semibold ${
-                    theme === "light"
-                      ? "bg-accent-2 text-accent"
-                      : "text-muted"
-                  }`}
-                >
-                  <Sun size={13} /> Light
-                </button>
-                <button
-                  onClick={() => setTheme("dark")}
-                  className={`flex h-7 items-center gap-1 rounded-full px-3 text-[12px] font-semibold ${
-                    theme === "dark"
-                      ? "bg-accent-2 text-accent"
-                      : "text-muted"
-                  }`}
-                >
-                  <Moon size={13} /> Dark
-                </button>
-              </div>
-            </Row>
           </div>
 
           <div className="flex flex-col gap-3 px-4 py-4">
