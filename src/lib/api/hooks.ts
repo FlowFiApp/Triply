@@ -50,10 +50,11 @@ export function useIdentityKey(): string {
 // ---- Feed ----------------------------------------------------------------
 
 export function useFeed() {
-  const key = useIdentityKey();
+  const { state } = useWalletState();
+  const key = state.nimiqAddress ?? "";
   return useQuery({
     queryKey: ["feed", key],
-    enabled: Boolean(key),
+    enabled: true,
     queryFn: async () => {
       const d = await getJson<{ moments: FeedMoment[]; live: boolean; error?: string }>(
         `/api/feed`,

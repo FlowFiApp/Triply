@@ -311,7 +311,7 @@ export function WalletConnectSheet({
           <ChevronRight size={14} className="text-muted" />
         </button>
       </div>
-      <div className="border-t border-border px-4 py-4 text-center">
+      <div className="px-4 py-4 text-center">
         <p className="text-[12px] text-muted">
           Powered by Web3 payment infrastructure. Zero setup required.
         </p>

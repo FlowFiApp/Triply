@@ -146,26 +146,26 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     [state.evmAddress],
   );
 
-  // On app start: silently connect the Nimiq identity and sign in. Polygon is
-  // never requested here — that only happens at checkout.
+  // No auto-connect: the app is fully browsable without a wallet. The Nimiq
+  // identity is only requested when the user explicitly signs in (Profile) or
+  // performs an action that needs it (posting, redeeming, booking).
+  // Silently restore an existing JWT session on open — no wallet prompt.
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const identity = await connectNimiqIdentity();
-      if (cancelled || !identity) return;
-      signerRef.current = identity.sign;
+      const session = await getSession();
+      if (cancelled || !session.authenticated || !session.address) return;
       setState((s) => ({
         ...s,
         connected: true,
-        nimiqAddress: identity.address,
+        nimiqAddress: session.address ?? undefined,
         source: "Nimiq Pay",
       }));
-      await runSignIn(identity.address);
+      setAuthState("authenticated");
     })();
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

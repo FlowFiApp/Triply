@@ -10,12 +10,12 @@ import { serializeMoment, type FeedMoment } from "@/lib/feed";
 import { requireUser, unauthorized } from "@/lib/auth";
 
 export async function GET(request: Request) {
+  // Public browse; personalizes the "liked" flag when a valid session exists.
   const user = await requireUser(request);
-  if (!user) return unauthorized();
   try {
     const moments = await listMoments(50);
     return Response.json({
-      moments: moments.map((m) => serializeMoment(m, user.key)),
+      moments: moments.map((m) => serializeMoment(m, user?.key ?? "")),
       live: true,
     });
   } catch (err) {
