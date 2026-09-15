@@ -3,7 +3,7 @@ import { getSenderBalanceLuna, rewardSenderAddress } from "@/lib/nimiq-payout";
 const LUNA_PER_NIM = 100_000n;
 
 export async function GET() {
-  const configured = Boolean(process.env.NIMIQ_REWARD_PRIVATE_KEY && process.env.NIMIQ_RPC_URL);
+  const configured = Boolean(process.env.NIMIQ_REWARD_MNEMONIC && process.env.NIMIQ_RPC_URL);
   try {
     const sender = await rewardSenderAddress();
     const balanceLuna = configured && sender ? await getSenderBalanceLuna(sender) : null;

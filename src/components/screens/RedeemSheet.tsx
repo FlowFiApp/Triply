@@ -8,7 +8,7 @@ import { useWalletState } from "@/lib/wallet-state";
 import { useToast } from "@/lib/toast";
 import { haptic } from "@/lib/haptics";
 import {
-  formatAmount,
+  formatNim,
   isValidNimiqAddress,
   normalizeNimiqAddress,
 } from "@/lib/nimiq";
@@ -63,7 +63,7 @@ export default function RedeemSheet({
         <div className="flex items-center justify-between">
           <span className="text-[12px] text-muted">NIM earned</span>
           <span className="text-[12px] font-semibold text-foreground">
-            {formatAmount(earned, 0)} NIM
+            {formatNim(earned)} NIM
           </span>
         </div>
         <p className="text-[11px] leading-4 text-muted">
@@ -86,7 +86,7 @@ export default function RedeemSheet({
           className="tap flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
         >
           <NimiqIcon size={16} />
-          Redeem {formatAmount(available, 0)} NIM
+          Redeem {formatNim(available)} NIM
         </button>
       </div>
     </Sheet>

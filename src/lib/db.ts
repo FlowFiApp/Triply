@@ -295,6 +295,52 @@ export async function deleteMoment(
   return { deleted: true, images: doc.images ?? [] };
 }
 
+// Feed reward amounts (NIM points).
+export const MOMENT_POST_REWARD = 2;
+export const MOMENT_LIKE_REWARD = 0.1;
+export const MOMENT_COMMENT_REWARD = 0.1;
+
+/**
+ * Credits feed engagement points. `idempotencyKey` makes each reward unique
+ * (e.g. `moment:<id>`, `like:<id>:<user>`, `comment:<id>`), so repeat actions
+ * never double-credit. Returns the NIM credited (0 when already rewarded).
+ */
+export async function earnMomentPoints({
+  userKey,
+  idempotencyKey,
+  bookingKind,
+  amountNim,
+}: {
+  userKey: string;
+  idempotencyKey: string;
+  bookingKind: string;
+  amountNim: number;
+}): Promise<number> {
+  const db = await getDb();
+  const existing = await db
+    .collection<RewardDoc>("rewards")
+    .findOne({ type: "earn", bookingRef: idempotencyKey });
+  if (existing) return 0;
+
+  await db.collection<RewardDoc>("rewards").insertOne({
+    userId: userKey,
+    type: "earn",
+    amountNim,
+    bookingRef: idempotencyKey,
+    bookingKind,
+    status: "sent",
+    createdAt: new Date(),
+  });
+  await db.collection<UserDoc>("users").updateOne(
+    { key: userKey },
+    {
+      $inc: { "points.earned": amountNim, "points.available": amountNim },
+      $set: { updatedAt: new Date() },
+    },
+  );
+  return amountNim;
+}
+
 export async function getPoints(userKey: string) {
   const user = await getUser(userKey);
   return user

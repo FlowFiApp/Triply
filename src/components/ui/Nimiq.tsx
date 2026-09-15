@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { formatAmount } from "@/lib/nimiq";
+import { formatNim } from "@/lib/nimiq";
 
 export function NimiqIcon({
   size = 16,
@@ -33,7 +33,7 @@ export function NimiqAmount({
 }) {
   return (
     <span className={`inline-flex items-center gap-1 ${className}`}>
-      {formatAmount(value, 0)}
+      {formatNim(value)}
       <NimiqIcon size={iconSize} />
     </span>
   );

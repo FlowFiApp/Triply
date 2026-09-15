@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const key = String(body.key ?? "");
-    const amount = Math.round(Number(body.amount ?? 0));
+    const amount = Math.round(Number(body.amount ?? 0) * 10) / 10; // 1-decimal precision
     const recipient = cleanRecipient(String(body.recipient ?? "")); // user's Nimiq address
 
     if (!key) return Response.json({ ok: false, error: "Missing identity." }, { status: 400 });

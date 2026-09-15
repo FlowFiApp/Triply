@@ -46,3 +46,8 @@ export function formatAmount(value: number, maxDecimals = 2): string {
     return value.toFixed(maxDecimals);
   }
 }
+
+/** Formats NIM points: whole numbers without decimals, fractions with one. */
+export function formatNim(value: number): string {
+  return Number.isInteger(value) ? formatAmount(value, 0) : formatAmount(value, 1);
+}

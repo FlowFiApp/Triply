@@ -137,15 +137,24 @@ export function readChainTx(raw: unknown): NimiqTx | null {
       rec = inner;
     }
   }
-  const to = pickAddress(rec.to_address ?? rec.toAddress ?? rec.to ?? rec.recipient);
+  const to = pickAddress(
+    rec.to_address ?? rec.toAddress ?? rec.to ?? rec.recipient,
+  );
   if (!to) return null;
-  const from = pickAddress(rec.from_address ?? rec.fromAddress ?? rec.from ?? rec.sender);
+  const from = pickAddress(
+    rec.from_address ?? rec.fromAddress ?? rec.from ?? rec.sender,
+  );
   return {
     from,
     to,
     valueLuna: Number(rec.value ?? rec.amount ?? 0),
     memo: decodeMemo(
-      rec.recipientData ?? rec.recipient_data ?? rec.data ?? rec.extraData ?? rec.message ?? "",
+      rec.recipientData ??
+        rec.recipient_data ??
+        rec.data ??
+        rec.extraData ??
+        rec.message ??
+        "",
     ),
   };
 }
@@ -155,7 +164,10 @@ async function sleep(ms: number): Promise<void> {
   await new Promise((r) => setTimeout(r, ms));
 }
 
-async function rpcLookup(method: string, hash: string): Promise<NimiqTx | null> {
+async function rpcLookup(
+  method: string,
+  hash: string,
+): Promise<NimiqTx | null> {
   try {
     return readChainTx(await rpc(method, [hash]));
   } catch {
@@ -176,7 +188,9 @@ export async function fetchTx(hash: string): Promise<NimiqTx | null> {
 }
 
 /** Best-effort sender balance (luna). Returns null when the node doesn't expose it. */
-export async function getSenderBalanceLuna(sender: string): Promise<number | null> {
+export async function getSenderBalanceLuna(
+  sender: string,
+): Promise<number | null> {
   try {
     const bal = await rpc("getBalanceByAddress", [sender]);
     if (bal != null) return Number(bal);
@@ -204,7 +218,8 @@ export async function sendNimReward({
   recipient: string;
   amountNim: number;
 }): Promise<NimiqSendResult> {
-  if (!REWARD_KEY) throw new Error("NIMIQ_REWARD_PRIVATE_KEY is not configured");
+  if (!REWARD_KEY)
+    throw new Error("NIMIQ_REWARD_PRIVATE_KEY is not configured");
 
   let Nimiq: any;
   try {
@@ -214,14 +229,16 @@ export async function sendNimReward({
   }
 
   const secret = Buffer.from(REWARD_KEY.replace(/^0x/, ""), "hex");
-  if (secret.length !== 32) throw new Error("NIMIQ_REWARD_PRIVATE_KEY must be 32 bytes");
+  if (secret.length !== 32)
+    throw new Error("NIMIQ_REWARD_PRIVATE_KEY must be 32 bytes");
 
   const toUserFriendly = await canonicalWallet(recipient);
   if (!toUserFriendly) throw new Error("invalid_recipient");
 
   const keyPair = Nimiq.KeyPair.derive(secret);
   const sender = keyPair.toAddress();
-  const recipientAddress = Nimiq.Address.fromUserFriendlyAddress(toUserFriendly);
+  const recipientAddress =
+    Nimiq.Address.fromUserFriendlyAddress(toUserFriendly);
 
   const value = BigInt(amountNim) * LUNA_PER_NIM;
   const balanceLuna = await getSenderBalanceLuna(sender);
@@ -233,7 +250,7 @@ export async function sendNimReward({
   const networkId = ((await rpc("getNetworkId", [])) as number) ?? NETWORK_ID;
 
   // Traceable on-chain memo (recipientData), max 64 bytes.
-  const memo = "You earned some Triply points";
+  const memo = "You redeemed your Triply points";
   const data = new TextEncoder().encode(memo).slice(0, 64);
 
   const tx = Nimiq.TransactionBuilder.newBasicWithData(
@@ -272,7 +289,9 @@ export async function verifyNimTx(opts: {
   const tx = await fetchTx(hash);
   if (!tx) return null;
 
-  const expectedTo = opts.expectedTo ? await canonicalWallet(opts.expectedTo) : "";
+  const expectedTo = opts.expectedTo
+    ? await canonicalWallet(opts.expectedTo)
+    : "";
   if (expectedTo && tx.to && tx.to !== expectedTo) {
     throw new Error("wrong_recipient");
   }
@@ -289,7 +308,9 @@ export async function rewardSenderAddress(): Promise<string> {
   if (secret.length !== 32) return "";
   try {
     const Nimiq = await import("@nimiq/core");
-    return Nimiq.KeyPair.derive(secret as any).toAddress().toUserFriendlyAddress();
+    return Nimiq.KeyPair.derive(secret as any)
+      .toAddress()
+      .toUserFriendlyAddress();
   } catch {
     return "";
   }

@@ -1,4 +1,10 @@
-import { createMoment, dbErrorMessage, listMoments } from "@/lib/db";
+import {
+  createMoment,
+  dbErrorMessage,
+  earnMomentPoints,
+  listMoments,
+  MOMENT_POST_REWARD,
+} from "@/lib/db";
 import { serializeMoment, type FeedMoment } from "@/lib/feed";
 
 export async function GET(request: Request) {
@@ -45,8 +51,21 @@ export async function POST(request: Request) {
       location,
       images,
     });
+
+    // Reward the poster (2 NIM), idempotent per moment.
+    try {
+      await earnMomentPoints({
+        userKey: userId,
+        idempotencyKey: `moment:${created._id.toHexString()}`,
+        bookingKind: "moment",
+        amountNim: MOMENT_POST_REWARD,
+      });
+    } catch {
+      // reward failure must not block posting
+    }
+
     const moment: FeedMoment = serializeMoment(created, userId);
-    return Response.json({ moment, live: true });
+    return Response.json({ moment, live: true, rewardNim: MOMENT_POST_REWARD });
   } catch (err) {
     return Response.json(
       { error: dbErrorMessage(err) },
