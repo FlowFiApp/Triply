@@ -176,7 +176,7 @@ export default function Web3Checkout() {
               </svg>
             </Link>
             <h1 className="text-[18px] font-extrabold text-foreground">
-              Web3 Checkout
+              Checkout
             </h1>
           </div>
 
