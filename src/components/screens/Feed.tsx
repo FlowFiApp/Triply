@@ -423,6 +423,7 @@ export default function Feed() {
               prev.map((x) => (x.id === commentsFor.id ? { ...x, commentCount: count } : x)),
             );
           }
+          refreshPoints();
         }}
       />
 
