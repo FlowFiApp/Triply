@@ -152,16 +152,18 @@ export function Sheet({
   children,
   height,
   footer,
+  zIndex = "z-[90]",
 }: {
   open: boolean;
   onClose: () => void;
   children: ReactNode;
   height?: string;
   footer?: ReactNode;
+  zIndex?: string;
 }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-[60] flex items-end justify-center">
+    <div className={`fixed inset-0 ${zIndex} flex items-end justify-center`}>
       <button
         aria-label="Close"
         className="absolute inset-0 bg-black/60 animate-fade-in"

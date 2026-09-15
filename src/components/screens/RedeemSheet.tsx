@@ -49,6 +49,7 @@ export default function RedeemSheet({
     <Sheet
       open={open}
       onClose={onClose}
+      zIndex="z-[95]"
       footer={
         <button
           onClick={onRedeem}
