@@ -28,7 +28,8 @@ import { NimiqAmount } from "@/components/ui/Nimiq";
 import PopularDestinations from "@/components/ui/popular-destinations";
 import { Skeleton } from "@/components/ui/feedback";
 import { usePoints } from "@/lib/points";
-import { addRecentSearch, getRecentSearches } from "@/lib/store";
+import { addRecentSearch, getRecentSearches, type SearchIntent } from "@/lib/store";
+import { useFlow } from "@/lib/flow-context";
 import { useI18n } from "@/lib/i18n";
 import { useToast } from "@/lib/toast";
 import { haptic } from "@/lib/haptics";
@@ -50,6 +51,7 @@ type Destination = {
 };
 
 export default function HomeSearch() {
+  const { setFlow } = useFlow();
   const router = useRouter();
   const { t } = useI18n();
   const { toast } = useToast();
@@ -100,26 +102,26 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
       return;
     }
     addRecentSearch(`${origin} → ${destination}`);
-    const params = new URLSearchParams({
+    const intent: SearchIntent = {
       origin,
       destination,
       date: range.start,
-      passengers: String(totalPax || 1),
+      passengers: totalPax || 1,
       cabin: CABIN_TO_DUFFEL[cabin] ?? "economy",
-    });
+    };
     if (tripType === "Multi-city") {
-      const slices = [
+      intent.slices = [
         { origin: from, destination: to, departureDate: range.start },
         ...extraLegs
           .filter((l) => l.from && l.to && l.date)
           .map((l) => ({ origin: l.from, destination: l.to, departureDate: l.date })),
       ];
-      params.set("slices", JSON.stringify(slices));
-      params.set("multiCity", "1");
+      intent.multiCity = true;
     } else if (tripType !== "One Way") {
-      params.set("returnDate", range.end);
+      intent.returnDate = range.end;
     }
-    router.push(`/search?${params.toString()}`);
+    setFlow({ search: intent });
+    router.push("/search");
   };
 
   const dateLabel =

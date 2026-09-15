@@ -83,34 +83,21 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
 
 export default function SearchResults() {
   const router = useRouter();
-const origin = useQueryParam("origin", "LAX");
-  const destination = useQueryParam("destination", "LHR");
-  const date = useQueryParam("date", "2026-10-24");
-  const returnDate = useQueryParam("returnDate", "");
-  const passengers = useQueryParam("passengers", "2");
-  const cabin = useQueryParam("cabin", "economy");
-  const multiCity = useQueryParam("multiCity", "");
-  const slicesParam = useQueryParam("slices", "");
-  const slices = useMemo(() => {
-    try {
-      const parsed = JSON.parse(slicesParam) as {
-        origin: string;
-        destination: string;
-        departureDate: string;
-      }[];
-      return Array.isArray(parsed) ? parsed : undefined;
-    } catch {
-      return undefined;
-    }
-  }, [slicesParam]);
-  const isMultiCity = multiCity === "1" || Boolean(slices?.length);
+  const { flow, setFlow } = useFlow();
+  const search = flow.search;
+  const origin = search?.origin ?? "LAX";
+  const destination = search?.destination ?? "LHR";
+  const date = search?.date ?? "2026-10-24";
+  const returnDate = search?.returnDate ?? "";
+  const passengers = String(search?.passengers ?? 2);
+  const cabin = search?.cabin ?? "economy";
+  const slices = search?.slices;
+  const isMultiCity = Boolean(search?.multiCity) || Boolean(slices?.length);
 
   const [offers, setOffers] = useState<FlightOffer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [filterOpen, setFilterOpen] = useState(
-    useQueryParam("sheet", "") === "filter",
-  );
+  const [filterOpen, setFilterOpen] = useState(false);
   const [active, setActive] = useState<(typeof FILTERS)[number]>("Cheapest");
   const [filters, setFilters] = useState<{
     price?: [number, number];
@@ -140,7 +127,7 @@ body: JSON.stringify({
           setOffers([]);
 } else if (d.live) {
           setOffers(d.offers);
-          writeFlow({
+          setFlow({
             offers: d.offers,
             passengers: Number(passengers) || 1,
           });

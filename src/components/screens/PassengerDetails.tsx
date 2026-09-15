@@ -90,13 +90,15 @@ export default function PassengerDetails() {
   );
   const next = useQueryParam("next", "");
   const passengerCount = readFlow().passengers ?? 1;
-  const [form, setForm] = useState<PassengerInfo>(empty);
+  const [forms, setForms] = useState<PassengerInfo[]>(() =>
+    Array.from({ length: passengerCount }, () => ({ ...empty })),
+  );
   const [invalid, setInvalid] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
 
-  const set = (k: keyof PassengerInfo) => (v: string) => {
-    setForm((f) => ({ ...f, [k]: v }));
-    setInvalid((prev) => ({ ...prev, [k]: false }));
+  const setField = (i: number, k: keyof PassengerInfo) => (v: string) => {
+    setForms((fs) => fs.map((f, idx) => (idx === i ? { ...f, [k]: v } : f)));
+    setInvalid((prev) => ({ ...prev, [`${i}-${k}`]: false }));
   };
 
   const continueTo = () => {
@@ -108,28 +110,29 @@ export default function PassengerDetails() {
       "email",
       "phone",
     ];
-    const missing = required.filter((k) => !form[k]?.trim());
-    if (missing.length) {
-      setInvalid(Object.fromEntries(missing.map((k) => [k, true])));
-      toast("error", "Please fill in all required fields before continuing.");
+    const nextInvalid: Record<string, boolean> = {};
+    for (let i = 0; i < forms.length; i++) {
+      const f = forms[i];
+      for (const k of required) {
+        if (!f[k]?.trim()) nextInvalid[`${i}-${k}`] = true;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) {
+        nextInvalid[`${i}-email`] = true;
+      }
+      if (f.phone.replace(/\D/g, "").length < 7) {
+        nextInvalid[`${i}-phone`] = true;
+      }
+      if (!f.dob) nextInvalid[`${i}-dob`] = true;
+    }
+    if (Object.keys(nextInvalid).length) {
+      setInvalid(nextInvalid);
+      toast(
+        "error",
+        "Please fill in all required fields for every passenger before continuing.",
+      );
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      setInvalid((p) => ({ ...p, email: true }));
-      toast("error", "Please enter a valid email address.");
-      return;
-    }
-    if (form.phone.replace(/\D/g, "").length < 7) {
-      setInvalid((p) => ({ ...p, phone: true }));
-      toast("error", "Please enter a valid phone number.");
-      return;
-    }
-    if (!form.dob) {
-      setInvalid((p) => ({ ...p, dob: true }));
-      toast("error", "Please select your date of birth.");
-      return;
-    }
-    writeFlow({ passenger: form });
+    writeFlow({ passenger: forms[0], passengersList: forms });
     router.push(next || "/checkout");
   };
 
@@ -177,98 +180,123 @@ export default function PassengerDetails() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 px-4 pb-6 pt-3">
-            <div className="flex gap-3">
-              <Field
-                className="flex-1"
-                label="First Name"
-                value={form.first}
-                onChange={set("first")}
-                invalid={invalid.first}
-                placeholder="Jane"
-                autoComplete="given-name"
-              />
-              <Field
-                className="flex-1"
-                label="Last Name"
-                value={form.last}
-                onChange={set("last")}
-                invalid={invalid.last}
-                placeholder="Doe"
-                autoComplete="family-name"
-              />
-            </div>
-            <div className="flex gap-3">
-              <Field
-                className="flex-1"
-                label="Date of Birth"
-                value={form.dob}
-                onChange={set("dob")}
-                invalid={invalid.dob}
-                type="date"
-                autoComplete="bday"
-              />
-              <div className="flex flex-1 flex-col gap-1.5">
-                <span className="text-[11px] font-semibold text-muted">
-                  Gender<span className="text-accent-2"> *</span>
-                </span>
-                <div
-                  className={`flex h-[43px] items-center justify-between rounded-[10px] border bg-card px-3 transition-colors ${
-                    invalid.gender
-                      ? "border-red-500"
-                      : "border-border focus-within:border-accent-2"
-                  }`}
-                >
-                  <select
-                    value={form.gender}
-                    onChange={(e) => set("gender")(e.target.value)}
-                    className={`w-full bg-transparent text-[14px] outline-none ${
-                      form.gender ? "text-foreground" : "text-muted"
-                    }`}
-                  >
-                    <option value="" disabled>
-                      Select
-                    </option>
-                    <option value="Female">Female</option>
-                    <option value="Male">Male</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  <ChevronDown size={16} className="shrink-0 text-muted" />
+          <div className="flex flex-col gap-5 px-4 pb-6 pt-3">
+            {forms.map((form, i) => (
+              <div
+                key={i}
+                className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4"
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-2 text-[12px] font-bold text-accent">
+                    {i + 1}
+                  </span>
+                  <span className="text-[14px] font-bold text-foreground">
+                    Passenger {i + 1}
+                  </span>
+                  {i === 0 ? (
+                    <span className="rounded bg-card-2 px-1.5 py-0.5 text-[9px] font-bold text-muted">
+                      LEAD
+                    </span>
+                  ) : null}
                 </div>
+
+                <div className="flex gap-3">
+                  <Field
+                    className="flex-1"
+                    label="First Name"
+                    value={form.first}
+                    onChange={setField(i, "first")}
+                    invalid={invalid[`${i}-first`]}
+                    placeholder="Jane"
+                    autoComplete="given-name"
+                  />
+                  <Field
+                    className="flex-1"
+                    label="Last Name"
+                    value={form.last}
+                    onChange={setField(i, "last")}
+                    invalid={invalid[`${i}-last`]}
+                    placeholder="Doe"
+                    autoComplete="family-name"
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <Field
+                    className="flex-1"
+                    label="Date of Birth"
+                    value={form.dob}
+                    onChange={setField(i, "dob")}
+                    invalid={invalid[`${i}-dob`]}
+                    type="date"
+                    autoComplete="bday"
+                  />
+                  <div className="flex flex-1 flex-col gap-1.5">
+                    <span className="text-[11px] font-semibold text-muted">
+                      Gender<span className="text-accent-2"> *</span>
+                    </span>
+                    <div
+                      className={`flex h-[43px] items-center justify-between rounded-[10px] border bg-card px-3 transition-colors ${
+                        invalid[`${i}-gender`]
+                          ? "border-red-500"
+                          : "border-border focus-within:border-accent-2"
+                      }`}
+                    >
+                      <select
+                        value={form.gender}
+                        onChange={(e) => setField(i, "gender")(e.target.value)}
+                        className={`w-full bg-transparent text-[14px] outline-none ${
+                          form.gender ? "text-foreground" : "text-muted"
+                        }`}
+                      >
+                        <option value="" disabled>
+                          Select
+                        </option>
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      <ChevronDown size={16} className="shrink-0 text-muted" />
+                    </div>
+                  </div>
+                </div>
+                <Field
+                  label="Email Address"
+                  value={form.email}
+                  onChange={setField(i, "email")}
+                  invalid={invalid[`${i}-email`]}
+                  type="email"
+                  inputMode="email"
+                  placeholder="you@email.com"
+                  autoComplete="email"
+                />
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[11px] font-semibold text-muted">
+                    Phone Number<span className="text-accent-2"> *</span>
+                  </span>
+                  <PhoneInput
+                    value={form.phone}
+                    dialCode={form.dialCode ?? "+234"}
+                    onChange={(dialCode, national) => {
+                      setForms((fs) =>
+                        fs.map((f, idx) =>
+                          idx === i ? { ...f, dialCode, phone: national } : f,
+                        ),
+                      );
+                      setInvalid((p) => ({ ...p, [`${i}-phone`]: false }));
+                    }}
+                    invalid={invalid[`${i}-phone`]}
+                  />
+                </div>
+                <Field
+                  label="Passport Number"
+                  optional
+                  value={form.passport}
+                  onChange={setField(i, "passport")}
+                  placeholder="A00123456"
+                  autoComplete="off"
+                />
               </div>
-            </div>
-            <Field
-              label="Email Address"
-              value={form.email}
-              onChange={set("email")}
-              invalid={invalid.email}
-              type="email"
-              inputMode="email"
-              placeholder="you@email.com"
-              autoComplete="email"
-            />
-            <div className="flex flex-col gap-1.5">
-              <span className="text-[11px] font-semibold text-muted">
-                Phone Number<span className="text-accent-2"> *</span>
-              </span>
-              <PhoneInput
-                value={form.phone}
-                dialCode={form.dialCode ?? "+234"}
-                onChange={(dialCode, national) => {
-                  setForm((f) => ({ ...f, dialCode, phone: national }));
-                  setInvalid((p) => ({ ...p, phone: false }));
-                }}
-                invalid={invalid.phone}
-              />
-            </div>
-            <Field
-              label="Passport Number"
-              optional
-              value={form.passport}
-              onChange={set("passport")}
-              placeholder="A00123456"
-              autoComplete="off"
-            />
+            ))}
           </div>
         </div>
 

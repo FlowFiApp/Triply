@@ -63,16 +63,16 @@ export default function Processing() {
           from: payer,
           nimiqAddress: state.nimiqAddress,
           deviceId: getStoredIdentity().deviceId,
-          passengers: [
-            {
-              given_name: flow.passenger?.first ?? "",
-              family_name: flow.passenger?.last ?? "",
-              born_on: flow.passenger?.dob ?? "",
-              email: flow.passenger?.email ?? "",
-              phone_number: `${flow.passenger?.dialCode ?? "+234"}${flow.passenger?.phone ?? ""}`,
-              gender: flow.passenger?.gender?.toLowerCase() ?? "female",
-            },
-          ],
+          passengers: (flow.passengersList ?? (flow.passenger ? [flow.passenger] : [])).map(
+            (p) => ({
+              given_name: p.first ?? "",
+              family_name: p.last ?? "",
+              born_on: p.dob ?? "",
+              email: p.email ?? "",
+              phone_number: `${p.dialCode ?? "+234"}${p.phone ?? ""}`,
+              gender: p.gender?.toLowerCase() ?? "female",
+            }),
+          ),
         }),
       });
       const data = await res.json();

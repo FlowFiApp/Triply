@@ -16,9 +16,6 @@ export type PopularDestination = {
   image: string;
 };
 
-const CARD_W = 244;
-const CARD_H = 170;
-
 export default function PopularDestinations({
   destinations,
   onSelect,
@@ -29,27 +26,25 @@ export default function PopularDestinations({
   return (
     <Swiper
       modules={[Pagination]}
-      slidesPerView="auto"
-      spaceBetween={14}
-      slidesOffsetBefore={20}
-      slidesOffsetAfter={20}
+      slidesPerView={1.15}
+      spaceBetween={12}
+      slidesOffsetBefore={16}
+      slidesOffsetAfter={16}
       grabCursor
       pagination={{ clickable: true }}
-      className="select-none"
+      className="w-full"
       style={
         {
-          height: CARD_H + 26,
+          height: 200,
           touchAction: "pan-y",
-          overscrollBehavior: "contain",
           "--swiper-pagination-color": "#203da3",
           "--swiper-pagination-bullet-inactive-color": "#94a3b8",
-          "--swiper-pagination-bullet-inactive-opacity": "0.5",
-          "--swiper-pagination-bottom": "4px",
+          "--swiper-pagination-bottom": "2px",
         } as CSSProperties
       }
     >
       {destinations.map((d) => (
-        <SwiperSlide key={d.iata} style={{ width: CARD_W, height: CARD_H }}>
+        <SwiperSlide key={d.iata} style={{ height: 170 }}>
           <button
             onClick={() => onSelect(d.iata)}
             className="group relative block h-full w-full overflow-hidden rounded-2xl text-left shadow-[0_4px_12px_rgba(0,0,0,0.25)]"
@@ -58,7 +53,7 @@ export default function PopularDestinations({
               src={d.image}
               alt={d.city}
               fill
-              sizes="320px"
+              sizes="360px"
               className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />

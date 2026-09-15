@@ -5,6 +5,7 @@ import { ToastProvider } from "@/lib/toast";
 import { I18nProvider } from "@/lib/i18n";
 import { WalletProvider } from "@/lib/wallet-state";
 import { PointsProvider } from "@/lib/points";
+import { FlowProvider } from "@/lib/flow-context";
 import { OfflineBanner } from "@/components/ui/feedback";
 import OnboardingGate from "@/components/OnboardingGate";
 import ConfigBanner from "@/components/ConfigBanner";
@@ -30,10 +31,12 @@ export default function RootLayout({
             <ToastProvider>
               <WalletProvider>
                 <PointsProvider>
-                  <OnboardingGate />
-                  <ConfigBanner />
-                  <OfflineBanner />
-                  <PageTransition>{children}</PageTransition>
+                  <FlowProvider>
+                    <OnboardingGate />
+                    <ConfigBanner />
+                    <OfflineBanner />
+                    <PageTransition>{children}</PageTransition>
+                  </FlowProvider>
                 </PointsProvider>
               </WalletProvider>
             </ToastProvider>

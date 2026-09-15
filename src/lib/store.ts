@@ -12,8 +12,20 @@ import type {
 
 const KEY = "triply-flow";
 
+export type SearchIntent = {
+  origin: string;
+  destination: string;
+  date: string;
+  returnDate?: string;
+  passengers: number;
+  cabin: string;
+  slices?: { origin: string; destination: string; departureDate: string }[];
+  multiCity?: boolean;
+};
+
 export type Flow = {
   passenger?: PassengerInfo;
+  passengersList?: PassengerInfo[];
   offer?: FlightOffer;
   offers?: FlightOffer[];
   passengers?: number;
@@ -30,6 +42,8 @@ export type Flow = {
   car?: CarOffer;
   cars?: CarOffer[];
   carBooking?: CarBooking;
+  search?: SearchIntent;
+  next?: string;
 };
 
 export function readFlow(): Partial<Flow> {
