@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
 export type PopularDestination = {
@@ -23,14 +22,17 @@ export default function PopularDestinations({
 }) {
   return (
     <Swiper
-      modules={[Autoplay]}
       slidesPerView="auto"
       spaceBetween={12}
       slidesOffsetBefore={20}
       slidesOffsetAfter={20}
       grabCursor
-      autoplay={{ delay: 4500, disableOnInteraction: true, pauseOnMouseEnter: true }}
-      className="!h-[140px] [touch-action:pan-y]"
+      className="select-none"
+      style={{
+        height: 140,
+        touchAction: "pan-y",
+        overscrollBehavior: "contain",
+      }}
     >
       {destinations.map((d) => (
         <SwiperSlide key={d.iata} style={{ width: 200, height: 140 }}>
