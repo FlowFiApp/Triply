@@ -1,0 +1,26 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>redeem-z3</title></head>
+<body>
+<iframe id="f" src="http://localhost:3000/search?origin=LAX&destination=LHR&date=2026-10-24&passengers=2&cabin=economy" style="width:480px;height:800px;border:0"></iframe>
+<script>
+const f = document.getElementById("f");
+setTimeout(() => {
+  try {
+    const doc = f.contentDocument;
+    const chip = [...doc.querySelectorAll("button")].find(b => b.querySelector('img[src*="nimiq"]'));
+    if (!chip) { document.title = "ERR no chip"; return; }
+    chip.click();
+    setTimeout(() => {
+      const sheet = [...doc.querySelectorAll("div")].find(d => d.className && /z-\[9\d\]/.test(d.className));
+      const nav = [...doc.querySelectorAll("div")].find(d => d.className && d.className.includes("fixed bottom-0"));
+      const sheetZ = sheet ? getComputedStyle(sheet).zIndex : "?";
+      const navZ = nav ? getComputedStyle(nav).zIndex : "?";
+      const hasRedeem = /Redeem Nimiq/.test(doc.body.innerText);
+      const sheetTop = sheet ? sheet.getBoundingClientRect().top : -1;
+      const navTop = nav ? nav.getBoundingClientRect().top : -1;
+      document.title = "sheetZ=" + sheetZ + " navZ=" + navZ + " redeem=" + hasRedeem + " covers=" + (sheetTop <= navTop);
+    }, 300);
+  } catch (e) { document.title = "err " + e.message; }
+}, 3500);
+</script>
+</body></html>

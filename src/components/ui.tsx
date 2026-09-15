@@ -186,7 +186,7 @@ export function Sheet({
           {footer ? null : <div className="h-8 w-full" />}
         </div>
         {footer ? (
-          <div className="shrink-0 border-t border-border px-4 py-3 pb-[max(env(safe-area-inset-bottom),12px)]">
+          <div className="shrink-0 border-t border-border px-4 py-3 pb-[max(env(safe-area-inset-bottom),24px)]">
             {footer}
           </div>
         ) : null}

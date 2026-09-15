@@ -29,7 +29,7 @@ export function MobileShell({
     <div className="flex h-screen w-full justify-center overflow-hidden bg-card-2/40 dark:bg-black">
       <div className="relative flex h-full w-full max-w-[768px] flex-col overflow-hidden bg-background shadow-2xl">
         {header ? (
-          <div className="relative z-30 w-full shrink-0 bg-background">
+          <div className="relative w-full shrink-0 bg-background">
             {header}
           </div>
         ) : null}
