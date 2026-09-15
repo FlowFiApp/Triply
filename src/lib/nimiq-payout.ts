@@ -19,9 +19,9 @@ async function loadRewardKeyPair(Nimiq: any): Promise<{ keyPair: any; sender: st
   }
   const mnemonic = REWARD_MNEMONIC.trim();
   const seed = Nimiq.MnemonicUtils.mnemonicToSeed(mnemonic);
-  const master = Nimiq.ExtendedPrivateKey.generateMasterKey(seed);
-  // Extended private key serializes as [privateKey (32)] [chainCode (32)].
-  const privateKeyBytes = master.serialize().subarray(0, 32);
+  // BIP44 path for Nimiq (coin type 242), account 0 — matches Nimiq Pay.
+  const account = Nimiq.ExtendedPrivateKey.derivePathFromSeed("m/44'/242'/0'/0'", seed);
+  const privateKeyBytes = account.serialize().subarray(0, 32);
   const keyPair = Nimiq.KeyPair.derive(new Nimiq.PrivateKey(privateKeyBytes));
   return { keyPair, sender: keyPair.toAddress().toUserFriendlyAddress() };
 }
