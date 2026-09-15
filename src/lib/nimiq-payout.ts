@@ -2,12 +2,29 @@ import "server-only";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-const REWARD_KEY = process.env.NIMIQ_REWARD_PRIVATE_KEY;
+const REWARD_MNEMONIC = process.env.NIMIQ_REWARD_MNEMONIC;
 const RPC_URL = process.env.NIMIQ_RPC_URL;
 const LUNA_PER_NIM = 100_000n;
 const NETWORK_ID = Number(process.env.NIMIQ_NETWORK ?? 1); // 1 = Albatross mainnet
 const TX_LOOKUP_ATTEMPTS = 10;
 const TX_LOOKUP_DELAY_MS = 1500;
+
+function rewardConfigured(): boolean {
+  return Boolean(REWARD_MNEMONIC);
+}
+
+async function loadRewardKeyPair(Nimiq: any): Promise<{ keyPair: any; sender: string }> {
+  if (!REWARD_MNEMONIC) {
+    throw new Error("NIMIQ_REWARD_MNEMONIC is not configured");
+  }
+  const mnemonic = REWARD_MNEMONIC.trim();
+  const seed = Nimiq.MnemonicUtils.mnemonicToSeed(mnemonic);
+  const master = Nimiq.ExtendedPrivateKey.generateMasterKey(seed);
+  // Extended private key serializes as [privateKey (32)] [chainCode (32)].
+  const privateKeyBytes = master.serialize().subarray(0, 32);
+  const keyPair = Nimiq.KeyPair.derive(new Nimiq.PrivateKey(privateKeyBytes));
+  return { keyPair, sender: keyPair.toAddress().toUserFriendlyAddress() };
+}
 
 export type NimiqTx = {
   from: string;
@@ -209,7 +226,7 @@ export async function getSenderBalanceLuna(
 /**
  * Sends NIM from the merchant reward wallet to the user's Nimiq address with a
  * traceable memo, then confirms the node has seen it.
- * Requires NIMIQ_REWARD_PRIVATE_KEY (32-byte hex) and a Nimiq mainnet RPC.
+ * Requires NIMIQ_REWARD_MNEMONIC (BIP39 phrase) and a Nimiq mainnet RPC.
  */
 export async function sendNimReward({
   recipient,
@@ -218,8 +235,8 @@ export async function sendNimReward({
   recipient: string;
   amountNim: number;
 }): Promise<NimiqSendResult> {
-  if (!REWARD_KEY)
-    throw new Error("NIMIQ_REWARD_PRIVATE_KEY is not configured");
+  if (!rewardConfigured())
+    throw new Error("NIMIQ_REWARD_MNEMONIC is not configured");
 
   let Nimiq: any;
   try {
@@ -228,19 +245,16 @@ export async function sendNimReward({
     throw new Error("Nimiq core is unavailable on the server");
   }
 
-  const secret = Buffer.from(REWARD_KEY.replace(/^0x/, ""), "hex");
-  if (secret.length !== 32)
-    throw new Error("NIMIQ_REWARD_PRIVATE_KEY must be 32 bytes");
-
   const toUserFriendly = await canonicalWallet(recipient);
   if (!toUserFriendly) throw new Error("invalid_recipient");
 
-  const keyPair = Nimiq.KeyPair.derive(secret);
+  const { keyPair } = await loadRewardKeyPair(Nimiq);
   const sender = keyPair.toAddress();
   const recipientAddress =
     Nimiq.Address.fromUserFriendlyAddress(toUserFriendly);
 
-  const value = BigInt(amountNim) * LUNA_PER_NIM;
+  // Supports fractional NIM (e.g. 0.1) by converting to luna precisely.
+  const value = BigInt(Math.round(amountNim * Number(LUNA_PER_NIM)));
   const balanceLuna = await getSenderBalanceLuna(sender);
   if (balanceLuna != null && balanceLuna < Number(value)) {
     throw new Error("insufficient_balance");
@@ -250,7 +264,7 @@ export async function sendNimReward({
   const networkId = ((await rpc("getNetworkId", [])) as number) ?? NETWORK_ID;
 
   // Traceable on-chain memo (recipientData), max 64 bytes.
-  const memo = "You redeemed your Triply points";
+  const memo = "You earned some Triply points";
   const data = new TextEncoder().encode(memo).slice(0, 64);
 
   const tx = Nimiq.TransactionBuilder.newBasicWithData(
@@ -303,14 +317,11 @@ export async function verifyNimTx(opts: {
 
 /** Canonical user-friendly address of the reward wallet, if configured. */
 export async function rewardSenderAddress(): Promise<string> {
-  if (!REWARD_KEY) return "";
-  const secret = Buffer.from(REWARD_KEY.replace(/^0x/, ""), "hex");
-  if (secret.length !== 32) return "";
+  if (!rewardConfigured()) return "";
   try {
     const Nimiq = await import("@nimiq/core");
-    return Nimiq.KeyPair.derive(secret as any)
-      .toAddress()
-      .toUserFriendlyAddress();
+    const { sender } = await loadRewardKeyPair(Nimiq);
+    return sender;
   } catch {
     return "";
   }
