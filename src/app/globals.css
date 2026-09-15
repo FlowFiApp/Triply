@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Sacramento&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap");
 @import "tailwindcss";
 
@@ -46,6 +47,7 @@
   --color-accent-2: var(--accent-2);
   --color-on-accent: var(--on-accent);
   --font-sans: "Host Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-script: "Sacramento", cursive;
 }
 
 html,

@@ -20,7 +20,7 @@ export function MobileShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-screen w-full justify-center overflow-hidden bg-card-2/40 dark:bg-black">
       <div className="relative flex h-full w-full max-w-[768px] flex-col overflow-hidden bg-background shadow-2xl">
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
           {children}
         </div>
       </div>

@@ -184,29 +184,11 @@ export default function Profile() {
               <ChevronRight size={16} className="text-muted" />
             </Link>
             <Link
-              href="/designs"
-              className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5"
-            >
-              <span className="text-[14px] font-semibold text-foreground">
-                Design Gallery
-              </span>
-              <ChevronRight size={16} className="text-muted" />
-            </Link>
-            <Link
               href="/onboarding"
               className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5"
             >
               <span className="text-[14px] font-semibold text-foreground">
                 Onboarding
-              </span>
-              <ChevronRight size={16} className="text-muted" />
-            </Link>
-            <Link
-              href="/webhooks"
-              className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5"
-            >
-              <span className="text-[14px] font-semibold text-foreground">
-                Webhooks
               </span>
               <ChevronRight size={16} className="text-muted" />
             </Link>
