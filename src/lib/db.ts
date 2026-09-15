@@ -305,6 +305,23 @@ export const MOMENT_COMMENT_REWARD = 0.1;
  * (e.g. `moment:<id>`, `like:<id>:<user>`, `comment:<id>`), so repeat actions
  * never double-credit. Returns the NIM credited (0 when already rewarded).
  */
+/** Ensures a user row exists so point balances can be credited (upsert). */
+export async function ensureUserByKey(key: string): Promise<void> {
+  const db = await getDb();
+  await db.collection<UserDoc>("users").updateOne(
+    { key },
+    {
+      $setOnInsert: {
+        key,
+        points: { earned: 0, available: 0 },
+        createdAt: new Date(),
+      },
+      $set: { updatedAt: new Date() },
+    },
+    { upsert: true },
+  );
+}
+
 export async function earnMomentPoints({
   userKey,
   idempotencyKey,
@@ -321,6 +338,9 @@ export async function earnMomentPoints({
     .collection<RewardDoc>("rewards")
     .findOne({ type: "earn", bookingRef: idempotencyKey });
   if (existing) return 0;
+
+  // The poster may never have a user row yet — create it so $inc lands.
+  await ensureUserByKey(userKey);
 
   await db.collection<RewardDoc>("rewards").insertOne({
     userId: userKey,

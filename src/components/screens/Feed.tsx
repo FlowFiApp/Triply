@@ -21,6 +21,7 @@ import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import ShareMomentSheet from "@/components/screens/ShareMomentSheet";
+import { usePoints } from "@/lib/points";
 import { useQueryParam } from "@/lib/query";
 import { useToast } from "@/lib/toast";
 import { share } from "@/lib/share";
@@ -248,6 +249,7 @@ function CommentsSheet({
 
 export default function Feed() {
   const { toast } = useToast();
+  const { refresh: refreshPoints } = usePoints();
   const [moments, setMoments] = useState<FeedMoment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -287,6 +289,7 @@ export default function Feed() {
       ),
     );
     await toggleMomentLike(m.id).catch(() => {});
+    refreshPoints();
   };
 
   const handleShare = async (m: FeedMoment) => {
@@ -305,6 +308,7 @@ export default function Feed() {
 
   const onPosted = (m: FeedMoment) => {
     setMoments((prev) => [m, ...prev]);
+    refreshPoints();
   };
 
   const handleDelete = async (m: FeedMoment) => {
