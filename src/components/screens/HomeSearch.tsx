@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeftRight,
@@ -26,6 +25,7 @@ import DateRangePicker, { formatDateLabel } from "@/components/ui/date-range-pic
 import { PassengerClassSheet } from "@/components/screens/sheets";
 import RedeemSheet from "@/components/screens/RedeemSheet";
 import { NimiqAmount } from "@/components/ui/Nimiq";
+import PopularDestinations from "@/components/ui/popular-destinations";
 import { Skeleton } from "@/components/ui/feedback";
 import { usePoints } from "@/lib/points";
 import { addRecentSearch, getRecentSearches } from "@/lib/store";
@@ -330,38 +330,21 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
                 ))}
               </div>
             </section>
-          ) : destinationsLive && destinations.length > 0 ? (
-            <section className="flex flex-col gap-3 px-5 py-3">
-              <h2 className="text-[16px] font-bold leading-[21px] text-foreground">
+) : destinationsLive && destinations.length > 0 ? (
+            <section className="flex flex-col gap-3 py-3">
+              <h2 className="px-5 text-[16px] font-bold leading-[21px] text-foreground">
                 Popular Destinations
               </h2>
-              <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
-                {destinations.map((d, i) => (
-                  <button
-                    key={d.iata}
-                    onClick={() => search(from, d.iata)}
-                    className="flex w-[140px] shrink-0 flex-col gap-2 rounded-xl border border-border bg-card p-3 text-left"
-                  >
-                    <div className="relative h-20 w-full overflow-hidden rounded-lg">
-                      <Image
-                        src={DEST_IMAGES[i % DEST_IMAGES.length]}
-                        alt={d.city}
-                        fill
-                        sizes="116px"
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[14px] font-bold text-foreground">
-                        {d.city}
-                      </span>
-                      <span className="text-[10px] text-muted">
-                        {d.name} · {d.country}
-                      </span>
-                    </div>
-                  </button>
-                ))}
-              </div>
+              <PopularDestinations
+                destinations={destinations.map((d, i) => ({
+                  iata: d.iata,
+                  city: d.city,
+                  name: d.name,
+                  country: d.country,
+                  image: DEST_IMAGES[i % DEST_IMAGES.length],
+                }))}
+                onSelect={(iata) => search(from, iata)}
+              />
             </section>
           ) : null}
 
