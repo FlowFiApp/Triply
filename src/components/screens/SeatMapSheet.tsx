@@ -69,7 +69,20 @@ export default function SeatMapSheet({
   const selected = seats.find((s) => s.id === picked);
 
   return (
-    <Sheet open={open} onClose={onClose} height="72vh">
+    <Sheet
+      open={open}
+      onClose={onClose}
+      height="82vh"
+      footer={
+        <button
+          disabled={!selected}
+          onClick={() => selected && onSelect(selected)}
+          className="flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
+        >
+          {selected ? `Select Seat ${selected.name}` : "Select an available seat"}
+        </button>
+      }
+    >
       <div className="px-4 py-3">
         <h2 className="text-[18px] font-extrabold text-foreground">
           Choose your seat
@@ -108,16 +121,6 @@ export default function SeatMapSheet({
             ))}
           </div>
         ) : null}
-      </div>
-
-      <div className="px-4 pb-4 pt-2">
-        <button
-          disabled={!selected}
-          onClick={() => selected && onSelect(selected)}
-          className="flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
-        >
-          {selected ? `Select Seat ${selected.name}` : "Select an available seat"}
-        </button>
       </div>
     </Sheet>
   );

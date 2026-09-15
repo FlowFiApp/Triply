@@ -174,7 +174,18 @@ export function FilterSortSheet({
   };
 
   return (
-    <Sheet open={open} onClose={onClose}>
+    <Sheet
+      open={open}
+      onClose={onClose}
+      footer={
+        <button
+          onClick={apply}
+          className="flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"
+        >
+          Apply Filters
+        </button>
+      }
+    >
       <SheetTitle>Filter &amp; Sort</SheetTitle>
 
       <div className="flex flex-col gap-3 px-4 py-5">
@@ -265,15 +276,6 @@ export function FilterSortSheet({
           })}
         </div>
       </div>
-
-      <div className="px-4 pb-4 pt-2">
-        <button
-          onClick={apply}
-          className="flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"
-        >
-          Apply Filters
-        </button>
-      </div>
     </Sheet>
   );
 }
@@ -359,7 +361,18 @@ export function FareRulesSheet({
     });
   }
   return (
-    <Sheet open={open} onClose={onClose}>
+    <Sheet
+      open={open}
+      onClose={onClose}
+      footer={
+        <button
+          onClick={onClose}
+          className="flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"
+        >
+          Got It, Dismiss
+        </button>
+      }
+    >
       <SheetTitle>Fare Rules &amp; Refund Policy</SheetTitle>
       <div className="flex flex-col gap-3 px-4 py-5">
         {rules.map((r) => {
@@ -386,14 +399,6 @@ export function FareRulesSheet({
             </div>
           );
         })}
-      </div>
-      <div className="px-4 pb-4 pt-2">
-        <button
-          onClick={onClose}
-          className="flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"
-        >
-          Got It, Dismiss
-        </button>
       </div>
     </Sheet>
   );

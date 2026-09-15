@@ -73,8 +73,21 @@ export default function LocationMapSheet({
   };
 
   return (
-    <Sheet open={open} onClose={onClose} height="82vh">
-      <div className="flex h-full flex-col px-4 pb-6 pt-1">
+    <Sheet
+      open={open}
+      onClose={onClose}
+      height="82vh"
+      footer={
+        <button
+          onClick={confirm}
+          className="tap flex h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-accent text-[15px] font-bold text-accent-2"
+        >
+          <Check size={18} />
+          Use this location
+        </button>
+      }
+    >
+      <div className="px-4 pb-2">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-[16px] font-extrabold text-foreground">
             Choose location
@@ -83,7 +96,7 @@ export default function LocationMapSheet({
             {initial.name}
           </span>
         </div>
-        <div ref={ref} className="h-[52vh] w-full rounded-2xl bg-card-2" />
+        <div ref={ref} className="h-[55vh] w-full rounded-2xl bg-card-2" />
         {ready ? (
           <p className="mt-3 text-[11px] text-muted">
             Drag the marker to fine-tune the location.
@@ -91,13 +104,6 @@ export default function LocationMapSheet({
         ) : (
           <p className="mt-3 text-[11px] text-muted">Loading map…</p>
         )}
-        <button
-          onClick={confirm}
-          className="tap mt-auto flex h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-accent text-[15px] font-bold text-accent-2"
-        >
-          <Check size={18} />
-          Use this location
-        </button>
       </div>
     </Sheet>
   );

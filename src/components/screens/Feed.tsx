@@ -41,7 +41,7 @@ function MomentImages({ images, alt }: { images: string[]; alt: string }) {
   const list = images.slice(0, 2);
   if (list.length === 0) return null;
   return (
-    <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-card-2">
+    <div className="relative aspect-[4/5] w-full overflow-hidden bg-card-2">
       {list.length === 1 ? (
         <Image src={list[0]} alt={alt} fill sizes="700px" className="object-cover" />
       ) : (
@@ -86,8 +86,8 @@ function MomentCard({
   onMenu: (m: FeedMoment) => void;
 }) {
   return (
-    <article className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-3.5">
-      <div className="flex items-center justify-between">
+    <article className="flex flex-col gap-3 overflow-hidden rounded-2xl border border-border bg-card">
+      <div className="flex items-center justify-between px-3.5 pt-3.5">
         <div className="flex items-center gap-2.5">
           <span className="block h-[38px] w-[38px] shrink-0 overflow-hidden rounded-full">
             {moment.authorAvatar ? (
@@ -122,7 +122,7 @@ function MomentCard({
 
       <MomentImages images={moment.images} alt={moment.caption || "Travel moment"} />
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between px-3.5">
         <div className="flex items-center gap-4">
           <motion.button
             onClick={() => onLike(moment)}
@@ -166,17 +166,19 @@ function MomentCard({
         </button>
       </div>
 
-      {moment.caption ? (
-        <p className="text-[13px] leading-5 text-foreground">{moment.caption}</p>
-      ) : null}
-      {moment.commentCount > 0 ? (
-        <button
-          onClick={() => onComments(moment)}
-          className="text-left text-[12px] font-medium text-muted"
-        >
-          View all {compactCount(moment.commentCount)} comments
-        </button>
-      ) : null}
+      <div className="flex flex-col gap-1 px-3.5 pb-3.5">
+        {moment.caption ? (
+          <p className="text-[13px] leading-5 text-foreground">{moment.caption}</p>
+        ) : null}
+        {moment.commentCount > 0 ? (
+          <button
+            onClick={() => onComments(moment)}
+            className="text-left text-[12px] font-medium text-muted"
+          >
+            View all {compactCount(moment.commentCount)} comments
+          </button>
+        ) : null}
+      </div>
     </article>
   );
 }
@@ -217,8 +219,30 @@ function CommentsSheet({
   };
 
   return (
-    <Sheet open onClose={onClose} height="70vh">
-      <div className="flex flex-col px-4 pb-6 pt-1">
+    <Sheet
+      open
+      onClose={onClose}
+      height="80vh"
+      footer={
+        <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2">
+          <input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && submit()}
+            placeholder="Add a comment..."
+            className="w-full bg-transparent text-[16px] text-foreground outline-none placeholder:text-muted"
+          />
+          <button
+            onClick={submit}
+            disabled={commentMoment.isPending || !text.trim()}
+            className="shrink-0 text-[13px] font-bold text-accent-2 disabled:opacity-40"
+          >
+            Post
+          </button>
+        </div>
+      }
+    >
+      <div className="flex flex-col px-4 pb-2">
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-[16px] font-extrabold text-foreground">Comments</h2>
         </div>
@@ -257,23 +281,6 @@ function CommentsSheet({
             })
           )}
         </div>
-
-        <div className="mt-4 flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2">
-          <input
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && submit()}
-            placeholder="Add a comment..."
-            className="w-full bg-transparent text-[16px] text-foreground outline-none placeholder:text-muted"
-          />
-          <button
-            onClick={submit}
-            disabled={commentMoment.isPending || !text.trim()}
-            className="shrink-0 text-[13px] font-bold text-accent-fg disabled:opacity-40"
-          >
-            Post
-          </button>
-        </div>
       </div>
     </Sheet>
   );
@@ -283,6 +290,9 @@ export default function Feed() {
   const router = useRouter();
   const { toast } = useToast();
   const { data: moments = [], isLoading, error } = useFeed();
+  const { data: profile } = useProfile();
+  const myAvatar = profile?.avatar;
+  const myName = profile?.username;
   const likeMoment = useLikeMoment();
   const deleteMoment = useDeleteMoment();
   const shareMoment = useShareMoment();
@@ -343,7 +353,7 @@ export default function Feed() {
         <div className="w-full">
                  <div className="flex gap-2 px-4 pb-1 pt-1">
             {[
-              { key: "feeds", label: "Feeds", href: "/feed" },
+              { key: "story", label: "Story", href: "/feed" },
               { key: "stays", label: "Accommodations", href: "/stays" },
               { key: "cars", label: "Cars", href: "/cars" },
             ].map((tab) => (
@@ -351,7 +361,7 @@ export default function Feed() {
                 key={tab.key}
                 onClick={() => router.push(tab.href)}
                 className={`flex h-[32px] shrink-0 items-center rounded-full px-4 text-[13px] font-semibold transition ${
-                  tab.key === "feeds"
+                  tab.key === "story"
                     ? "bg-accent text-accent-2"
                     : "bg-card-2 text-muted"
                 }`}
@@ -366,12 +376,23 @@ export default function Feed() {
               onClick={() => setShareOpen(true)}
               className="flex w-[58px] shrink-0 flex-col items-center gap-1.5"
             >
-              <span className="relative flex h-[58px] w-[58px] items-center justify-center rounded-full border-2 border-accent-2 bg-card-2">
-                <span className="flex h-[26px] w-[26px] items-center justify-center rounded-full bg-accent text-[18px] font-bold text-accent-2">
-                  +
-                </span>
+              <span className="relative flex h-[58px] w-[58px] items-center justify-center rounded-full bg-card-2">
+                {myAvatar ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={myAvatar}
+                    alt=""
+                    width={58}
+                    height={58}
+                    className="h-full w-full rounded-full object-cover"
+                  />
+                ) : (
+                  <Identicon seed={feedKey()} size={58} />
+                )}
               </span>
-              <span className="text-[11px] text-muted">Your Story</span>
+              <span className="text-[11px] text-muted">
+                {myName || "You"}
+              </span>
             </button>
             {storyAuthors.map((m) => (
               <div key={m.userId} className="flex w-[58px] shrink-0 flex-col items-center gap-1.5">
