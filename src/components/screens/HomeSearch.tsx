@@ -331,7 +331,7 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
               </div>
             </section>
 ) : destinationsLive && destinations.length > 0 ? (
-            <section className="flex flex-col gap-3 py-3">
+            <section className="flex flex-col gap-3 pb-3 pt-6">
               <h2 className="px-5 text-[16px] font-bold leading-[21px] text-foreground">
                 Popular Destinations
               </h2>

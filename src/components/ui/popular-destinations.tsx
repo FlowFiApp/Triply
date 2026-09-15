@@ -24,18 +24,20 @@ export default function PopularDestinations({
   return (
     <Swiper
       modules={[Autoplay]}
-      slidesPerView={1.35}
+      slidesPerView="auto"
       spaceBetween={12}
+      slidesOffsetBefore={20}
+      slidesOffsetAfter={20}
       grabCursor
       freeMode
       autoplay={{ delay: 4500, disableOnInteraction: true, pauseOnMouseEnter: true }}
-      className="!px-5 !pb-1"
+      className="!pb-1"
     >
       {destinations.map((d) => (
-        <SwiperSlide key={d.iata}>
+        <SwiperSlide key={d.iata} style={{ width: 200 }}>
           <button
             onClick={() => onSelect(d.iata)}
-            className="group relative block h-[150px] w-full overflow-hidden rounded-2xl text-left shadow-[0_4px_12px_rgba(0,0,0,0.25)]"
+            className="group relative block h-[140px] w-full overflow-hidden rounded-2xl text-left shadow-[0_4px_12px_rgba(0,0,0,0.25)]"
           >
             <Image
               src={d.image}
