@@ -141,14 +141,17 @@ export function useI18n() {
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("en");
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const host = (window as Window & { nimiqPay?: { language?: string } })
-      .nimiqPay?.language;
-    if (host && host in DICT) {
-      setLang(host as Lang);
-      return;
-    }
-    setLang(detectLang());
+    const id = setTimeout(() => {
+      if (typeof window === "undefined") return;
+      const host = (window as Window & { nimiqPay?: { language?: string } })
+        .nimiqPay?.language;
+      if (host && host in DICT) {
+        setLang(host as Lang);
+        return;
+      }
+      setLang(detectLang());
+    }, 0);
+    return () => clearTimeout(id);
   }, []);
 
   const t = (k: string) => DICT[lang][k] ?? DICT.en[k] ?? k;

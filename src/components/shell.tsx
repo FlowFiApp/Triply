@@ -51,7 +51,7 @@ export function Avatar({
 }) {
   const { state } = useWalletState();
   const { data: profile } = useProfile();
-  const seedValue = seed ?? state.nimiqAddress ?? "triply";
+  const seedValue = seed ?? state.nimiqAddress ?? "triply-user";
   const avatarSrc = profile?.avatar;
   return (
     <Link href={href} aria-label="Profile">

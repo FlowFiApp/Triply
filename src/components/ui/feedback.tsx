@@ -70,12 +70,13 @@ export function EmptyState({
 export function OfflineBanner() {
   const [offline, setOffline] = useState(false);
   useEffect(() => {
-    setOffline(!navigator.onLine);
     const on = () => setOffline(false);
     const off = () => setOffline(true);
     window.addEventListener("online", on);
     window.addEventListener("offline", off);
+    const id = setTimeout(() => setOffline(!navigator.onLine), 0);
     return () => {
+      clearTimeout(id);
       window.removeEventListener("online", on);
       window.removeEventListener("offline", off);
     };

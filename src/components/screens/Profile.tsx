@@ -128,7 +128,7 @@ export default function Profile() {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <Identicon seed={identityKey()} size={80} />
+                  <Identicon seed={identityKey() || "triply-user"} size={80} />
                 )}
               </span>
               <span className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-accent text-accent-2">

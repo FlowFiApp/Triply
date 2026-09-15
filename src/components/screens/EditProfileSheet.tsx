@@ -90,7 +90,7 @@ export default function EditProfileSheet({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <Identicon seed={identityKey()} size={96} />
+                <Identicon seed={identityKey() || "triply-user"} size={96} />
               )}
             </span>
             <span className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-accent text-accent-2">
