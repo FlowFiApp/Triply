@@ -111,7 +111,7 @@ export function PassengerClassSheet({
                 {c}
                 <span
                   className={`flex h-[18px] w-[18px] items-center justify-center rounded-full border ${
-                    selected ? "border-accent-2 bg-[#f1f5f9] dark:bg-[#090d1a]" : "border-border"
+                    selected ? "border-accent-2 bg-card-2" : "border-border"
                   }`}
                 >
                   {selected ? (

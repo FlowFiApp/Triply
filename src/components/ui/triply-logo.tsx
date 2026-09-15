@@ -5,10 +5,12 @@ export default function TriplyLogo({
   size?: number;
   className?: string;
 }) {
-  const width = Math.round(size * (704 / 470));
+  // const width = Math.round(size * (704 / 470));
   return (
-    <span className={`inline-flex items-center gap-1.5 text-foreground ${className}`}>
-      <svg
+    <span
+      className={`inline-flex items-center gap-1.5 text-foreground ${className}`}
+    >
+      {/* <svg
         width={width}
         height={"fit-content"}
         viewBox="0 0 704 470"
@@ -46,7 +48,7 @@ export default function TriplyLogo({
             />
           </clipPath>
         </defs>
-      </svg>
+      </svg> */}
       <span
         className="font-script leading-none text-foreground"
         style={{ fontSize: Math.round(size * 0.82) }}

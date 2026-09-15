@@ -23,7 +23,6 @@ import "swiper/css";
 import "swiper/css/pagination";
 import ShareMomentSheet from "@/components/screens/ShareMomentSheet";
 import { usePoints } from "@/lib/points";
-import { useQueryParam } from "@/lib/query";
 import { useToast } from "@/lib/toast";
 import { share } from "@/lib/share";
 import {
@@ -267,9 +266,7 @@ export default function Feed() {
   const [moments, setMoments] = useState<FeedMoment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [shareOpen, setShareOpen] = useState(
-    useQueryParam("sheet", "") === "share",
-  );
+  const [shareOpen, setShareOpen] = useState(false);
   const [commentsFor, setCommentsFor] = useState<FeedMoment | null>(null);
   const [menuFor, setMenuFor] = useState<FeedMoment | null>(null);
 

@@ -8,7 +8,7 @@ import { MobileShell } from "@/components/shell";
 import { FareRulesSheet } from "@/components/screens/sheets";
 import SeatMapSheet from "@/components/screens/SeatMapSheet";
 import Identicon from "@/components/ui/identicon";
-import { Price, SkeletonRows } from "@/components/ui/feedback";
+import { Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import { useFlow } from "@/lib/flow-context";
 import type { FlightOffer, OfferService } from "@/lib/types";
@@ -18,7 +18,6 @@ const SERVICE_ICON: Record<string, ElementType> = {
   seat: MonitorPlay,
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
   return (
     <button
@@ -41,10 +40,7 @@ export default function FlightDetails() {
   const [offer, setOffer] = useState<FlightOffer | null>(
     () => flow.offer ?? null,
   );
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(
-    flow.offer ? "" : "No offer selected. Search for a flight first.",
-  );
+  const error = flow.offer ? "" : "No offer selected. Search for a flight first.";
   const [selected, setSelected] = useState<Record<string, boolean>>(() => {
     const ids = flow.selectedServiceIds ?? [];
     return Object.fromEntries(ids.map((id) => [id, true]));
@@ -64,16 +60,6 @@ export default function FlightDetails() {
     setFlow({ offer: o, amount: o.price, selectedServiceIds: [], seat: undefined });
     window.scrollTo({ top: 0 });
   };
-
-  if (loading) {
-    return (
-      <MobileShell>
-        <div className="px-4 py-5">
-          <SkeletonRows rows={2} height={220} />
-        </div>
-      </MobileShell>
-    );
-  }
 
   if (!offer) {
     return (

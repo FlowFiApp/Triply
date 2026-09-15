@@ -169,7 +169,7 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
 
           <div className="px-4 py-3">
             <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-[18px]">
-              <div className="flex items-center gap-1 rounded-[10px] bg-[#f1f5f9] p-[3px] dark:bg-[#090d1a]">
+              <div className="flex items-center gap-1 rounded-[10px] bg-card-2 p-[3px]">
                 {TRIP_TYPES.map((t) => (
                   <button
                     key={t}

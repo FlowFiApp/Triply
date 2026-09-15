@@ -306,7 +306,7 @@ export default function MyTrips() {
           </div>
 
           <div className="px-4 pt-1">
-            <div className="flex items-center gap-1 rounded-[10px] bg-[#f1f5f9] p-[3px] dark:bg-[#090d1a]">
+            <div className="flex items-center gap-1 rounded-[10px] bg-card-2 p-[3px]">
               {["Upcoming", `Past (${past.length})`].map(
                 (t) => {
                   const key = t.startsWith("Upcoming") ? "Upcoming" : "Past";

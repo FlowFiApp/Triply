@@ -145,7 +145,7 @@ body: JSON.stringify({
 return () => {
       ignore = true;
     };
-  }, [origin, destination, date, returnDate, passengers, cabin, slices]);
+  }, [origin, destination, date, returnDate, passengers, cabin, slices, setFlow]);
 
   const prices = useMemo(
     () =>

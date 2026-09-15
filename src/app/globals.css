@@ -5,29 +5,29 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f8fafc;
+  --background: #ffffff;
   --foreground: #0f172a;
   --card: #ffffff;
-  --card-2: #f1f5f9;
-  --card-3: #e2e8f0;
+  --card-2: #f8fafc;
+  --card-3: #f1f5f9;
   --muted: #64748b;
-  --border: #e2e8f0;
+  --border: #e5e7eb;
   --surface: #ffffff;
   --accent: #203da3;
   --accent-2: #cdff9b;
   --on-accent: #ffffff;
-  --shadow-card: 0 4px 12px rgba(15, 23, 42, 0.05);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 .dark {
-  --background: #0f172a;
+  --background: #000000;
   --foreground: #f8fafc;
-  --card: #131c2e;
-  --card-2: #1e293b;
-  --card-3: #243249;
+  --card: #111111;
+  --card-2: #1a1a1a;
+  --card-3: #222222;
   --muted: #94a3b8;
-  --border: #243249;
-  --surface: #0f172a;
+  --border: #1a1a1a;
+  --surface: #111111;
   --accent: #203da3;
   --accent-2: #cdff9b;
   --on-accent: #cdff9b;

@@ -826,7 +826,7 @@ export function AccConfirmed() {
           <div className="flex flex-col gap-4 px-4 py-5">
             <div className="flex items-center gap-3 rounded-xl bg-[#10b981] px-4 py-4">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#10b981]">
-                <Check size={16} strokeWidth={3} className="text-[#090d1a]" />
+                <Check size={16} strokeWidth={3} className="text-[#0f172a]" />
               </span>
               <div className="flex flex-col">
                 <span className="text-[18px] font-extrabold text-white">
@@ -839,7 +839,7 @@ export function AccConfirmed() {
             </div>
 
             <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-card">
-              <div className="flex items-center justify-between bg-[#090d1a] px-4 py-3.5">
+              <div className="flex items-center justify-between bg-card-2 px-4 py-3.5">
                 <span className="text-[14px] font-bold text-foreground">
                   {booking.accommodationName}
                 </span>

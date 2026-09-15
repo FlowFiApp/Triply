@@ -34,6 +34,7 @@ import PlacesCombobox, {
   type PlaceSelection,
 } from "@/components/ui/places-combobox";
 import { readFlow, writeFlow } from "@/lib/store";
+import { useFlow } from "@/lib/flow-context";
 import { useToast } from "@/lib/toast";
 import { getStoredIdentity } from "@/lib/identity";
 import { share } from "@/lib/share";
@@ -361,6 +362,7 @@ export function CarSearch() {
 
 export function CarDetails() {
   const router = useRouter();
+  const { setFlow } = useFlow();
   const [car] = useState<CarOffer | null>(() => readFlow().car ?? null);
   const [booking, setBooking] = useState(false);
   const [error, setError] = useState("");
@@ -386,7 +388,8 @@ export function CarDetails() {
     const flow = readFlow();
     const passenger = flow.passenger;
     if (!passenger?.first || !passenger?.email) {
-      router.push("/passengers?next=/car");
+      setFlow({ next: "/car" });
+      router.push("/passengers");
       return;
     }
     setBooking(true);
@@ -695,7 +698,7 @@ export function CarConfirmed() {
           <div className="flex flex-col gap-4 px-4 py-5">
             <div className="flex items-center gap-3 rounded-xl bg-[#10b981] px-4 py-4">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#10b981]">
-                <Check size={16} strokeWidth={3} className="text-[#090d1a]" />
+                <Check size={16} strokeWidth={3} className="text-[#0f172a]" />
               </span>
               <div className="flex flex-col">
                 <span className="text-[18px] font-extrabold text-white">
@@ -708,7 +711,7 @@ export function CarConfirmed() {
             </div>
 
             <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-card">
-              <div className="flex items-center justify-between bg-[#090d1a] px-4 py-3.5">
+              <div className="flex items-center justify-between bg-card-2 px-4 py-3.5">
                 <span className="text-[14px] font-bold text-foreground">
                   {booking.carName}
                 </span>
