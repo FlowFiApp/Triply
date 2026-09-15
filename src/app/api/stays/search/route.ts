@@ -2,6 +2,7 @@
 import { duffelErrorMessage, geocode, searchStays } from "@/lib/duffel";
 import type { StayOffer } from "@/lib/types";
 import { testPrice } from "@/lib/pricing";
+import mockData from "@/lib/data.json";
 
 function normalizeStay(r: any): StayOffer {
   const acc = r.accommodation ?? {};
@@ -57,6 +58,11 @@ export async function POST(request: Request) {
         ? { latitude: body.latitude, longitude: body.longitude }
         : await geocode(query);
 
+    // NOTE: The Stays product is not enabled on this Duffel token
+    // (Duffel returns "This Duffel token does not have access to this product").
+    // Serving from the bundled local dataset instead. The live Duffel call is
+    // kept below, commented out, for when access is granted.
+    /*
     const stays = await searchStays({
       checkInDate: body.checkInDate ?? "2026-10-24",
       checkOutDate: body.checkOutDate ?? "2026-11-08",
@@ -66,6 +72,8 @@ export async function POST(request: Request) {
       rooms: body.rooms ?? 1,
       guests: body.guests ?? 2,
     });
+    */
+    const stays: any[] = mockData.accommodations as unknown as any[];
 
     return Response.json({
       stays: stays.map(normalizeStay),

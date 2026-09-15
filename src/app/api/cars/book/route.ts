@@ -1,11 +1,17 @@
 import { createCarBooking, duffelErrorMessage, ensureCustomerUser } from "@/lib/duffel";
 import type { CarBooking } from "@/lib/types";
 import { testPrice } from "@/lib/pricing";
+import mockData from "@/lib/data.json";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const driver = body.driver;
+
+    // NOTE: Cars are served from the bundled local dataset (Duffel Cars is
+    // not enabled on this token). The live Duffel booking + customer-user calls
+    // are kept below, commented out, for when access is granted.
+    /*
     const customerUserId = driver?.email
       ? await ensureCustomerUser({
           email: driver.email,
@@ -19,12 +25,22 @@ export async function POST(request: Request) {
       driver,
       customerUserId: customerUserId ?? undefined,
     });
-    if (!booking) {
-      return Response.json({
-        live: false,
-        error: "Duffel is not configured. Set DUFFEL_ACCESS_TOKEN to book cars.",
-      });
-    }
+    */
+    const carRate = (mockData.cars as unknown as any[]).find(
+      (r: any) => r.id === body.rateId,
+    );
+    const booking = {
+      id: crypto.randomUUID(),
+      reference: `CAR-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
+      status: "confirmed",
+      pickup_date: body.pickupDate ?? "2026-10-24",
+      dropoff_date: body.dropoffDate ?? "2026-10-29",
+      pickup_location: { name: carRate?.pickup_location?.name ?? "Pickup location" },
+      car: { name: carRate?.car?.name ?? "Car" },
+      total_amount: carRate?.total_amount ?? "0",
+      total_currency: carRate?.total_currency ?? "USD",
+    };
+
     // 2 NIM per 1 USDT, credited once per booking.
     try {
       const { getOrCreateUser, earnPoints } = await import("@/lib/db");

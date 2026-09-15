@@ -2,6 +2,7 @@
 import { duffelErrorMessage, geocode, searchCars } from "@/lib/duffel";
 import type { CarOffer } from "@/lib/types";
 import { testPrice } from "@/lib/pricing";
+import mockData from "@/lib/data.json";
 
 function normalizeCar(r: any): CarOffer {
   const car = r.car ?? {};
@@ -61,6 +62,12 @@ export async function POST(request: Request) {
         : body.pickupLocation
           ? await geocode(body.pickupLocation)
           : { latitude: 51.47, longitude: -0.4543 };
+
+    // NOTE: The Cars product is not enabled on this Duffel token
+    // (Duffel returns "This Duffel token does not have access to this product").
+    // Serving from the bundled local dataset instead. The live Duffel call is
+    // kept below, commented out, for when access is granted.
+    /*
     const rates = await searchCars({
       pickupDate: body.pickupDate ?? "2026-10-24",
       pickupTime: body.pickupTime ?? "10:30",
@@ -72,6 +79,9 @@ export async function POST(request: Request) {
       radiusKm: testMode ? 1 : (body.radiusKm ?? 20),
       residenceCountry: testMode ? "GB" : undefined,
     });
+    */
+    const rates: any[] = mockData.cars as unknown as any[];
+
     return Response.json({
       cars: rates.map(normalizeCar),
       live: rates.length > 0,

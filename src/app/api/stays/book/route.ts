@@ -1,11 +1,17 @@
 import { createStayBooking, duffelErrorMessage, ensureCustomerUser } from "@/lib/duffel";
 import type { StayBooking } from "@/lib/types";
 import { testPrice } from "@/lib/pricing";
+import mockData from "@/lib/data.json";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const guest = body.guest;
+
+    // NOTE: Stays are served from the bundled local dataset (Duffel Stays is
+    // not enabled on this token). The live Duffel booking + customer-user calls
+    // are kept below, commented out, for when access is granted.
+    /*
     const customerUserId = guest?.email
       ? await ensureCustomerUser({
           email: guest.email,
@@ -19,12 +25,30 @@ export async function POST(request: Request) {
       guest,
       customerUserId: customerUserId ?? undefined,
     });
-    if (!booking) {
-      return Response.json({
-        live: false,
-        error: "Duffel is not configured. Set DUFFEL_ACCESS_TOKEN to book stays.",
-      });
-    }
+    */
+    const resultId = String(body.rateId ?? "").replace("rat_local_", "");
+    const stay = (mockData.accommodations as unknown as any[]).find(
+      (r: any) => r.id === resultId,
+    );
+    const booking = {
+      id: crypto.randomUUID(),
+      reference: `STAY-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
+      status: "confirmed",
+      check_in_date: body.checkInDate ?? "2026-10-24",
+      check_out_date: body.checkOutDate ?? "2026-11-08",
+      accommodation: {
+        name: stay?.accommodation?.name ?? "Local Stay",
+        address: stay?.accommodation?.address
+          ? {
+              line_one: stay.accommodation.address.line_one ?? "",
+              city_name: stay.accommodation.address.city_name ?? "",
+            }
+          : {},
+      },
+      total_amount: stay?.cheapest_rate_total_amount ?? "0",
+      total_currency: stay?.cheapest_rate_currency ?? "USD",
+    };
+
     // 2 NIM per 1 USDT, credited once per booking.
     try {
       const { getOrCreateUser, earnPoints } = await import("@/lib/db");
