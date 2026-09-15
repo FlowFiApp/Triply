@@ -44,7 +44,7 @@ export default function TriplyLogo({
       </svg>
       <span
         className="font-script leading-none text-foreground"
-        style={{ fontSize: Math.round(size * 0.92) }}
+        style={{ fontSize: Math.round(size * 0.82) }}
       >
         Triply
       </span>

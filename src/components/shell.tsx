@@ -57,7 +57,7 @@ export function BrandHeader({
   return (
     <div className="sticky top-0 z-30 flex h-[60px] w-full items-center justify-between bg-background px-5 py-3">
       <div>
-        <TriplyLogo size={36} />
+        <TriplyLogo size={30} />
         {subtitle ? (
           <p className="mt-0.5 text-[11px] font-medium text-muted">{subtitle}</p>
         ) : null}

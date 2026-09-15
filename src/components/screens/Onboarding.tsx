@@ -49,7 +49,7 @@ export default function Onboarding() {
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
           <div className="sticky top-0 z-30 flex h-[60px] w-full items-center justify-between bg-background px-6">
-            <TriplyLogo size={32} />
+            <TriplyLogo size={27} />
             <button
               onClick={finish}
               className="rounded-full border border-border bg-card px-3 py-1.5 text-[13px] font-semibold text-muted"
