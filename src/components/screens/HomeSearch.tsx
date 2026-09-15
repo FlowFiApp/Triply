@@ -54,7 +54,7 @@ export default function HomeSearch() {
   const { t } = useI18n();
   const { toast } = useToast();
   const [tripType, setTripType] = useState<(typeof TRIP_TYPES)[number]>("Round Trip");
-  const [from, setFrom] = useState("LOS");
+  const [from, setFrom] = useState("LAX");
   const [to, setTo] = useState("LHR");
 const [range, setRange] = useState({ start: "2026-10-24", end: "2026-11-08" });
   const [dateOpen, setDateOpen] = useState(false);

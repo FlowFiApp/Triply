@@ -83,7 +83,7 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
 
 export default function SearchResults() {
   const router = useRouter();
-const origin = useQueryParam("origin", "LOS");
+const origin = useQueryParam("origin", "LAX");
   const destination = useQueryParam("destination", "LHR");
   const date = useQueryParam("date", "2026-10-24");
   const returnDate = useQueryParam("returnDate", "");
