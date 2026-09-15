@@ -421,7 +421,7 @@ export default function Feed() {
                     className="h-full w-full rounded-full object-cover"
                   />
                 ) : (
-                  <Identicon seed={feedKey()} size={58} />
+                  <Identicon seed={feedKey() || "triply-user"} size={58} />
                 )}
               </span>
               <span className="text-[11px] text-muted">{myName || "You"}</span>

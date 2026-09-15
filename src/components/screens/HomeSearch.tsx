@@ -324,7 +324,7 @@ return (
               </div>
               <div className="flex gap-3.5 overflow-hidden px-4">
                 {[0, 1, 2].map((i) => (
-                  <Skeleton key={i} className="h-[170px] w-[244px] shrink-0 rounded-2xl" />
+                  <Skeleton key={i} className="h-[218px] w-[244px] shrink-0 rounded-2xl" />
                 ))}
               </div>
             </section>

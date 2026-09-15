@@ -35,7 +35,7 @@ export default function PopularDestinations({
       className="w-full"
       style={
         {
-          height: 200,
+          height: 256,
           touchAction: "pan-y",
           "--swiper-pagination-color": "#203da3",
           "--swiper-pagination-bullet-inactive-color": "#94a3b8",
@@ -44,7 +44,7 @@ export default function PopularDestinations({
       }
     >
       {destinations.map((d) => (
-        <SwiperSlide key={d.iata} style={{ height: 170 }}>
+        <SwiperSlide key={d.iata} style={{ height: 218 }}>
           <button
             onClick={() => onSelect(d.iata)}
             className="group relative block h-full w-full overflow-hidden rounded-2xl text-left shadow-[0_4px_12px_rgba(0,0,0,0.25)]"
@@ -61,10 +61,10 @@ export default function PopularDestinations({
               <ArrowUpRight size={14} />
             </div>
             <div className="absolute inset-x-0 bottom-0 flex flex-col gap-0.5 p-3">
-              <span className="text-[18px] font-extrabold leading-6 text-white">
+              <span className="text-[20px] font-extrabold leading-6 text-white">
                 {d.city}
               </span>
-              <span className="text-[12px] font-medium text-white/80">
+              <span className="text-[13px] font-medium text-white/80">
                 {d.name} · {d.country}
               </span>
             </div>
