@@ -82,7 +82,7 @@ export default function SeatMapSheet({
       <div className="px-4 pb-3">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 size={24} className="animate-spin text-accent-2" />
+            <Loader2 size={24} className="animate-spin text-accent-fg" />
           </div>
         ) : error ? (
           <p className="rounded-lg bg-red-500/10 px-3 py-2 text-[12px] text-red-500">
@@ -99,7 +99,7 @@ export default function SeatMapSheet({
                   !s.available
                     ? "cursor-not-allowed bg-card-2 text-muted/50"
                     : picked === s.id
-                      ? "bg-accent text-accent-2"
+                      ? "bg-accent text-accent-fg"
                       : "bg-accent-2 text-accent"
                 }`}
               >

@@ -43,7 +43,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             className="animate-sheet-up pointer-events-auto flex w-full max-w-[360px] items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-2.5 shadow-xl"
           >
             {t.kind === "success" ? (
-              <CheckCircle2 size={18} className="shrink-0 text-accent-2" />
+              <CheckCircle2 size={18} className="shrink-0 text-accent-fg" />
             ) : t.kind === "error" ? (
               <XCircle size={18} className="shrink-0 text-red-500" />
             ) : (

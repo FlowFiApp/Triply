@@ -55,7 +55,7 @@ export default function RedeemSheet({
       <div className="mx-5 flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-[13px] font-semibold text-foreground">
-            <Gift size={16} className="text-accent-2" />
+            <Gift size={16} className="text-accent-fg" />
             NIM available
           </span>
           <NimiqAmount value={available} iconSize={16} />

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BedDouble, Car, Loader2, Plane, Search } from "lucide-react";
@@ -11,6 +11,8 @@ import { UsdtAmount } from "@/components/ui/Usdt";
 import { Sheet } from "@/components/ui";
 import AnimatedTabs from "@/components/ui/animated-tabs";
 import { useFlow } from "@/lib/flow-context";
+import { useBookings } from "@/lib/api/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/lib/toast";
 import { readFlow } from "@/lib/store";
 import type { CarBooking } from "@/lib/types";
@@ -73,7 +75,7 @@ function BookingCard({
     <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#5b7cfa] text-accent-2">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#5b7cfa] text-accent-fg">
             <Icon size={16} />
           </span>
           <div className="flex flex-col">
@@ -146,9 +148,9 @@ function BookingCard({
 }
 
 export default function MyTrips() {
-  const [bookings, setBookings] = useState<BookingItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const email = readFlow().passenger?.email ?? "";
+  const qc = useQueryClient();
+  const { data, isLoading, error } = useBookings(email);
   const [tab, setTab] = useState<"Upcoming" | "Past">("Upcoming");
   const [ref, setRef] = useState("");
   const [lookedUp, setLookedUp] = useState<BookingItem | null>(null);
@@ -159,50 +161,33 @@ export default function MyTrips() {
   const [changeLoading, setChangeLoading] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    let ignore = false;
-    const email = readFlow().passenger?.email ?? "";
-    Promise.all([
-      fetch(
-        `/api/bookings${email ? `?email=${encodeURIComponent(email)}` : ""}`,
-      ).then((r) => r.json()),
-      Promise.resolve(
-        (() => {
-          const flow = readFlow();
-          const cb = flow.carBooking as CarBooking | undefined;
-          return cb
-            ? [
-                {
-                  kind: "car",
-                  id: cb.id,
-                  reference: cb.reference,
-                  title: cb.carName,
-                  subtitle: cb.pickupLocation,
-                  status: cb.status,
-                  depTime: cb.pickupDate,
-                  arrTime: cb.dropoffDate,
-                  dep: "Pickup",
-                  arr: "Return",
-                  amount: cb.totalAmount,
-                },
-              ]
-            : [];
-        })(),
-      ),
-    ])
-      .then(([d, localCars]) => {
-        if (ignore) return;
-        if (d.error) setError(d.error);
-        else setBookings([...(d.bookings ?? []), ...localCars]);
-      })
-      .catch(() => setError("Failed to load bookings."))
-      .finally(() => {
-        if (!ignore) setLoading(false);
-      });
-    return () => {
-      ignore = true;
-    };
+  const localCars = useMemo<BookingItem[]>(() => {
+    const cb = readFlow().carBooking as CarBooking | undefined;
+    return cb
+      ? [
+          {
+            kind: "car",
+            id: cb.id,
+            reference: cb.reference,
+            title: cb.carName,
+            subtitle: cb.pickupLocation,
+            status: cb.status,
+            depTime: cb.pickupDate,
+            arrTime: cb.dropoffDate,
+            dep: "Pickup",
+            arr: "Return",
+            amount: cb.totalAmount,
+          },
+        ]
+      : [];
   }, []);
+
+  const bookings = useMemo<BookingItem[]>(
+    () => [...((data?.bookings as BookingItem[]) ?? []), ...localCars],
+    [data, localCars],
+  );
+  const loading = isLoading;
+  const errorMessage = error instanceof Error ? error.message : "";
 
   const upcoming = useMemo(
     () => bookings.filter((b) => ACTIVE.test(b.status)),
@@ -231,7 +216,7 @@ export default function MyTrips() {
       const res = await fetch(path, { method: "POST" });
       const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Cancellation failed");
-      setBookings((prev) => prev.filter((b) => b.id !== item.id));
+      await qc.invalidateQueries({ queryKey: ["bookings"] });
       toast("success", `Booking ${item.reference} cancelled.`);
     } catch (err) {
       toast("error", err instanceof Error ? err.message : "Cancellation failed");
@@ -297,23 +282,21 @@ export default function MyTrips() {
   const visible = lookedUp ? [lookedUp] : tab === "Upcoming" ? upcoming : past;
 
   return (
-    <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
-        <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center bg-background px-4">
+    <MobileShell header={<><div className="flex h-[60px] items-center bg-background px-4">
             <h1 className="text-[18px] font-extrabold text-foreground">
               My Bookings
             </h1>
-          </div>
-
-          <div className="px-4 pt-1">
+          </div></>}>
+      <div className="flex min-h-screen flex-col justify-between">
+        <div className="w-full">
+                 <div className="px-4 pt-1">
             <AnimatedTabs
               id="trips"
               options={["Upcoming", `Past (${past.length})`]}
               value={tab === "Upcoming" ? "Upcoming" : `Past (${past.length})`}
               onChange={(v) => setTab(v.startsWith("Upcoming") ? "Upcoming" : "Past")}
               activeClassName="bg-accent"
-              selectedTextClassName="text-accent-2"
+              selectedTextClassName="text-accent-fg"
             />
           </div>
 
@@ -327,7 +310,7 @@ export default function MyTrips() {
                 placeholder="Find by booking reference"
                 className="h-11 flex-1 bg-transparent text-[16px] text-foreground outline-none placeholder:text-muted"
               />
-              <button onClick={lookup} className="text-[12px] font-bold text-accent-2">
+              <button onClick={lookup} className="text-[12px] font-bold text-accent-fg">
                 Find
               </button>
             </div>
@@ -338,7 +321,7 @@ export default function MyTrips() {
                 </span>
                 <button
                   onClick={() => setLookedUp(null)}
-                  className="text-[11px] font-bold text-accent-2"
+                  className="text-[11px] font-bold text-accent-fg"
                 >
                   Clear
                 </button>
@@ -349,15 +332,15 @@ export default function MyTrips() {
           <div className="flex flex-col gap-4 px-4 pb-5 pt-4">
             {loading ? <SkeletonRows rows={3} height={168} /> : null}
 
-            {!loading && error ? (
+            {!loading && errorMessage ? (
               <EmptyState
                 title="Bookings unavailable"
-                message={error}
+                message={errorMessage}
                 icon={<Loader2 size={24} />}
               />
             ) : null}
 
-            {!loading && !error && bookings.length === 0 && !lookedUp ? (
+            {!loading && !errorMessage && bookings.length === 0 && !lookedUp ? (
               <EmptyState
                 title="No bookings yet"
                 message="Your tickets and stays will appear here after you book."
@@ -373,7 +356,7 @@ export default function MyTrips() {
               />
             ) : null}
 
-            {!loading && !error && visible.length === 0 && !lookedUp ? (
+            {!loading && !errorMessage && visible.length === 0 && !lookedUp ? (
               <EmptyState
                 title="Nothing here"
                 message={`No ${tab.toLowerCase()} bookings right now.`}
@@ -382,7 +365,7 @@ export default function MyTrips() {
             ) : null}
 
             {!loading &&
-              !error &&
+              !errorMessage &&
               visible.map((b, i) => (
                 <div
                   key={b.id}
@@ -454,7 +437,7 @@ export default function MyTrips() {
                       {o.slices?.[0]?.segments?.[0]?.origin?.iata_code ?? ""} →{" "}
                       {o.slices?.[0]?.segments?.[0]?.destination?.iata_code ?? ""}
                     </span>
-                    <span className="text-[12px] font-bold text-accent-2">
+                    <span className="text-[12px] font-bold text-accent-fg">
                       <UsdtAmount
                         value={o.total_due_amount ?? o.new_total_amount ?? 0}
                       />

@@ -112,16 +112,14 @@ export default function Processing() {
   ];
 
   return (
-    <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
-        <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center bg-background px-4">
+    <MobileShell header={<><div className="flex h-[60px] items-center bg-background px-4">
             <h1 className="text-[18px] font-extrabold leading-6 text-foreground">
               Processing Booking
             </h1>
-          </div>
-
-          <div className="flex flex-col items-center gap-8 px-4 py-5">
+          </div></>}>
+      <div className="flex min-h-screen flex-col justify-between">
+        <div className="w-full">
+                 <div className="flex flex-col items-center gap-8 px-4 py-5">
             <div className="flex w-full flex-col gap-5 rounded-2xl border border-border bg-card p-4">
               {steps.map((s, i) => {
                 const done = i < stepIndex;
@@ -144,7 +142,7 @@ export default function Processing() {
                         {done ? (
                           <Check
                             size={14}
-                            className="text-accent-2"
+                            className="text-accent-fg"
                             strokeWidth={3}
                           />
                         ) : active ? (
@@ -161,7 +159,7 @@ export default function Processing() {
                         </span>
                         <span
                           className={`text-[12px] ${
-                            active ? "text-accent-2" : done ? "text-accent-2" : "text-muted"
+                            active ? "text-accent-fg" : done ? "text-accent-fg" : "text-muted"
                           }`}
                         >
                           {done ? "Completed" : active ? sub : "Pending"}
@@ -214,14 +212,14 @@ export default function Processing() {
                   <Link
                     href={`${chain.explorer}/tx/${tx}`}
                     target="_blank"
-                    className="flex items-center gap-1 text-[14px] font-semibold text-accent-2"
+                    className="flex items-center gap-1 text-[14px] font-semibold text-accent-fg"
                   >
                     {tx}
                     <ExternalLink size={12} />
                   </Link>
                   <button
                     onClick={() => navigator.clipboard?.writeText(tx)}
-                    className="text-accent-2"
+                    className="text-accent-fg"
                     aria-label="Copy transaction hash"
                   >
                     <Copy size={16} />

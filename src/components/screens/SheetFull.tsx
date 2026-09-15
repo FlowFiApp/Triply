@@ -140,7 +140,7 @@ function FilterContent() {
       <div className="flex flex-col gap-3 px-4 py-5">
         <div className="flex items-center justify-between">
           <span className="text-[14px] font-bold text-muted">Price Range</span>
-          <span className="text-[14px] font-bold text-accent-2">
+          <span className="text-[14px] font-bold text-accent-fg">
             200 - 3,000 USDT
           </span>
         </div>
@@ -217,7 +217,7 @@ function WalletContent() {
       <div className="flex flex-col gap-2 px-4 py-5">
         <div className="flex h-[60px] items-center gap-3 rounded-xl border border-accent-2 bg-card p-3">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent">
-            <Wallet size={16} className="text-accent-2" />
+            <Wallet size={16} className="text-accent-fg" />
           </span>
           <span className="flex flex-1 flex-col gap-0.5">
             <span className="text-[14px] font-bold text-foreground">

@@ -97,7 +97,7 @@ export default function GoogleMap({
       <div
         className={`flex flex-col items-center justify-center gap-2 rounded-lg bg-card-2 ${className}`}
       >
-        <Loader2 size={20} className="animate-spin text-accent-2" />
+        <Loader2 size={20} className="animate-spin text-accent-fg" />
         <span className="text-[11px] text-muted">Loading map…</span>
       </div>
     );
@@ -107,7 +107,7 @@ export default function GoogleMap({
     <div className={`relative ${className}`}>
       <div ref={ref} className="h-full w-full rounded-lg" />
       <span className="pointer-events-none absolute bottom-2 left-2 flex items-center gap-1 rounded-md bg-card/90 px-1.5 py-0.5 text-[10px] font-medium text-foreground shadow">
-        <MapPin size={10} className="text-accent-2" />
+        <MapPin size={10} className="text-accent-fg" />
         {query}
       </span>
     </div>

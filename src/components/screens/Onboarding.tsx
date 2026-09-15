@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { MobileShell } from "@/components/shell";
 import TriplyLogo from "@/components/ui/triply-logo";
+import { useUpdateProfile } from "@/lib/api/hooks";
 import { haptic } from "@/lib/haptics";
 
 const SLIDES = [
@@ -32,14 +33,13 @@ const SLIDES = [
 
 export default function Onboarding() {
   const router = useRouter();
+  const updateProfile = useUpdateProfile();
   const [step, setStep] = useState(0);
   const last = step === SLIDES.length - 1;
 
   const finish = () => {
     haptic();
-    if (typeof window !== "undefined") {
-      localStorage.setItem("triply-onboarded", "1");
-    }
+    updateProfile.mutate({ onboarded: true });
     router.push("/");
   };
 
@@ -50,10 +50,7 @@ export default function Onboarding() {
   };
 
   return (
-    <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
-        <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] w-full items-center justify-between bg-background px-4">
+    <MobileShell header={<><div className="flex h-[60px] items-center justify-between bg-background px-4">
             <TriplyLogo size={27} />
             <button
               onClick={finish}
@@ -61,9 +58,10 @@ export default function Onboarding() {
             >
               Skip
             </button>
-          </div>
-
-          <div className="px-4 pt-3">
+          </div></>}>
+      <div className="flex min-h-screen flex-col justify-between">
+        <div className="w-full">
+                 <div className="px-4 pt-3">
             <div className="overflow-hidden rounded-3xl border border-border">
               <div
                 className="flex transition-transform duration-300 ease-out"

@@ -60,9 +60,7 @@ export default function WebhooksAdmin() {
   };
 
   return (
-    <MobileShell>
-      <div className="flex min-h-screen flex-col">
-        <div className="sticky top-0 z-30 flex h-[60px] items-center justify-between bg-background px-4">
+    <MobileShell header={<><div className="flex h-[60px] items-center justify-between bg-background px-4">
           <h1 className="text-[18px] font-extrabold text-foreground">
             Webhooks
           </h1>
@@ -71,13 +69,13 @@ export default function WebhooksAdmin() {
               setLoading(true);
               load();
             }}
-            className="flex items-center gap-1 text-[12px] font-bold text-accent-2"
+            className="flex items-center gap-1 text-[12px] font-bold text-accent-fg"
           >
             <RefreshCw size={14} /> Refresh
           </button>
-        </div>
-
-        <div className="flex flex-col gap-4 px-4 pb-6 pt-4">
+        </div></>}>
+      <div className="flex min-h-screen flex-col">
+               <div className="flex flex-col gap-4 px-4 pb-6 pt-4">
           {loading ? <SkeletonRows rows={3} height={120} /> : null}
 
           {!loading && error ? (
@@ -125,7 +123,7 @@ export default function WebhooksAdmin() {
                           <span
                             className={`text-[12px] font-semibold ${
                               d.status === "delivered"
-                                ? "text-accent-2"
+                                ? "text-accent-fg"
                                 : "text-red-500"
                             }`}
                           >

@@ -94,7 +94,7 @@ export function Badge({
 }) {
   return (
     <span
-      className={`inline-flex h-[21px] items-center rounded-md border border-border bg-card-2 px-2 text-[10px] font-semibold text-accent-2 ${className}`}
+      className={`inline-flex h-[21px] items-center rounded-md border border-border bg-card-2 px-2 text-[10px] font-semibold text-accent-fg ${className}`}
     >
       {children}
     </span>

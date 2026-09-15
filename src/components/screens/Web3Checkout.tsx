@@ -153,10 +153,7 @@ export default function Web3Checkout() {
   }
 
   return (
-    <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
-        <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-4 py-3">
+    <MobileShell header={<><div className="flex h-[60px] items-center gap-3 bg-background px-4 py-3">
             <Link
               href="/passengers"
               className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground"
@@ -174,9 +171,10 @@ export default function Web3Checkout() {
             <h1 className="text-[18px] font-extrabold text-foreground">
               Checkout
             </h1>
-          </div>
-
-          <div className="px-4 py-3">
+          </div></>}>
+      <div className="flex min-h-screen flex-col justify-between">
+        <div className="w-full">
+                 <div className="px-4 py-3">
             <div className="flex items-center justify-between rounded-xl bg-accent-2 px-3 py-3">
               <span className="flex items-center gap-2.5">
                 <Clock size={20} className="text-accent" />
@@ -211,7 +209,7 @@ export default function Web3Checkout() {
                 <span className="text-[12px] font-semibold text-foreground">
                   Points you&apos;ll earn
                 </span>
-                <span className="flex items-center gap-1 text-[12px] font-bold text-accent-2">
+                <span className="flex items-center gap-1 text-[12px] font-bold text-accent-fg">
                   +{Math.round(amount * 2)}
                   <NimiqIcon size={13} />
                 </span>
@@ -227,17 +225,17 @@ export default function Web3Checkout() {
             <div className="flex flex-col gap-3 rounded-xl border-2 border-accent-2 bg-card p-4">
               <span className="flex items-center justify-between">
                 <span className="flex items-center gap-2.5">
-                  <RadioReceiver size={18} className="text-accent-2" />
+                  <RadioReceiver size={18} className="text-accent-fg" />
                   <span className="text-[14px] font-bold text-foreground">
                     Pay with Crypto Wallet
                   </span>
                 </span>
-                <span className="text-[10px] font-bold text-accent-2">
+                <span className="text-[10px] font-bold text-accent-fg">
                   Fast &amp; Gasless
                 </span>
               </span>
               <span className="flex items-center gap-2 pl-7">
-                <span className="flex h-[21px] items-center rounded-md border border-border bg-card-2 px-2 text-[10px] font-semibold text-accent-2">
+                <span className="flex h-[21px] items-center rounded-md border border-border bg-card-2 px-2 text-[10px] font-semibold text-accent-fg">
                   Polygon
                 </span>
               </span>

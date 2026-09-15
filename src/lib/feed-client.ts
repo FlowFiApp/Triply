@@ -1,94 +1,14 @@
 "use client";
 
-import type { FeedMoment } from "@/lib/feed";
 import { identityKey } from "@/lib/identity";
-import { getStoredProfile } from "@/lib/profile";
 
 export function feedKey(): string {
   return identityKey();
 }
 
 export function feedHandle(key: string): string {
-  // Relationship: prefer the user's saved profile username for their own handle.
-  const stored = getStoredProfile().username;
-  if (stored && key === feedKey()) return stored;
   const compact = key.replace(/^NQ[\d A-Z]+/i, "").replace(/[^0-9a-z]/gi, "").slice(-4);
   return `Traveler ${compact || "Trip"}`;
-}
-
-export async function fetchFeed(): Promise<{ moments: FeedMoment[]; error?: string }> {
-  const res = await fetch(`/api/feed?key=${encodeURIComponent(feedKey())}`);
-  const d = await res.json();
-  if (!res.ok || !d.live) {
-    return { moments: [], error: d.error ?? "Feed is unavailable right now." };
-  }
-  return { moments: (d.moments ?? []) as FeedMoment[] };
-}
-
-export async function uploadFeedImage(dataUrl: string): Promise<{ url: string; error?: string }> {
-  const res = await fetch("/api/feed/upload", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ image: dataUrl }),
-  });
-  return res.json();
-}
-
-export async function postMoment(input: {
-  caption: string;
-  location?: string;
-  images: string[];
-}): Promise<{ moment?: FeedMoment; error?: string }> {
-  const res = await fetch("/api/feed", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      key: feedKey(),
-      authorName: feedHandle(feedKey()),
-      avatar: getStoredProfile().avatar,
-      caption: input.caption,
-      location: input.location,
-      images: input.images,
-    }),
-  });
-  return res.json();
-}
-
-export async function toggleMomentLike(id: string): Promise<boolean> {
-  const res = await fetch(`/api/feed/${id}/like`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ key: feedKey() }),
-  });
-  const d = await res.json();
-  return d.ok ? Boolean(d.liked) : false;
-}
-
-export async function addMomentComment(
-  id: string,
-  text: string,
-): Promise<{ ok: boolean; error?: string }> {
-  const res = await fetch(`/api/feed/${id}/comment`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ key: feedKey(), text }),
-  });
-  return res.json();
-}
-
-export async function incrementMomentShare(id: string): Promise<boolean> {
-  const res = await fetch(`/api/feed/${id}/share`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-  });
-  return res.ok;
-}
-
-export async function deleteMoment(id: string): Promise<{ ok: boolean; error?: string }> {
-  const res = await fetch(`/api/feed/${id}?key=${encodeURIComponent(feedKey())}`, {
-    method: "DELETE",
-  });
-  return res.json();
 }
 
 export function timeAgo(iso: string): string {

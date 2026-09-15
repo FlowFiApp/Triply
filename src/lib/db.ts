@@ -25,6 +25,7 @@ async function ensureIndexes(db: Db): Promise<void> {
     db.collection("moments").createIndex({ userId: 1 }),
     db.collection("moments").createIndex({ createdAt: -1 }),
     db.collection("moments").createIndex({ likes: 1 }),
+    db.collection("passengers").createIndex({ key: 1 }, { unique: true }),
   ]);
   indexesEnsured = true;
 }
@@ -63,6 +64,7 @@ export type UserDoc = {
   email?: string;
   username?: string;
   avatar?: string;
+  onboarded?: boolean;
   points: { earned: number; available: number };
   createdAt: Date;
   updatedAt: Date;
@@ -92,21 +94,98 @@ export async function getUser(key: string): Promise<UserDoc | null> {
 export async function getUserProfile(key: string) {
   const user = await getUser(key);
   return user
-    ? { username: user.username ?? "", avatar: user.avatar ?? "" }
-    : { username: "", avatar: "" };
+    ? {
+        username: user.username ?? "",
+        avatar: user.avatar ?? "",
+        onboarded: Boolean(user.onboarded),
+      }
+    : { username: "", avatar: "", onboarded: false };
 }
 
 export async function updateProfile(
   key: string,
-  patch: { username?: string; avatar?: string },
-): Promise<{ username: string; avatar: string }> {
+  patch: { username?: string; avatar?: string; onboarded?: boolean },
+): Promise<{ username: string; avatar: string; onboarded: boolean }> {
   await ensureUserByKey(key);
   const db = await getDb();
   const set: Record<string, unknown> = { updatedAt: new Date() };
   if (patch.username !== undefined) set.username = patch.username;
   if (patch.avatar !== undefined) set.avatar = patch.avatar;
+  if (patch.onboarded !== undefined) set.onboarded = patch.onboarded;
   await db.collection<UserDoc>("users").updateOne({ key }, { $set: set });
   return getUserProfile(key);
+}
+
+// ---- Saved passengers ----------------------------------------------------
+
+export type SavedPassenger = {
+  id: string;
+  first: string;
+  last: string;
+  dob: string;
+  gender: string;
+  email: string;
+  phone: string;
+  dialCode?: string;
+  passport?: string;
+  createdAt: Date;
+};
+
+export type PassengerDoc = {
+  key: string; // users.key relationship
+  passengers: SavedPassenger[];
+  updatedAt: Date;
+};
+
+export async function listPassengers(key: string): Promise<SavedPassenger[]> {
+  const db = await getDb();
+  const doc = await db.collection<PassengerDoc>("passengers").findOne({ key });
+  return doc?.passengers ?? [];
+}
+
+export async function addPassenger(
+  key: string,
+  input: Omit<SavedPassenger, "id" | "createdAt">,
+): Promise<SavedPassenger> {
+  await ensureUserByKey(key);
+  const db = await getDb();
+  const passenger: SavedPassenger = {
+    ...input,
+    id: new ObjectId().toHexString(),
+    createdAt: new Date(),
+  };
+  await db.collection<PassengerDoc>("passengers").updateOne(
+    { key },
+    {
+      $push: { passengers: passenger },
+      $set: { updatedAt: new Date() },
+      $setOnInsert: { key },
+    },
+    { upsert: true },
+  );
+  return passenger;
+}
+
+export async function updatePassenger(
+  key: string,
+  id: string,
+  patch: Partial<Omit<SavedPassenger, "id" | "createdAt">>,
+): Promise<void> {
+  const db = await getDb();
+  const set: Record<string, unknown> = { updatedAt: new Date() };
+  for (const [k, v] of Object.entries(patch)) {
+    set[`passengers.$.${k}`] = v;
+  }
+  await db
+    .collection<PassengerDoc>("passengers")
+    .updateOne({ key, "passengers.id": id }, { $set: set });
+}
+
+export async function deletePassenger(key: string, id: string): Promise<void> {
+  const db = await getDb();
+  await db
+    .collection<PassengerDoc>("passengers")
+    .updateOne({ key }, { $pull: { passengers: { id } }, $set: { updatedAt: new Date() } });
 }
 
 export async function getOrCreateUser(

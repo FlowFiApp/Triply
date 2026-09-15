@@ -99,10 +99,7 @@ export default function FlightDetails() {
   };
 
   return (
-    <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
-        <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-4 py-3">
+    <MobileShell header={<><div className="flex h-[60px] items-center gap-3 bg-background px-4 py-3">
             <button
               onClick={() => router.push("/search")}
               className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground"
@@ -122,13 +119,14 @@ export default function FlightDetails() {
             </h1>
             <button
               onClick={() => setRulesOpen(true)}
-              className="ml-auto text-[12px] font-bold text-accent-2"
+              className="ml-auto text-[12px] font-bold text-accent-fg"
             >
               Fare rules
             </button>
-          </div>
-
-          <div className="px-4 py-3">
+          </div></>}>
+      <div className="flex min-h-screen flex-col justify-between">
+        <div className="w-full">
+                 <div className="px-4 py-3">
             <div className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-[18px]">
               <div className="flex gap-3">
                 <div className="flex w-12 flex-col">
@@ -176,7 +174,7 @@ export default function FlightDetails() {
                       </div>
                       <div className="flex flex-col gap-0.5">
                         <span className="text-[10px] text-muted">Fare</span>
-                        <span className="text-[12px] font-semibold text-accent-2">
+                        <span className="text-[12px] font-semibold text-accent-fg">
                           <UsdtAmount value={offer.price} />
                         </span>
                       </div>
@@ -221,7 +219,7 @@ export default function FlightDetails() {
                       ) : null}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <Icon size={20} className="text-accent-2" />
+                          <Icon size={20} className="text-accent-fg" />
                           <div className="flex flex-col gap-0.5">
                             <span className="text-[13px] font-semibold text-foreground">
                               {a.name}
@@ -244,7 +242,7 @@ export default function FlightDetails() {
                       {a.type === "seat" ? (
                         <button
                           onClick={() => setSeatOpen(true)}
-                          className="mt-2 flex h-9 w-full items-center justify-center rounded-lg border border-border bg-card-2 text-[12px] font-semibold text-accent-2"
+                          className="mt-2 flex h-9 w-full items-center justify-center rounded-lg border border-border bg-card-2 text-[12px] font-semibold text-accent-fg"
                         >
                           {chosenSeat
                             ? `Seat ${chosenSeat} selected — change`
@@ -278,7 +276,7 @@ export default function FlightDetails() {
                     <span className="text-[11px] text-muted">
                       {s.depTime} → {s.arrTime} · {s.duration}
                     </span>
-                    <span className="text-[14px] font-bold text-accent-2">
+                    <span className="text-[14px] font-bold text-accent-fg">
                       <UsdtAmount value={s.price} />
                     </span>
                   </button>
@@ -300,7 +298,7 @@ export default function FlightDetails() {
               className="text-[20px] leading-6 text-foreground"
               bold
             />
-            <span className="flex items-center gap-1 text-[12px] font-bold text-accent-2">
+            <span className="flex items-center gap-1 text-[12px] font-bold text-accent-fg">
               You earn +{Math.round(total * 2)}
               <NimiqIcon size={13} />
             </span>

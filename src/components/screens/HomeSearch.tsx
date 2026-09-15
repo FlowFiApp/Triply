@@ -153,23 +153,26 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
     setSwapRot((r) => r + 180);
   };
 
-  return (
-    <MobileShell>
+return (
+    <MobileShell
+      header={
+        <BrandHeader
+          right={
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setRedeemOpen(true)}
+                className="flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-[13px] font-bold text-foreground"
+              >
+                <NimiqAmount value={available} />
+              </button>
+              <Avatar />
+            </div>
+          }
+        />
+      }
+    >
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <BrandHeader
-            right={
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setRedeemOpen(true)}
-                  className="flex h-9 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-[13px] font-bold text-foreground"
-                >
-                  <NimiqAmount value={available} />
-                </button>
-                <Avatar />
-              </div>
-            }
-          />
 
           <div className="px-4 py-3">
 <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-[18px]">
@@ -179,7 +182,7 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
                   value={tripType}
                   onChange={(v) => setTripType(v as (typeof TRIP_TYPES)[number])}
                   activeClassName="bg-accent"
-                  selectedTextClassName="text-accent-2"
+                  selectedTextClassName="text-accent-fg"
                 />
 
               <div className="flex items-center gap-4">
@@ -213,7 +216,7 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
                 onClick={() => setDateOpen(true)}
                 className="flex h-[60px] w-full items-center gap-3 rounded-xl border border-border bg-card-2 px-3 text-left"
               >
-                <Calendar size={20} className="text-accent-2" strokeWidth={2} />
+                <Calendar size={20} className="text-accent-fg" strokeWidth={2} />
                 <span className="flex flex-1 flex-col gap-0.5">
                   <span className="text-[11px] font-medium text-muted">
                     {dateLabel}
@@ -228,7 +231,7 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
                 onClick={() => setPaxOpen(true)}
                 className="flex h-[60px] w-full items-center gap-3 rounded-xl border border-border bg-card-2 px-3 text-left"
               >
-                <UserRound size={20} className="text-accent-2" strokeWidth={2} />
+                <UserRound size={20} className="text-accent-fg" strokeWidth={2} />
                 <span className="flex flex-1 flex-col gap-0.5">
                   <span className="text-[11px] font-medium text-muted">
                     Passengers &amp; Cabin
@@ -264,7 +267,7 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
                           onChange={(v) => updateLeg(i, { from: v })}
                           placeholder="IATA"
                         />
-                        <ArrowLeftRight size={16} className="shrink-0 text-accent-2" />
+                        <ArrowLeftRight size={16} className="shrink-0 text-accent-fg" />
                         <AirportCombobox
                           value={leg.to}
                           onChange={(v) => updateLeg(i, { to: v })}
@@ -279,14 +282,14 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
                         }}
                         className="flex items-center gap-2 text-[13px] font-semibold text-foreground"
                       >
-                        <Calendar size={16} className="text-accent-2" />
+                        <Calendar size={16} className="text-accent-fg" />
                         {leg.date ? formatDateLabel(leg.date) : "Select date"}
                       </button>
                     </div>
                   ))}
                   <button
                     onClick={addLeg}
-                    className="flex h-10 items-center justify-center gap-1.5 rounded-xl border border-dashed border-border text-[13px] font-semibold text-accent-2"
+                    className="flex h-10 items-center justify-center gap-1.5 rounded-xl border border-dashed border-border text-[13px] font-semibold text-accent-fg"
                   >
                     <Plus size={14} /> Add another flight
                   </button>
@@ -311,14 +314,14 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
               href="/stays"
               className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl border border-border bg-card text-[13px] font-semibold text-foreground"
             >
-              <BedDouble size={15} className="text-accent-2" />
+              <BedDouble size={15} className="text-accent-fg" />
               Stays
             </Link>
             <Link
               href="/cars"
               className="flex h-10 flex-1 items-center justify-center gap-1.5 rounded-xl border border-border bg-card text-[13px] font-semibold text-foreground"
             >
-              <Car size={15} className="text-accent-2" />
+              <Car size={15} className="text-accent-fg" />
               Cars
             </Link>
           </div>

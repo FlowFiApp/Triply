@@ -15,6 +15,7 @@
   --surface: #ffffff;
   --accent: #203da3;
   --accent-2: #cdff9b;
+  --accent-fg: #203da3;
   --on-accent: #ffffff;
   --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
@@ -30,6 +31,7 @@
   --surface: #111111;
   --accent: #203da3;
   --accent-2: #cdff9b;
+  --accent-fg: #cdff9b;
   --on-accent: #cdff9b;
   --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
@@ -45,6 +47,7 @@
   --color-surface: var(--surface);
   --color-accent: var(--accent);
   --color-accent-2: var(--accent-2);
+  --color-accent-fg: var(--accent-fg);
   --color-on-accent: var(--on-accent);
   --font-sans: "Host Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-script: "Sacramento", cursive;

@@ -3,29 +3,32 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { Camera, Loader2, MapPin, X } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 import { Sheet } from "@/components/ui";
+import PlacesCombobox from "@/components/ui/places-combobox";
 import { useToast } from "@/lib/toast";
 import { compressImage } from "@/lib/image";
-import { postMoment, uploadFeedImage } from "@/lib/feed-client";
-import type { FeedMoment } from "@/lib/feed";
+import { useCreateMoment, useUploadFeedImage } from "@/lib/api/hooks";
 
 const MAX_PHOTOS = 2;
 
 export default function ShareMomentSheet({
   open,
   onClose,
-  onPosted,
 }: {
   open: boolean;
   onClose: () => void;
-  onPosted?: (moment: FeedMoment) => void;
 }) {
   const { toast } = useToast();
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [images, setImages] = useState<string[]>([]);
   const [caption, setCaption] = useState("");
   const [location, setLocation] = useState("");
-  const [posting, setPosting] = useState(false);
+  const createMoment = useCreateMoment();
+  const uploadImage = useUploadFeedImage();
 
   const pick = () => fileRef.current?.click();
 
@@ -54,93 +57,93 @@ export default function ShareMomentSheet({
     setImages([]);
     setCaption("");
     setLocation("");
-    setPosting(false);
   };
+
+  const posting = createMoment.isPending || uploadImage.isPending;
 
   const post = async () => {
     if (images.length < 1) {
       toast("info", "Add at least one photo.");
       return;
     }
-    setPosting(true);
     try {
       const urls: string[] = [];
       for (const dataUrl of images) {
-        const uploaded = await uploadFeedImage(dataUrl);
-        if (!uploaded.url) throw new Error(uploaded.error ?? "Upload failed");
+        const uploaded = await uploadImage.mutateAsync(dataUrl);
+        if (!uploaded.url) throw new Error("Upload failed");
         urls.push(uploaded.url);
       }
-      const result = await postMoment({
+      await createMoment.mutateAsync({
         caption: caption.trim(),
         location: location.trim() || undefined,
         images: urls,
       });
-      if (!result.moment) throw new Error(result.error ?? "Post failed");
       toast("success", "Your moment is live!");
       reset();
-      onPosted?.(result.moment);
       onClose();
     } catch (err) {
       toast("error", err instanceof Error ? err.message : "Post failed.");
-    } finally {
-      setPosting(false);
     }
   };
-
-  const slots = [0, 1];
 
   return (
     <Sheet open={open} onClose={onClose}>
       <div className="px-4 pb-6 pt-1">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-[17px] font-extrabold text-foreground">
-            Share Your Moment
-          </h2>
-          <button
-            onClick={post}
-            disabled={posting || images.length < 1}
-            className="flex h-[29px] items-center rounded-full bg-accent px-3.5 text-[12px] font-bold text-accent-2 disabled:opacity-50"
-          >
-            Post
-          </button>
-        </div>
+        <h2 className="mb-4 text-[17px] font-extrabold text-foreground">
+          Share Your Moment
+        </h2>
 
-        <div className="flex gap-3">
-          {slots.map((i) => {
-            const img = images[i];
-            return img ? (
-              <div
-                key={i}
-                className="relative h-[100px] w-full overflow-hidden rounded-xl border border-border bg-card"
-              >
-                <Image
-                  src={img}
-                  alt="Upload preview"
-                  fill
-                  sizes="180px"
-                  className="object-cover"
-                />
+        {images.length === 0 ? (
+          <button
+            onClick={pick}
+            className="flex h-[220px] w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-card-2 text-muted"
+          >
+            <Camera size={28} className="text-accent-fg" />
+            <span className="text-[14px] font-semibold">Add Photo</span>
+            <span className="text-[11px]">Up to {MAX_PHOTOS} photos</span>
+          </button>
+        ) : (
+          <Swiper
+            modules={[Pagination]}
+            slidesPerView={1}
+            spaceBetween={10}
+            pagination={{ clickable: true }}
+            className="w-full rounded-2xl"
+            style={{ height: 260 }}
+          >
+            {images.map((img, i) => (
+              <SwiperSlide key={i}>
+                <div className="relative h-[220px] w-full overflow-hidden rounded-2xl bg-card-2">
+                  <Image
+                    src={img}
+                    alt="Upload preview"
+                    fill
+                    sizes="400px"
+                    className="object-cover"
+                  />
+                  <button
+                    onClick={() => removeImage(i)}
+                    aria-label="Remove photo"
+                    className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              </SwiperSlide>
+            ))}
+            {images.length < MAX_PHOTOS ? (
+              <SwiperSlide>
                 <button
-                  onClick={() => removeImage(i)}
-                  aria-label="Remove photo"
-                  className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white"
+                  onClick={pick}
+                  className="flex h-[220px] w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-card-2 text-muted"
                 >
-                  <X size={13} />
+                  <Camera size={26} className="text-accent-fg" />
+                  <span className="text-[13px] font-semibold">Add another</span>
                 </button>
-              </div>
-            ) : (
-              <button
-                key={i}
-                onClick={pick}
-                className="flex h-[100px] w-full flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-border bg-card-2 text-muted"
-              >
-                <Camera size={20} className="text-accent-2" />
-                <span className="text-[12px] font-semibold">Add Photo</span>
-              </button>
-            );
-          })}
-        </div>
-        <p className="mt-2 text-[11px] text-muted">Up to {MAX_PHOTOS} photos</p>
+              </SwiperSlide>
+            ) : null}
+          </Swiper>
+        )}
 
         <input
           ref={fileRef}
@@ -163,13 +166,13 @@ export default function ShareMomentSheet({
           className="mt-4 w-full resize-none rounded-2xl border border-border bg-card px-3 py-3 text-[16px] text-foreground outline-none placeholder:text-muted"
         />
 
-        <div className="mt-3 flex items-center gap-2">
-          <MapPin size={18} className="shrink-0 text-accent-2" />
-          <input
+        <div className="mt-3 flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5">
+          <MapPin size={18} className="shrink-0 text-accent-fg" />
+          <PlacesCombobox
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={setLocation}
+            onSelect={(p) => setLocation(p.name)}
             placeholder="Add Location"
-            className="w-full bg-transparent text-[16px] text-foreground outline-none placeholder:text-muted"
           />
         </div>
 

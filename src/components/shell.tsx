@@ -15,12 +15,23 @@ import Identicon from "@/components/ui/identicon";
 import TriplyLogo from "@/components/ui/triply-logo";
 import { useI18n } from "@/lib/i18n";
 import { useWalletState } from "@/lib/wallet-state";
-import { ensureDeviceId } from "@/lib/identity";
+import { getDeviceId } from "@/lib/identity";
 
-export function MobileShell({ children }: { children: ReactNode }) {
+export function MobileShell({
+  children,
+  header,
+}: {
+  children: ReactNode;
+  header?: ReactNode;
+}) {
   return (
     <div className="flex h-screen w-full justify-center overflow-hidden bg-card-2/40 dark:bg-black">
       <div className="relative flex h-full w-full max-w-[768px] flex-col overflow-hidden bg-background shadow-2xl">
+        {header ? (
+          <div className="relative z-30 w-full shrink-0 bg-background">
+            {header}
+          </div>
+        ) : null}
         <div className="min-h-0 flex-1 overflow-y-auto overflow-x-clip overscroll-contain">
           {children}
         </div>
@@ -39,7 +50,7 @@ export function Avatar({
   seed?: string;
 }) {
   const { state } = useWalletState();
-  const seedValue = seed ?? state.nimiqAddress ?? (ensureDeviceId() || "triply");
+  const seedValue = seed ?? state.nimiqAddress ?? (getDeviceId() || "triply");
   return (
     <Link href={href} aria-label="Profile">
       <Identicon seed={seedValue} size={size} />
@@ -55,7 +66,7 @@ export function BrandHeader({
   subtitle?: string;
 }) {
   return (
-    <div className="sticky top-0 z-30 flex h-[60px] w-full items-center justify-between bg-background px-4 py-3">
+    <div className="flex h-[60px] w-full items-center justify-between bg-background px-4 py-3">
       <div>
         <TriplyLogo size={30} />
         {subtitle ? (
@@ -78,7 +89,7 @@ export function BackHeader({
 }) {
   const router = usePathname();
   return (
-    <div className="sticky top-0 z-30 flex h-[60px] w-full items-center gap-3 bg-background px-4 py-3">
+    <div className="flex h-[60px] w-full items-center gap-3 bg-background px-4 py-3">
       <Link
         href={onBack ? "#" : router.split("/").slice(0, -1).join("/") || "/"}
         onClick={onBack}
@@ -128,9 +139,9 @@ export function BottomTabBar({ active = "Home" }: { active?: string }) {
                   className="relative -top-4 flex w-16 flex-col items-center gap-1"
                 >
                   <span className="flex h-[48px] w-[48px] items-center justify-center rounded-full bg-accent shadow-[0_4px_8px_rgba(0,0,0,0.20)]">
-                    <Icon size={22} className="text-accent-2" />
+                    <Icon size={22} className="text-accent-fg" />
                   </span>
-                  <span className="text-[10px] leading-[13px] font-semibold text-accent-2">
+                  <span className="text-[10px] leading-[13px] font-semibold text-accent-fg">
                     {label}
                   </span>
                 </Link>
@@ -146,12 +157,12 @@ export function BottomTabBar({ active = "Home" }: { active?: string }) {
                   size={22}
                   strokeWidth={2}
                   className={
-                    isActive ? "text-accent-2" : "text-muted"
+                    isActive ? "text-accent-fg" : "text-muted"
                   }
                 />
                 <span
                   className={`text-[10px] leading-[13px] ${
-                    isActive ? "font-semibold text-accent-2" : "font-normal text-muted"
+                    isActive ? "font-semibold text-accent-fg" : "font-normal text-muted"
                   }`}
                 >
                   {label}

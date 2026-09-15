@@ -8,6 +8,7 @@ import {
   Calendar,
   Check,
   Loader2,
+  Map as MapIcon,
   MapPin,
   Minus,
   Plus,
@@ -24,6 +25,8 @@ import {
 } from "@/components/shell";
 import { directionsUrl } from "@/components/MapEmbed";
 import GoogleMap from "@/components/GoogleMap";
+import ExploreTabs from "@/components/ui/explore-tabs";
+import LocationMapSheet from "@/components/ui/location-map-sheet";
 import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import ImageCarousel from "@/components/ui/image-carousel";
@@ -35,6 +38,7 @@ import PlacesCombobox, {
 } from "@/components/ui/places-combobox";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useFlow } from "@/lib/flow-context";
+import { useCarSearch } from "@/lib/api/hooks";
 import { useToast } from "@/lib/toast";
 import { getStoredIdentity } from "@/lib/identity";
 import { share } from "@/lib/share";
@@ -63,11 +67,13 @@ function SearchField({
   label,
   value,
   children,
+  right,
 }: {
   icon: ReactNode;
   label: string;
   value?: string;
   children?: ReactNode;
+  right?: ReactNode;
 }) {
   return (
     <div className="flex h-[60px] w-full items-center gap-3 rounded-xl border border-border bg-card-2 px-3 text-left">
@@ -80,6 +86,7 @@ function SearchField({
           </span>
         )}
       </span>
+      {right}
     </div>
   );
 }
@@ -92,6 +99,7 @@ export function CarSearch() {
   const [testMode, setTestMode] = useState(false);
   const [pickupLocation, setPickupLocation] = useState("London Heathrow (LHR)");
   const [pickupPlace, setPickupPlace] = useState<PlaceSelection | null>(null);
+  const [mapOpen, setMapOpen] = useState(false);
   const [range, setRange] = useState({
     start: "2026-10-24",
     end: "2026-10-29",
@@ -101,11 +109,10 @@ export function CarSearch() {
   const [returnTime, setReturnTime] = useState("15:00");
   const [age, setAge] = useState(25);
 
+  const carSearch = useCarSearch();
   const runSearch = (test = testMode) => {
-    fetch("/api/cars/search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    carSearch
+      .mutateAsync({
         pickupLocation,
         latitude: pickupPlace?.latitude,
         longitude: pickupPlace?.longitude,
@@ -115,21 +122,14 @@ export function CarSearch() {
         dropoffTime: returnTime,
         driverAge: age,
         test,
-      }),
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.error) {
-          setError(d.error);
-          setCars([]);
-        } else if (d.live) {
-          setCars(d.cars);
-        } else {
-          setError("No cars available at this location.");
-          setCars([]);
-        }
       })
-      .catch(() => setError("Failed to search cars."))
+      .then((d) => {
+        if (!d.live) throw new Error("No cars available at this location.");
+        setCars(d.cars);
+      })
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : "Failed to search cars."),
+      )
       .finally(() => setLoading(false));
   };
 
@@ -144,10 +144,10 @@ export function CarSearch() {
   };
 
   return (
-    <MobileShell>
+    <MobileShell header={<BrandHeader right={<Avatar />} />}>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <BrandHeader right={<Avatar />} />
+          <ExploreTabs active="cars" />
 
           <div className="px-4 py-3">
             <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-[18px]">
@@ -155,8 +155,17 @@ export function CarSearch() {
                 Rent a Car
               </h2>
               <SearchField
-                icon={<MapPin size={20} className="text-accent-2" />}
+                icon={<MapPin size={20} className="text-accent-fg" />}
                 label="Pickup Location"
+                right={
+                  <button
+                    onClick={() => setMapOpen(true)}
+                    aria-label="Pick on map"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground"
+                  >
+                    <MapIcon size={15} className="text-accent-fg" />
+                  </button>
+                }
               >
                 <PlacesCombobox
                   value={pickupLocation}
@@ -171,7 +180,7 @@ export function CarSearch() {
                 onClick={() => setDateOpen(true)}
                 className="flex h-[60px] w-full items-center gap-3 rounded-xl border border-border bg-card-2 px-3 text-left"
               >
-                <Calendar size={20} className="text-accent-2" />
+                <Calendar size={20} className="text-accent-fg" />
                 <span className="flex flex-1 flex-col gap-0.5">
                   <span className="text-[11px] font-medium text-muted">
                     Pickup / Return Date
@@ -217,7 +226,7 @@ export function CarSearch() {
                 </label>
               </div>
               <SearchField
-                icon={<Users size={20} className="text-accent-2" />}
+                icon={<Users size={20} className="text-accent-fg" />}
                 label="Driver's Age"
               >
                 <div className="flex items-center justify-between gap-3">
@@ -331,11 +340,11 @@ export function CarSearch() {
                         {c.category || "Car"} • {c.transmission || "—"}
                         {c.supplier ? ` • ${c.supplier}` : ""}
                       </span>
-                      <span className="text-[13px] font-semibold text-accent-2">
+                      <span className="text-[13px] font-semibold text-accent-fg">
                         <UsdtAmount value={c.pricePerDay} /> / day
                       </span>
                     </div>
-                    <span className="text-[14px] font-bold text-accent-2">
+                    <span className="text-[14px] font-bold text-accent-fg">
                       <UsdtAmount value={c.totalAmount} />
                     </span>
                   </button>
@@ -355,6 +364,20 @@ export function CarSearch() {
           setDateOpen(false);
         }}
         onClose={() => setDateOpen(false)}
+      />
+
+      <LocationMapSheet
+        open={mapOpen}
+        onClose={() => setMapOpen(false)}
+        initial={{
+          name: pickupLocation,
+          latitude: pickupPlace?.latitude ?? 51.47,
+          longitude: pickupPlace?.longitude ?? -0.4543,
+        }}
+        onSelect={(p) => {
+          setPickupPlace(p);
+          setPickupLocation(p.name);
+        }}
       />
     </MobileShell>
   );
@@ -421,10 +444,7 @@ export function CarDetails() {
   };
 
   return (
-    <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
-        <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-card px-4 py-3">
+    <MobileShell header={<><div className="flex h-[60px] items-center gap-3 bg-card px-4 py-3">
             <button
               onClick={() => router.push("/cars")}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-card-2 text-foreground"
@@ -447,9 +467,10 @@ export function CarDetails() {
                 {car.category || "Car"} • {car.transmission || "Automatic"}
               </p>
             </div>
-          </div>
-
-          <ImageCarousel
+          </div></>}>
+      <div className="flex min-h-screen flex-col justify-between">
+        <div className="w-full">
+                 <ImageCarousel
             images={car.image ? [car.image] : []}
             alt={car.name}
             className="h-[180px] w-full"
@@ -460,7 +481,7 @@ export function CarDetails() {
               <h2 className="text-[22px] font-extrabold text-foreground">
                 {car.name}
               </h2>
-              <span className="flex h-[23px] items-center rounded-md bg-card-2 px-2 text-[11px] font-bold text-accent-2">
+              <span className="flex h-[23px] items-center rounded-md bg-card-2 px-2 text-[11px] font-bold text-accent-fg">
                 {car.category || "Car"}
               </span>
             </div>
@@ -472,12 +493,12 @@ export function CarDetails() {
                 </span>
               ) : null}
               <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
-                <Settings size={14} className="text-accent-2" />{" "}
+                <Settings size={14} className="text-accent-fg" />{" "}
                 {car.transmission || "Automatic"}
               </span>
               {car.fuel ? (
                 <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
-                  <Fuel size={14} className="text-accent-2" /> {car.fuel}
+                  <Fuel size={14} className="text-accent-fg" /> {car.fuel}
                 </span>
               ) : null}
               <span className="flex h-7 items-center gap-1.5 rounded-lg border border-border bg-card-2 px-2.5 text-[12px] font-medium text-foreground">
@@ -492,7 +513,7 @@ export function CarDetails() {
                 Pickup &amp; Dropoff Details
               </h3>
               <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-3">
-                <span className="text-[12px] font-bold text-accent-2">
+                <span className="text-[12px] font-bold text-accent-fg">
                   PICKUP: {car.pickup}
                 </span>
                 <span className="text-[13px] text-foreground">
@@ -500,7 +521,7 @@ export function CarDetails() {
                 </span>
               </div>
               <div className="flex flex-col gap-1 rounded-xl border border-border bg-card p-3">
-                <span className="text-[12px] font-bold text-accent-2">
+                <span className="text-[12px] font-bold text-accent-fg">
                   RETURN: {car.dropoff}
                 </span>
                 <span className="text-[13px] text-foreground">
@@ -746,7 +767,7 @@ export function CarConfirmed() {
               <div className="flex items-center justify-between px-4 py-2">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[10px] text-muted">Booking Ref</span>
-                  <span className="text-[13px] font-bold text-accent-2">
+                  <span className="text-[13px] font-bold text-accent-fg">
                     {booking.reference}
                   </span>
                 </div>

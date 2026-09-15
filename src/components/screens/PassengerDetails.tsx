@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { ChevronDown, ShieldCheck } from "lucide-react";
+import { ChevronDown, ShieldCheck, UserRound } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { PassengerClassSheet } from "@/components/screens/sheets";
 import PhoneInput from "@/components/ui/phone-input";
+import { Sheet } from "@/components/ui";
+import { usePassengers, type SavedPassenger } from "@/lib/api/hooks";
 import { useFlow } from "@/lib/flow-context";
 import { useToast } from "@/lib/toast";
 import type { PassengerInfo } from "@/lib/types";
@@ -41,7 +43,7 @@ function Field({
       <div className="flex items-center justify-between">
         <span className="text-[11px] font-semibold text-muted">
           {label}
-          {!optional ? <span className="text-accent-2"> *</span> : null}
+          {!optional ? <span className="text-accent-fg"> *</span> : null}
         </span>
         {optional ? (
           <span className="rounded bg-card-2 px-1.5 py-0.5 text-[9px] font-bold text-muted">
@@ -93,10 +95,35 @@ export default function PassengerDetails() {
   );
   const [invalid, setInvalid] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
+  const { data: savedPassengers = [] } = usePassengers();
+  const [pickerFor, setPickerFor] = useState<number | null>(null);
 
   const setField = (i: number, k: keyof PassengerInfo) => (v: string) => {
     setForms((fs) => fs.map((f, idx) => (idx === i ? { ...f, [k]: v } : f)));
     setInvalid((prev) => ({ ...prev, [`${i}-${k}`]: false }));
+  };
+
+  const applySaved = (i: number, p: SavedPassenger) => {
+    setForms((fs) =>
+      fs.map((f, idx) =>
+        idx === i
+          ? {
+              ...f,
+              first: p.first,
+              last: p.last,
+              dob: p.dob,
+              gender: p.gender,
+              email: p.email,
+              phone: p.phone,
+              dialCode: p.dialCode ?? "+234",
+              passport: p.passport ?? "",
+            }
+          : f,
+      ),
+    );
+    setInvalid({});
+    setPickerFor(null);
+    toast("success", "Passenger details filled.");
   };
 
   const continueTo = () => {
@@ -135,10 +162,7 @@ export default function PassengerDetails() {
   };
 
   return (
-    <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
-        <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-4 py-3">
+    <MobileShell header={<><div className="flex h-[60px] items-center gap-3 bg-background px-4 py-3">
             <button
               onClick={() => {
                 const backTo = next || (flow.offer ? "/flight" : "/search");
@@ -164,9 +188,10 @@ export default function PassengerDetails() {
                 {passengerCount} Passenger{passengerCount > 1 ? "s" : ""}
               </p>
             </div>
-          </div>
-
-          <div className="px-4 py-3">
+          </div></>}>
+      <div className="flex min-h-screen flex-col justify-between">
+        <div className="w-full">
+                 <div className="px-4 py-3">
             <div className="flex items-center gap-2.5 rounded-xl bg-accent-2 p-3">
               <ShieldCheck size={20} className="shrink-0 text-accent" />
               <p className="text-[12px] font-semibold leading-[17px] text-accent">
@@ -193,6 +218,15 @@ export default function PassengerDetails() {
                     <span className="rounded bg-card-2 px-1.5 py-0.5 text-[9px] font-bold text-muted">
                       LEAD
                     </span>
+                  ) : null}
+                  {savedPassengers.length > 0 ? (
+                    <button
+                      onClick={() => setPickerFor(i)}
+                      className="ml-auto flex items-center gap-1 rounded-full border border-border bg-card-2 px-2.5 py-1 text-[11px] font-semibold text-accent-fg"
+                    >
+                      <UserRound size={12} />
+                      Use saved
+                    </button>
                   ) : null}
                 </div>
 
@@ -228,7 +262,7 @@ export default function PassengerDetails() {
                   />
                   <div className="flex flex-1 flex-col gap-1.5">
                     <span className="text-[11px] font-semibold text-muted">
-                      Gender<span className="text-accent-2"> *</span>
+                      Gender<span className="text-accent-fg"> *</span>
                     </span>
                     <div
                       className={`flex h-[43px] items-center justify-between rounded-[10px] border bg-card px-3 transition-colors ${
@@ -267,7 +301,7 @@ export default function PassengerDetails() {
                 />
                 <div className="flex flex-col gap-1.5">
                   <span className="text-[11px] font-semibold text-muted">
-                    Phone Number<span className="text-accent-2"> *</span>
+                    Phone Number<span className="text-accent-fg"> *</span>
                   </span>
                   <PhoneInput
                     value={form.phone}
@@ -311,6 +345,35 @@ export default function PassengerDetails() {
         open={classOpen}
         onClose={() => setClassOpen(false)}
       />
+
+      {pickerFor !== null ? (
+        <Sheet open onClose={() => setPickerFor(null)}>
+          <div className="flex flex-col px-4 pb-6 pt-1">
+            <h2 className="mb-3 text-[16px] font-extrabold text-foreground">
+              Use a saved passenger
+            </h2>
+            <div className="flex flex-col gap-2">
+              {savedPassengers.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => applySaved(pickerFor, p)}
+                  className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 text-left"
+                >
+                  <span className="flex flex-col">
+                    <span className="text-[14px] font-bold text-foreground">
+                      {p.first} {p.last}
+                    </span>
+                    <span className="text-[11px] text-muted">
+                      {p.email || p.phone || "—"}
+                    </span>
+                  </span>
+                  <UserRound size={16} className="text-accent-fg" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </Sheet>
+      ) : null}
     </MobileShell>
   );
 }

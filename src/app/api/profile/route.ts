@@ -16,7 +16,7 @@ export async function PATCH(request: Request) {
     const key = String(body.key ?? "");
     if (!key) return Response.json({ error: "Missing identity." }, { status: 400 });
 
-    const patch: { username?: string; avatar?: string } = {};
+    const patch: { username?: string; avatar?: string; onboarded?: boolean } = {};
     if (body.username !== undefined) {
       const username = String(body.username).trim().replace(/\s+/g, " ").slice(0, 30);
       if (username && username.length < 3) {
@@ -25,6 +25,7 @@ export async function PATCH(request: Request) {
       patch.username = username;
     }
     if (body.avatar !== undefined) patch.avatar = String(body.avatar);
+    if (body.onboarded !== undefined) patch.onboarded = Boolean(body.onboarded);
 
     const profile = await updateProfile(key, patch);
     return Response.json({ ok: true, profile });

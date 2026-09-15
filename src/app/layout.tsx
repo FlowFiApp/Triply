@@ -6,6 +6,7 @@ import { I18nProvider } from "@/lib/i18n";
 import { WalletProvider } from "@/lib/wallet-state";
 import { PointsProvider } from "@/lib/points";
 import { FlowProvider } from "@/lib/flow-context";
+import { QueryProvider } from "@/lib/query-client";
 import { OfflineBanner } from "@/components/ui/feedback";
 import OnboardingGate from "@/components/OnboardingGate";
 import ConfigBanner from "@/components/ConfigBanner";
@@ -29,16 +30,18 @@ export default function RootLayout({
         <ThemeProvider>
           <I18nProvider>
             <ToastProvider>
-              <WalletProvider>
-                <PointsProvider>
-                  <FlowProvider>
-                    <OnboardingGate />
-                    <ConfigBanner />
-                    <OfflineBanner />
-                    <PageTransition>{children}</PageTransition>
-                  </FlowProvider>
-                </PointsProvider>
-              </WalletProvider>
+              <QueryProvider>
+                <WalletProvider>
+                  <PointsProvider>
+                    <FlowProvider>
+                      <OnboardingGate />
+                      <ConfigBanner />
+                      <OfflineBanner />
+                      <PageTransition>{children}</PageTransition>
+                    </FlowProvider>
+                  </PointsProvider>
+                </WalletProvider>
+              </QueryProvider>
             </ToastProvider>
           </I18nProvider>
         </ThemeProvider>

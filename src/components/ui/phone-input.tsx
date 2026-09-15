@@ -50,7 +50,7 @@ export default function PhoneInput({
         value={dialCode}
         onChange={(e) => onChange(e.target.value, value)}
         aria-label="Country dial code"
-        className="shrink-0 appearance-none bg-transparent text-[14px] font-semibold text-accent-2 outline-none"
+        className="shrink-0 appearance-none bg-transparent text-[14px] font-semibold text-accent-fg outline-none"
       >
         {COUNTRY_DIAL_CODES.map((c) => (
           <option key={c.code} value={c.code}>

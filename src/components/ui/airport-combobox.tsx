@@ -98,7 +98,7 @@ export default function AirportCombobox({
                 }}
                 className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-card-2"
               >
-                <MapPin size={14} className="shrink-0 text-accent-2" />
+                <MapPin size={14} className="shrink-0 text-accent-fg" />
                 <span className="flex flex-col">
                   <span className="text-[13px] font-bold text-foreground">
                     {o.code}

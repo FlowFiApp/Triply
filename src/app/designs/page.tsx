@@ -21,7 +21,7 @@ export default function DesignsPage() {
 
       {DESIGN_GROUPS.map((group) => (
         <section key={group.key} className="px-5 py-3">
-          <h2 className="mb-2 text-[14px] font-bold text-accent-2">
+          <h2 className="mb-2 text-[14px] font-bold text-accent-fg">
             {group.label}
           </h2>
           <div className="flex flex-col gap-2">

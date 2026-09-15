@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { loadGoogleMaps } from "@/lib/maps";
 
 export type PlaceSelection = {
-  placeId: string;
+  placeId?: string;
   name: string;
   latitude: number;
   longitude: number;

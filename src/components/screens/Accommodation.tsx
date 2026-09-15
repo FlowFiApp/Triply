@@ -8,6 +8,7 @@ import {
   Calendar,
   Check,
   Loader2,
+  Map as MapIcon,
   MapPin,
   Minus,
   Plus,
@@ -23,6 +24,8 @@ import {
 import { Sheet } from "@/components/ui";
 import { directionsUrl } from "@/components/MapEmbed";
 import GoogleMap from "@/components/GoogleMap";
+import ExploreTabs from "@/components/ui/explore-tabs";
+import LocationMapSheet from "@/components/ui/location-map-sheet";
 import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import DateRangePicker, {
@@ -34,6 +37,7 @@ import PlacesCombobox, {
 } from "@/components/ui/places-combobox";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useFlow } from "@/lib/flow-context";
+import { useStaySearch } from "@/lib/api/hooks";
 import { useToast } from "@/lib/toast";
 import { getStoredIdentity } from "@/lib/identity";
 import { share } from "@/lib/share";
@@ -46,11 +50,13 @@ function SearchField({
   label,
   value,
   children,
+  right,
 }: {
   icon: ReactNode;
   label: string;
   value?: string;
   children?: ReactNode;
+  right?: ReactNode;
 }) {
   return (
     <div className="flex h-[60px] w-full items-center gap-3 rounded-xl border border-border bg-card-2 px-3 text-left">
@@ -63,6 +69,7 @@ function SearchField({
           </span>
         )}
       </span>
+      {right}
     </div>
   );
 }
@@ -156,12 +163,12 @@ export function AccSearch() {
   const [rooms, setRooms] = useState(1);
   const [grOpen, setGrOpen] = useState(false);
   const [place, setPlace] = useState<PlaceSelection | null>(null);
+  const [mapOpen, setMapOpen] = useState(false);
 
+  const staySearch = useStaySearch();
   const runSearch = (dest: string, r = range, test = testMode) => {
-    fetch("/api/stays/search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    staySearch
+      .mutateAsync({
         destination: dest,
         checkInDate: r.start,
         checkOutDate: r.end,
@@ -170,21 +177,14 @@ export function AccSearch() {
         test,
         latitude: place?.latitude,
         longitude: place?.longitude,
-      }),
-    })
-      .then((res) => res.json())
-      .then((d) => {
-        if (d.error) {
-          setError(d.error);
-          setStays([]);
-        } else if (d.live) {
-          setStays(d.stays);
-        } else {
-          setError("No stays available for this destination.");
-          setStays([]);
-        }
       })
-      .catch(() => setError("Failed to search stays."))
+      .then((d) => {
+        if (!d.live) throw new Error("No stays available for this destination.");
+        setStays(d.stays);
+      })
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : "Failed to search stays."),
+      )
       .finally(() => setLoading(false));
   };
 
@@ -199,10 +199,10 @@ export function AccSearch() {
   };
 
   return (
-    <MobileShell>
+    <MobileShell header={<BrandHeader right={<Avatar />} />}>
       <div className="flex min-h-screen flex-col justify-between">
         <div className="w-full">
-          <BrandHeader right={<Avatar />} />
+          <ExploreTabs active="stays" />
 
           <div className="px-4 py-3">
             <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-[18px]">
@@ -210,8 +210,17 @@ export function AccSearch() {
                 Book Accommodations
               </h2>
               <SearchField
-                icon={<MapPin size={20} className="text-accent-2" />}
+                icon={<MapPin size={20} className="text-accent-fg" />}
                 label="Destination"
+                right={
+                  <button
+                    onClick={() => setMapOpen(true)}
+                    aria-label="Pick on map"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground"
+                  >
+                    <MapIcon size={15} className="text-accent-fg" />
+                  </button>
+                }
               >
                 <PlacesCombobox
                   value={destination}
@@ -226,7 +235,7 @@ export function AccSearch() {
                 onClick={() => setDateOpen(true)}
                 className="flex h-[60px] w-full items-center gap-3 rounded-xl border border-border bg-card-2 px-3 text-left"
               >
-                <Calendar size={20} className="text-accent-2" />
+                <Calendar size={20} className="text-accent-fg" />
                 <span className="flex flex-1 flex-col gap-0.5">
                   <span className="text-[11px] font-medium text-muted">
                     Check-in / Check-out
@@ -241,7 +250,7 @@ export function AccSearch() {
                 onClick={() => setGrOpen(true)}
                 className="flex h-[60px] w-full items-center gap-3 rounded-xl border border-border bg-card-2 px-3 text-left"
               >
-                <Users size={20} className="text-accent-2" />
+                <Users size={20} className="text-accent-fg" />
                 <span className="flex flex-1 flex-col gap-0.5">
                   <span className="text-[11px] font-medium text-muted">
                     Guests &amp; Rooms
@@ -359,7 +368,7 @@ export function AccSearch() {
                         {s.rating > 0 ? `${s.rating} (${s.reviews})` : "New"} ·{" "}
                         {s.city}
                       </span>
-                      <span className="text-[13px] font-semibold text-accent-2">
+                      <span className="text-[13px] font-semibold text-accent-fg">
                         <UsdtAmount value={s.pricePerNight} />
                         /night
                       </span>
@@ -393,6 +402,20 @@ export function AccSearch() {
         onApply={(v) => {
           setGuestCount({ Adults: v.Adults, Children: v.Children });
           setRooms(v.rooms);
+        }}
+      />
+
+      <LocationMapSheet
+        open={mapOpen}
+        onClose={() => setMapOpen(false)}
+        initial={{
+          name: destination,
+          latitude: place?.latitude ?? 51.5072,
+          longitude: place?.longitude ?? -0.1276,
+        }}
+        onSelect={(p) => {
+          setPlace(p);
+          setDestination(p.name);
         }}
       />
     </MobileShell>
@@ -514,10 +537,7 @@ export function AccDetails() {
   };
 
   return (
-    <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
-        <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-card px-4 py-3">
+    <MobileShell header={<><div className="flex h-[60px] items-center gap-3 bg-card px-4 py-3">
             <button
               onClick={() => router.push("/stays")}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-card-2 text-foreground"
@@ -540,9 +560,10 @@ export function AccDetails() {
                 {stay.city} • Guest Rating {stay.rating}
               </p>
             </div>
-          </div>
-
-          <ImageCarousel
+          </div></>}>
+      <div className="flex min-h-screen flex-col justify-between">
+        <div className="w-full">
+                 <ImageCarousel
             images={
               stay.images?.length ? stay.images : stay.image ? [stay.image] : []
             }
@@ -563,7 +584,7 @@ export function AccDetails() {
                     : "New listing"}
                 </span>
                 <span className="text-muted">•</span>
-                <span className="font-semibold text-accent-2">
+                <span className="font-semibold text-accent-fg">
                   {stay.location}
                 </span>
               </div>
@@ -627,7 +648,7 @@ export function AccDetails() {
                         {s.name}
                       </span>
                       <span className="text-[11px] text-muted">{s.city}</span>
-                      <span className="text-[13px] font-semibold text-accent-2">
+                      <span className="text-[13px] font-semibold text-accent-fg">
                         <UsdtAmount value={s.pricePerNight} />
                         /night
                       </span>
@@ -665,7 +686,7 @@ export function AccDetails() {
                         <span className="text-[13px] font-bold text-foreground">
                           {r.reviewer_name || "Guest"}
                         </span>
-                        <span className="flex items-center gap-1 text-[12px] text-accent-2">
+                        <span className="flex items-center gap-1 text-[12px] text-accent-fg">
                           <Star size={12} className="fill-current" />
                           {r.score?.toFixed?.(1) ?? r.score ?? ""}
                         </span>
@@ -878,7 +899,7 @@ export function AccConfirmed() {
               <div className="flex items-center justify-between px-4 py-2">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[10px] text-muted">Booking Ref</span>
-                  <span className="text-[13px] font-bold text-accent-2">
+                  <span className="text-[13px] font-bold text-accent-fg">
                     {booking.reference}
                   </span>
                 </div>

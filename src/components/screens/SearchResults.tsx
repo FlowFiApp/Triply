@@ -12,6 +12,7 @@ import Identicon from "@/components/ui/identicon";
 import { FilterSortSheet } from "@/components/screens/sheets";
 import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
 import { useFlow } from "@/lib/flow-context";
+import { useFlightSearch } from "@/lib/api/hooks";
 import type { FlightOffer } from "@/lib/types";
 
 const FILTERS = ["Cheapest", "Fastest", "Non-stop", "Earliest"] as const;
@@ -55,11 +56,11 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
           <div className="flex w-full items-center gap-1">
             <span className="h-1.5 w-1.5 rounded-full bg-muted" />
             <span className="h-px flex-1 bg-border" />
-            <Plane size={12} className="text-accent-2" />
+            <Plane size={12} className="text-accent-fg" />
             <span className="h-px flex-1 bg-border" />
             <span className="h-1.5 w-1.5 rounded-full bg-muted" />
           </div>
-          <span className="text-[10px] font-semibold text-accent-2">
+          <span className="text-[10px] font-semibold text-accent-fg">
             {offer.stops}
           </span>
         </div>
@@ -73,7 +74,7 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
 
       <button
         onClick={select}
-        className="flex h-[37px] w-full items-center justify-center rounded-lg border border-border bg-card-2 text-[13px] font-semibold text-accent-2"
+        className="flex h-[37px] w-full items-center justify-center rounded-lg border border-border bg-card-2 text-[13px] font-semibold text-accent-fg"
       >
         Select Flight
       </button>
@@ -94,9 +95,6 @@ export default function SearchResults() {
   const slices = search?.slices;
   const isMultiCity = Boolean(search?.multiCity) || Boolean(slices?.length);
 
-  const [offers, setOffers] = useState<FlightOffer[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
   const [active, setActive] = useState<(typeof FILTERS)[number]>("Cheapest");
   const [filters, setFilters] = useState<{
@@ -104,48 +102,38 @@ export default function SearchResults() {
     airlines?: string[];
   }>({});
 
+  const flightSearch = useFlightSearch();
+
   useEffect(() => {
-    let ignore = false;
-    fetch("/api/flights/search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-body: JSON.stringify({
-        origin,
-        destination,
-        departureDate: date,
-        returnDate: returnDate || undefined,
+    flightSearch.mutate({
+      origin,
+      destination,
+      departureDate: date,
+      returnDate: returnDate || undefined,
+      passengers: Number(passengers) || 1,
+      cabinClass: cabin,
+      slices,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [origin, destination, date, returnDate, passengers, cabin, slices]);
+
+  useEffect(() => {
+    if (flightSearch.data?.live) {
+      setFlow({
+        offers: flightSearch.data.offers,
         passengers: Number(passengers) || 1,
-        cabinClass: cabin,
-        slices,
-      }),
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        if (ignore) return;
-        if (d.error) {
-          setError(d.error);
-          setOffers([]);
-} else if (d.live) {
-          setOffers(d.offers);
-          setFlow({
-            offers: d.offers,
-            passengers: Number(passengers) || 1,
-          });
-        } else {
-          setError("Live search unavailable — is DUFFEL_ACCESS_TOKEN configured?");
-          setOffers([]);
-        }
-      })
-      .catch(() => {
-        if (!ignore) setError("Failed to load flights.");
-      })
-      .finally(() => {
-        if (!ignore) setLoading(false);
       });
-return () => {
-      ignore = true;
-    };
-  }, [origin, destination, date, returnDate, passengers, cabin, slices, setFlow]);
+    }
+  }, [flightSearch.data, setFlow, passengers]);
+
+  const offers = useMemo(() => flightSearch.data?.offers ?? [], [flightSearch.data]);
+  const loading = flightSearch.isPending;
+  const error =
+    flightSearch.error instanceof Error
+      ? flightSearch.error.message
+      : flightSearch.data && !flightSearch.data.live
+        ? "Live search unavailable — is DUFFEL_ACCESS_TOKEN configured?"
+        : "";
 
   const prices = useMemo(
     () =>
@@ -180,10 +168,7 @@ return () => {
   const directCount = offers.filter((o) => o.direct).length;
 
   return (
-    <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
-        <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-card px-4 py-3">
+    <MobileShell header={<><div className="flex h-[60px] items-center gap-3 bg-card px-4 py-3">
             <button
               onClick={() => router.push("/")}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-card-2 text-foreground"
@@ -208,7 +193,9 @@ return () => {
                   : `${date} • ${passengers} Passengers • ${cabin.charAt(0).toUpperCase() + cabin.slice(1)}`}
               </p>
             </div>
-          </div>
+          </div></>}>
+<div className="flex min-h-screen flex-col justify-between">
+        <div className="w-full">
 
 <div className="flex h-[60px] items-center gap-2 py-3">
             <button
@@ -217,7 +204,7 @@ return () => {
               className={`ml-4 flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-accent-2 ${
                 filters.price || filters.airlines?.length
                   ? "bg-accent-2 text-accent"
-                  : "bg-accent text-accent-2"
+                  : "bg-accent text-accent-fg"
               }`}
             >
               <SlidersHorizontal size={16} />
@@ -266,7 +253,7 @@ return () => {
                       setFilters({});
                       setActive("Cheapest");
                     }}
-                    className="mt-3 text-[12px] font-semibold text-accent-2"
+                    className="mt-3 text-[12px] font-semibold text-accent-fg"
                   >
                     Clear filters
                   </button>

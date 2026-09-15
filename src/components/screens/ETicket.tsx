@@ -88,10 +88,7 @@ useEffect(() => {
   }
 
   return (
-    <MobileShell>
-      <div className="flex min-h-screen flex-col justify-between">
-        <div className="w-full">
-          <div className="sticky top-0 z-30 flex h-[60px] items-center gap-3 bg-background px-4 py-3">
+    <MobileShell header={<><div className="flex h-[60px] items-center gap-3 bg-background px-4 py-3">
             <Link
               href="/trips"
               className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground"
@@ -107,9 +104,10 @@ useEffect(() => {
               </svg>
             </Link>
             <h1 className="text-[18px] font-extrabold text-foreground">E-Ticket</h1>
-          </div>
-
-          <div className="flex flex-col gap-4 px-4 py-5">
+          </div></>}>
+      <div className="flex min-h-screen flex-col justify-between">
+        <div className="w-full">
+                 <div className="flex flex-col gap-4 px-4 py-5">
             <div className="flex items-center gap-3 rounded-xl bg-[#22c55e] px-3 py-3">
               <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#22c55e]">
                 <Check size={14} strokeWidth={3} className="text-white" />
@@ -153,7 +151,7 @@ useEffect(() => {
                         stroke="currentColor"
                         strokeWidth="1.6"
                         strokeLinejoin="round"
-                        className="text-accent-2"
+                        className="text-accent-fg"
                       />
                     </svg>
                     <span className="text-[10px] text-muted">{order.duration}</span>
@@ -221,7 +219,7 @@ useEffect(() => {
                   <Link
                     href={chain?.explorer ? `${chain.explorer}/tx/${txHash}` : "#"}
                     target="_blank"
-                    className="truncate text-[12px] font-semibold text-accent-2"
+                    className="truncate text-[12px] font-semibold text-accent-fg"
                   >
                     {txHash}
                   </Link>
@@ -241,7 +239,7 @@ useEffect(() => {
                 }
                 className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-card text-[12px] font-semibold text-foreground"
               >
-                <Calendar size={14} className="text-accent-2" />
+                <Calendar size={14} className="text-accent-fg" />
                 Add to Calendar
               </button>
               <button
@@ -251,14 +249,14 @@ useEffect(() => {
                 }}
                 className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-card text-[12px] font-semibold text-foreground"
               >
-                <Download size={14} className="text-accent-2" />
+                <Download size={14} className="text-accent-fg" />
                 Download PDF
               </button>
               <button
                 onClick={handleShare}
                 className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-card text-[12px] font-semibold text-foreground"
               >
-                <Share2 size={14} className="text-accent-2" />
+                <Share2 size={14} className="text-accent-fg" />
                 Share
               </button>
             </div>
