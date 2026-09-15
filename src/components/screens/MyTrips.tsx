@@ -2,13 +2,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BedDouble, Car, Loader2, Plane, Search } from "lucide-react";
 import { BottomTabBar, MobileShell } from "@/components/shell";
 import { EmptyState, SkeletonRows, Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import { Sheet } from "@/components/ui";
-import { useQueryParam } from "@/lib/query";
+import { useFlow } from "@/lib/flow-context";
 import { useToast } from "@/lib/toast";
 import { readFlow } from "@/lib/store";
 import type { CarBooking } from "@/lib/types";
@@ -61,6 +62,8 @@ function BookingCard({
   cancelling?: boolean;
   changing?: boolean;
 }) {
+  const router = useRouter();
+  const { setFlow } = useFlow();
   const meta = KIND_META[item.kind];
   const Icon = meta.icon;
   const isFlight = item.kind === "flight";
@@ -107,12 +110,15 @@ function BookingCard({
         </span>
         <div className="flex gap-2">
           {isFlight && active ? (
-            <Link
-              href={`/ticket?order=${encodeURIComponent(item.id)}`}
+            <button
+              onClick={() => {
+                setFlow({ orderId: item.id });
+                router.push("/ticket");
+              }}
               className="flex h-[37px] items-center rounded-lg border border-border bg-accent px-4 text-[13px] font-semibold text-accent-2"
             >
               Boarding Pass
-            </Link>
+            </button>
           ) : null}
           {isFlight && active && onChange ? (
             <button
@@ -139,7 +145,6 @@ function BookingCard({
 }
 
 export default function MyTrips() {
-  const variant = useQueryParam("v", "a") === "b" ? "b" : "a";
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -302,7 +307,7 @@ export default function MyTrips() {
 
           <div className="px-4 pt-1">
             <div className="flex items-center gap-1 rounded-[10px] bg-[#f1f5f9] p-[3px] dark:bg-[#090d1a]">
-              {["Upcoming", variant === "b" ? `Past (${past.length})` : "Past"].map(
+              {["Upcoming", `Past (${past.length})`].map(
                 (t) => {
                   const key = t.startsWith("Upcoming") ? "Upcoming" : "Past";
                   return (

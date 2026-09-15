@@ -33,6 +33,7 @@ import PlacesCombobox, {
   type PlaceSelection,
 } from "@/components/ui/places-combobox";
 import { readFlow, writeFlow } from "@/lib/store";
+import { useFlow } from "@/lib/flow-context";
 import { useToast } from "@/lib/toast";
 import { getStoredIdentity } from "@/lib/identity";
 import { share } from "@/lib/share";
@@ -400,6 +401,7 @@ export function AccSearch() {
 
 export function AccDetails() {
   const router = useRouter();
+  const { setFlow } = useFlow();
   const [stay, setStay] = useState<StayOffer | null>(
     () => readFlow().stay ?? null,
   );
@@ -474,7 +476,8 @@ export function AccDetails() {
     const flow = readFlow();
     const passenger = flow.passenger;
     if (!passenger?.first || !passenger?.email) {
-      router.push("/passengers?next=/stay");
+      setFlow({ next: "/stay" });
+      router.push("/passengers");
       return;
     }
     if (!stay.rateId) {

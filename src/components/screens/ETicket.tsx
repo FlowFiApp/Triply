@@ -7,8 +7,7 @@ import { BottomTabBar, MobileShell } from "@/components/shell";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import BookingQR from "@/components/ui/booking-qr";
 import Identicon from "@/components/ui/identicon";
-import { useQueryParam } from "@/lib/query";
-import { readFlow } from "@/lib/store";
+import { useFlow } from "@/lib/flow-context";
 import { useToast } from "@/lib/toast";
 import { share } from "@/lib/share";
 import { downloadIcs } from "@/lib/calendar";
@@ -50,14 +49,14 @@ export default function ETicket() {
     );
   };
 
-  useEffect(() => {
-    if (order || !orderId) return;
+useEffect(() => {
+    if (order || !flow.orderId) return;
     let ignore = false;
     fetch("/api/orders")
       .then((r) => r.json())
       .then((d) => {
         if (ignore) return;
-        const found = d.orders?.find((o: OrderRecord) => o.id === orderId);
+        const found = d.orders?.find((o: OrderRecord) => o.id === flow.orderId);
         if (found) setOrder(found);
         else setError("Order not found.");
       })
@@ -67,7 +66,7 @@ export default function ETicket() {
     return () => {
       ignore = true;
     };
-  }, [order, orderId]);
+  }, [order, flow.orderId]);
 
   if (!order) {
     return (
