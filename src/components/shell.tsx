@@ -16,7 +16,6 @@ import TriplyLogo from "@/components/ui/triply-logo";
 import { useI18n } from "@/lib/i18n";
 import { useWalletState } from "@/lib/wallet-state";
 import { useProfile } from "@/lib/api/hooks";
-import { getDeviceId } from "@/lib/identity";
 
 export function MobileShell({
   children,
@@ -52,7 +51,7 @@ export function Avatar({
 }) {
   const { state } = useWalletState();
   const { data: profile } = useProfile();
-  const seedValue = seed ?? state.nimiqAddress ?? (getDeviceId() || "triply");
+  const seedValue = seed ?? state.nimiqAddress ?? "triply";
   const avatarSrc = profile?.avatar;
   return (
     <Link href={href} aria-label="Profile">

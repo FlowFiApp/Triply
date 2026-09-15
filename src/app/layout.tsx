@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   title: "Triply — Web3 Travel",
   description:
     "Book flights, stays and cars with USDT on-chain. Price-guaranteed, instant settlement, no accounts needed.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({

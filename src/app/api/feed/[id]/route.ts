@@ -1,13 +1,13 @@
 import { dbErrorMessage, deleteMoment } from "@/lib/db";
 import { destroyCloudinaryUrl } from "@/lib/cloudinary";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
-    const key = new URL(request.url).searchParams.get("key") ?? "";
-    if (!key) return Response.json({ error: "Missing identity." }, { status: 400 });
-
-    const result = await deleteMoment(id, key);
+    const result = await deleteMoment(id, user.key);
     if (!result.deleted) {
       return Response.json(
         { error: "You can only delete your own moment." },

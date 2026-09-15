@@ -3,6 +3,7 @@ import { listOrders } from "@/lib/duffel";
 import { formatAMPM, formatDuration } from "@/lib/format";
 import { testPrice } from "@/lib/pricing";
 import type { OrderRecord } from "@/lib/types";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 function normalizeOrder(o: any): OrderRecord {
   const seg = o.slices?.[0]?.segments?.[0] ?? {};
@@ -51,6 +52,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const body = await request.json();
     const { createFlightOrder, ensureCustomerUser } = await import("@/lib/duffel");
@@ -66,16 +69,15 @@ export async function POST(request: Request) {
       : undefined;
 
     const identity = {
-      nimiqAddress: body.nimiqAddress,
+      nimiqAddress: user.address,
       evmAddress: body.from,
-      deviceId: body.deviceId,
     };
     let userKey: string | undefined;
-    if (identity.nimiqAddress || identity.deviceId) {
+    if (identity.nimiqAddress) {
       try {
-        const user = await getOrCreateUser(identity);
-        userKey = user.key;
-        await updateUser(user.key, {
+        const created = await getOrCreateUser(identity);
+        userKey = created.key;
+        await updateUser(created.key, {
           ...(customerUserId ? { customerUserId } : {}),
           ...(p?.email ? { email: p.email } : {}),
           ...(p ? { name: `${p.given_name ?? ""} ${p.family_name ?? ""}`.trim() } : {}),

@@ -55,10 +55,9 @@ export function dbErrorMessage(err: unknown): string {
 }
 
 export type UserDoc = {
-  key: string; // nimiqAddress (preferred) or deviceId fallback
+  key: string; // nimiqAddress — the only user key
   nimiqAddress?: string;
   evmAddress?: string;
-  deviceId?: string;
   customerUserId?: string;
   name?: string;
   email?: string;
@@ -189,10 +188,10 @@ export async function deletePassenger(key: string, id: string): Promise<void> {
 }
 
 export async function getOrCreateUser(
-  identity: { nimiqAddress?: string; evmAddress?: string; deviceId?: string },
+  identity: { nimiqAddress?: string; evmAddress?: string },
 ): Promise<UserDoc> {
   const db = await getDb();
-  const key = identity.nimiqAddress ?? identity.deviceId ?? "anonymous";
+  const key = identity.nimiqAddress ?? "anonymous";
   const now = new Date();
   const doc = await db.collection<UserDoc>("users").findOneAndUpdate(
     { key },
@@ -201,7 +200,6 @@ export async function getOrCreateUser(
         key,
         nimiqAddress: identity.nimiqAddress,
         evmAddress: identity.evmAddress,
-        deviceId: identity.deviceId,
         points: { earned: 0, available: 0 },
         createdAt: now,
         updatedAt: now,
@@ -319,7 +317,7 @@ export type MomentComment = {
 
 export type MomentDoc = {
   _id: ObjectId;
-  userId: string; // identity key (nimiqAddress or deviceId) → users.key
+  userId: string; // identity key (nimiqAddress) → users.key
   authorName?: string;
   authorAvatar?: string;
   caption: string;

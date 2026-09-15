@@ -3,7 +3,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { FeedMoment } from "@/lib/feed";
 import type { FlightOffer, StayOffer, CarOffer } from "@/lib/types";
-import { identityKey, loadDeviceId } from "@/lib/identity";
 import { useWalletState } from "@/lib/wallet-state";
 
 export type Profile = { username: string; avatar: string; onboarded: boolean };
@@ -38,24 +37,14 @@ async function sendJson<T>(url: string, method: string, body?: unknown): Promise
   return data;
 }
 
-/** Resolves the server-issued identity key before running a query. */
-export async function ensureIdentity(): Promise<string> {
-  await loadDeviceId();
-  return identityKey();
-}
-
 /**
- * Reactive identity key: the connected Nimiq address takes precedence over the
- * anonymous server-issued device id. When the wallet connects/disconnects the
- * key changes, so identity-scoped queries refetch against the right user.
+ * Reactive identity key: the authenticated Nimiq address. Query keys are scoped
+ * to it so switching accounts refetches the right user. Identity-scoped queries
+ * are gated on a verified session (the API returns 401 otherwise).
  */
 export function useIdentityKey(): string {
-  const { state } = useWalletState();
-  const { data: deviceId } = useQuery({
-    queryKey: ["deviceId"],
-    queryFn: loadDeviceId,
-  });
-  return state.nimiqAddress ?? deviceId ?? "anonymous";
+  const { state, authState } = useWalletState();
+  return authState === "authenticated" ? (state.nimiqAddress ?? "") : "";
 }
 
 // ---- Feed ----------------------------------------------------------------
@@ -64,10 +53,10 @@ export function useFeed() {
   const key = useIdentityKey();
   return useQuery({
     queryKey: ["feed", key],
-    enabled: Boolean(key && key !== "anonymous"),
+    enabled: Boolean(key),
     queryFn: async () => {
       const d = await getJson<{ moments: FeedMoment[]; live: boolean; error?: string }>(
-        `/api/feed?key=${encodeURIComponent(key)}`,
+        `/api/feed`,
       );
       if (!d.live) throw new Error(d.error ?? "Feed is unavailable right now.");
       return d.moments;
@@ -79,8 +68,7 @@ export function useCreateMoment() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (input: { caption: string; location?: string; images: string[] }) => {
-      const key = await ensureIdentity();
-      return sendJson<{ moment: FeedMoment }>("/api/feed", "POST", { key, ...input });
+      return sendJson<{ moment: FeedMoment }>("/api/feed", "POST", input);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["feed"] });
@@ -93,8 +81,7 @@ export function useLikeMoment() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const key = await ensureIdentity();
-      return sendJson<{ liked: boolean }>(`/api/feed/${id}/like`, "POST", { key });
+      return sendJson<{ liked: boolean }>(`/api/feed/${id}/like`, "POST");
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["feed"] });
@@ -107,8 +94,7 @@ export function useCommentMoment() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, text }: { id: string; text: string }) => {
-      const key = await ensureIdentity();
-      return sendJson(`/api/feed/${id}/comment`, "POST", { key, text });
+      return sendJson(`/api/feed/${id}/comment`, "POST", { text });
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["feed"] });
@@ -121,8 +107,7 @@ export function useDeleteMoment() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const key = await ensureIdentity();
-      return sendJson(`/api/feed/${id}?key=${encodeURIComponent(key)}`, "DELETE");
+      return sendJson(`/api/feed/${id}`, "DELETE");
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["feed"] }),
   });
@@ -150,8 +135,8 @@ export function useProfile() {
   const key = useIdentityKey();
   return useQuery({
     queryKey: ["profile", key],
-    enabled: Boolean(key && key !== "anonymous"),
-    queryFn: () => getJson<Profile>(`/api/profile?key=${encodeURIComponent(key)}`),
+    enabled: Boolean(key),
+    queryFn: () => getJson<Profile>(`/api/profile`),
   });
 }
 
@@ -159,8 +144,7 @@ export function useUpdateProfile() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (patch: { username?: string; avatar?: string; onboarded?: boolean }) => {
-      const key = await ensureIdentity();
-      return sendJson<{ profile: Profile }>("/api/profile", "PATCH", { key, ...patch });
+      return sendJson<{ profile: Profile }>("/api/profile", "PATCH", patch);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["profile"] }),
   });
@@ -200,10 +184,10 @@ export function usePassengers() {
   const key = useIdentityKey();
   return useQuery({
     queryKey: ["passengers", key],
-    enabled: Boolean(key && key !== "anonymous"),
+    enabled: Boolean(key),
     queryFn: async () => {
       const d = await getJson<{ passengers: SavedPassenger[] }>(
-        `/api/passengers?key=${encodeURIComponent(key)}`,
+        `/api/passengers`,
       );
       return d.passengers ?? [];
     },
@@ -216,9 +200,8 @@ export function useSavePassenger() {
     mutationFn: async (
       input: Omit<SavedPassenger, "id" | "createdAt"> & { id?: string },
     ) => {
-      const key = await ensureIdentity();
       const method = input.id ? "PATCH" : "POST";
-      return sendJson("/api/passengers", method, { key, ...input });
+      return sendJson("/api/passengers", method, input);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["passengers"] }),
   });
@@ -228,11 +211,7 @@ export function useDeletePassenger() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const key = await ensureIdentity();
-      return sendJson(
-        `/api/passengers?key=${encodeURIComponent(key)}&id=${encodeURIComponent(id)}`,
-        "DELETE",
-      );
+      return sendJson(`/api/passengers?id=${encodeURIComponent(id)}`, "DELETE");
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["passengers"] }),
   });

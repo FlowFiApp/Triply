@@ -1,8 +1,11 @@
 import { cloudinary } from "@/lib/cloudinary";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 const MAX_BYTES = 10 * 1024 * 1024; // 10MB data URL
 
 export async function POST(request: Request) {
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const body = await request.json();
     const dataUri = String(body.image ?? "");

@@ -1,11 +1,12 @@
 import { dbErrorMessage, earnMomentPoints, MOMENT_LIKE_REWARD, toggleMomentLike } from "@/lib/db";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
-    const body = await request.json();
-    const key = String(body.key ?? "");
-    if (!key) return Response.json({ error: "Missing identity." }, { status: 400 });
+    const key = user.key;
     const liked = await toggleMomentLike(id, key);
 
     // Reward the liker (0.1 NIM), idempotent per moment+user.

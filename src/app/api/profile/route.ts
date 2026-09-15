@@ -1,20 +1,22 @@
 import { dbErrorMessage, getUserProfile, updateProfile } from "@/lib/db";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 export async function GET(request: Request) {
-  const key = new URL(request.url).searchParams.get("key") ?? "";
-  if (!key) return Response.json({ username: "", avatar: "" });
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
-    return Response.json(await getUserProfile(key));
+    return Response.json(await getUserProfile(user.key));
   } catch (err) {
     return Response.json({ error: dbErrorMessage(err) }, { status: 502 });
   }
 }
 
 export async function PATCH(request: Request) {
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const body = await request.json();
-    const key = String(body.key ?? "");
-    if (!key) return Response.json({ error: "Missing identity." }, { status: 400 });
+    const key = user.key;
 
     const patch: { username?: string; avatar?: string; onboarded?: boolean } = {};
     if (body.username !== undefined) {

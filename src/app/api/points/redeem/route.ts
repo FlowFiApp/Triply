@@ -1,5 +1,6 @@
 import { redeemPoints, updateRewardStatus } from "@/lib/db";
 import { sendNimReward } from "@/lib/nimiq-payout";
+import { requireUser, unauthorized } from "@/lib/auth";
 import { ValidationUtils } from "@nimiq/utils/validation-utils";
 
 function cleanRecipient(raw: string): string {
@@ -13,13 +14,14 @@ function cleanRecipient(raw: string): string {
 }
 
 export async function POST(request: Request) {
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const body = await request.json();
-    const key = String(body.key ?? "");
+    const key = user.key;
     const amount = Math.round(Number(body.amount ?? 0) * 10) / 10; // 1-decimal precision
     const recipient = cleanRecipient(String(body.recipient ?? "")); // user's Nimiq address
 
-    if (!key) return Response.json({ ok: false, error: "Missing identity." }, { status: 400 });
     if (amount <= 0) return Response.json({ ok: false, error: "Invalid amount." }, { status: 400 });
 
     const redeemed = await redeemPoints({ userKey: key, amount });

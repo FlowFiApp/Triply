@@ -80,7 +80,7 @@ function AddressRow({
 }
 
 export default function Profile() {
-  const { state, connect, disconnect } = useWalletState();
+  const { state, authState, connectIdentity, disconnect } = useWalletState();
   const { earned, available } = usePoints();
   const { toast } = useToast();
   const { data: profile } = useProfile();
@@ -89,19 +89,21 @@ export default function Profile() {
 
   const username = profile?.username || "Triply Traveler";
   const avatar = profile?.avatar ?? "";
+  const signedIn = authState === "authenticated";
 
   const handleWalletAction = async () => {
-    if (state.connected) {
+    if (signedIn) {
       disconnect();
+      toast("success", "Signed out.");
       return;
     }
     try {
-      await connect();
-      toast("success", "Wallet connected.");
+      await connectIdentity();
+      toast("success", "Signed in with Nimiq.");
     } catch (err) {
       toast(
         "error",
-        err instanceof Error ? err.message : "Could not connect your wallet.",
+        err instanceof Error ? err.message : "Could not sign in with Nimiq.",
       );
     }
   };
@@ -137,9 +139,9 @@ export default function Profile() {
               {username}
             </h1>
             <p className="text-[12px] text-muted">
-              {state.connected
-                ? "Wallet connected"
-                : "No wallet connected"}
+              {signedIn
+                ? "Signed in with Nimiq"
+                : "Not signed in"}
             </p>
           </div>
 
@@ -160,13 +162,13 @@ export default function Profile() {
             <button
               onClick={handleWalletAction}
               className={`flex h-10 items-center justify-center gap-1.5 rounded-xl border ${
-                state.connected
+                signedIn
                   ? "border-border bg-card-2 text-foreground"
                   : "border-accent-2 bg-accent text-accent-2"
               } text-[13px] font-bold`}
             >
               <Wallet size={15} />
-              {state.connected ? "Disconnect" : "Connect Wallet"}
+              {signedIn ? "Sign Out" : "Sign In with Nimiq"}
             </button>
           </div>
 

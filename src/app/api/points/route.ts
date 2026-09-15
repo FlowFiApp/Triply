@@ -1,10 +1,11 @@
 import { getPoints } from "@/lib/db";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 export async function GET(request: Request) {
-  const key = new URL(request.url).searchParams.get("key") ?? "";
-  if (!key) return Response.json({ earned: 0, available: 0 });
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
-    const points = await getPoints(key);
+    const points = await getPoints(user.key);
     return Response.json(points);
   } catch (err) {
     return Response.json(

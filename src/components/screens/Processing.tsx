@@ -8,7 +8,6 @@ import { MobileShell } from "@/components/shell";
 import { useFlow } from "@/lib/flow-context";
 import { useToast } from "@/lib/toast";
 import { useWalletState } from "@/lib/wallet-state";
-import { getStoredIdentity } from "@/lib/identity";
 import { CHAINS } from "@/lib/wallet";
 import type { OrderRecord } from "@/lib/types";
 
@@ -61,7 +60,6 @@ export default function Processing() {
           chain: chain.id,
           from: payer,
           nimiqAddress: state.nimiqAddress,
-          deviceId: getStoredIdentity().deviceId,
           passengers: (flow.passengersList ?? (flow.passenger ? [flow.passenger] : [])).map(
             (p) => ({
               given_name: p.first ?? "",

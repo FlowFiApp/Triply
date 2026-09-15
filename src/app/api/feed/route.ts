@@ -7,13 +7,15 @@ import {
   MOMENT_POST_REWARD,
 } from "@/lib/db";
 import { serializeMoment, type FeedMoment } from "@/lib/feed";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 export async function GET(request: Request) {
-  const key = new URL(request.url).searchParams.get("key") ?? "";
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const moments = await listMoments(50);
     return Response.json({
-      moments: moments.map((m) => serializeMoment(m, key)),
+      moments: moments.map((m) => serializeMoment(m, user.key)),
       live: true,
     });
   } catch (err) {
@@ -25,9 +27,11 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const body = await request.json();
-    const userId = String(body.key ?? "");
+    const userId = user.key;
     const caption = String(body.caption ?? "").trim();
     const location = body.location ? String(body.location).trim() : undefined;
     const images: string[] = Array.isArray(body.images)

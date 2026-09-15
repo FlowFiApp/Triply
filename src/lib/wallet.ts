@@ -1,6 +1,7 @@
 "use client";
 
 import { treasuryAddress } from "@/lib/config";
+import { normalizeNimiqAddress } from "@/lib/nimiq";
 
 export type ChainId = "polygon";
 
@@ -114,8 +115,17 @@ export type ConnectedWallet = {
   source: string;
 };
 
-export async function connectWallet(): Promise<ConnectedWallet> {
-  let nimiqAddress: string | undefined;
+export type NimiqSigner = (
+  message: string,
+) => Promise<{ publicKey: string; signature: string }>;
+
+export type NimiqIdentity = {
+  address: string;
+  sign: NimiqSigner;
+};
+
+/** Connects ONLY the Nimiq identity (Nimiq Pay) — no Polygon/EVM prompt. */
+export async function connectNimiqIdentity(): Promise<NimiqIdentity | null> {
   try {
     const mod = await import("@nimiq/mini-app-sdk");
     const nimiq = await Promise.race([
@@ -124,27 +134,44 @@ export async function connectWallet(): Promise<ConnectedWallet> {
         setTimeout(() => reject(new Error("nimiq-timeout")), 4500),
       ),
     ]);
-    const accounts = (await nimiq.listAccounts()) as string[];
-    if (Array.isArray(accounts) && accounts.length) {
-      nimiqAddress = accounts[0];
-    }
+    const accounts = await nimiq.listAccounts();
+    const first = Array.isArray(accounts) ? accounts[0] : undefined;
+    if (!first) return null;
+    return {
+      address: normalizeNimiqAddress(first) ?? first,
+      sign: async (message: string) => {
+        const res = await nimiq.sign(message);
+        if (!res || typeof res !== "object" || !("signature" in res)) {
+          throw new Error("Sign request was rejected.");
+        }
+        return { publicKey: res.publicKey, signature: res.signature };
+      },
+    };
   } catch {
     // Not running inside Nimiq Pay — the Nimiq identity is unavailable.
+    return null;
   }
+}
 
+/** Connects ONLY the Polygon/EVM wallet (requested at checkout). */
+export async function connectEvmWallet(): Promise<string | undefined> {
   const provider = getEvmProvider();
-  let evmAddress: string | undefined;
-  if (provider) {
-    try {
-      const accounts = (await provider.request({
-        method: "eth_requestAccounts",
-      })) as string[];
-      if (Array.isArray(accounts) && accounts.length) evmAddress = accounts[0];
-    } catch {
-      // user denied or no EVM accounts
-    }
+  if (!provider) return undefined;
+  try {
+    const accounts = (await provider.request({
+      method: "eth_requestAccounts",
+    })) as string[];
+    if (Array.isArray(accounts) && accounts.length) return accounts[0];
+  } catch {
+    // user denied or no EVM accounts
   }
+  return undefined;
+}
 
+export async function connectWallet(): Promise<ConnectedWallet> {
+  const nimiq = await connectNimiqIdentity();
+  const evmAddress = await connectEvmWallet();
+  const nimiqAddress = nimiq?.address;
   if (!nimiqAddress && !evmAddress) {
     throw new Error("No wallet available. Open Triply inside Nimiq Pay.");
   }

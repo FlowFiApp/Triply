@@ -5,7 +5,14 @@ import "server-only";
 const REWARD_MNEMONIC = process.env.NIMIQ_REWARD_MNEMONIC;
 const RPC_URL = process.env.NIMIQ_RPC_URL;
 const LUNA_PER_NIM = 100_000n;
-const NETWORK_ID = Number(process.env.NIMIQ_NETWORK ?? 1); // 1 = Albatross mainnet
+// Nimiq network IDs (from @nimiq/core): mainnet Albatross is 24, test 5, dev 1.
+const NETWORK_IDS: Record<string, number> = {
+  mainalbatross: 24,
+  testalbatross: 5,
+  devalbatross: 1,
+};
+const NETWORK_ID =
+  NETWORK_IDS[String(process.env.NIMIQ_NETWORK ?? "").trim().toLowerCase()] ?? 24;
 const TX_LOOKUP_ATTEMPTS = 10;
 const TX_LOOKUP_DELAY_MS = 1500;
 
@@ -49,7 +56,12 @@ async function rpc(method: string, params: unknown[]): Promise<any> {
   if (!res.ok) throw new Error(`Nimiq RPC error ${res.status}`);
   const json = await res.json();
   if (json.error) throw new Error(json.error.message ?? "Nimiq RPC error");
-  return json.result;
+  // NimiqWatch wraps results as { data, metadata } — unwrap to the real value.
+  let result = json.result;
+  if (result && typeof result === "object" && "data" in result) {
+    result = result.data;
+  }
+  return result;
 }
 
 function bytesToHex(bytes: Uint8Array): string {
@@ -209,6 +221,14 @@ export async function getSenderBalanceLuna(
   sender: string,
 ): Promise<number | null> {
   try {
+    const acc = await rpc("getAccountByAddress", [sender]);
+    if (acc && typeof acc === "object" && acc.balance != null) {
+      return Number(acc.balance);
+    }
+  } catch {
+    // fall through
+  }
+  try {
     const bal = await rpc("getBalanceByAddress", [sender]);
     if (bal != null) return Number(bal);
   } catch {
@@ -261,7 +281,13 @@ export async function sendNimReward({
   }
 
   const headHeight = (await rpc("getBlockNumber", [])) as number;
-  const networkId = ((await rpc("getNetworkId", [])) as number) ?? NETWORK_ID;
+  // Some public nodes (NimiqWatch) don't expose getNetworkId; default to mainnet.
+  let networkId: number = NETWORK_ID;
+  try {
+    networkId = ((await rpc("getNetworkId", [])) as number) ?? NETWORK_ID;
+  } catch {
+    // keep mainnet default
+  }
 
   // Traceable on-chain memo (recipientData), max 64 bytes.
   const memo = "You earned some Triply points";
@@ -279,7 +305,12 @@ export async function sendNimReward({
   tx.sign(keyPair);
 
   const raw = bytesToHex(tx.serialize());
-  const hash = (await rpc("sendRawTransaction", [raw])) as string;
+  // Some proxies return the hash, others don't — fall back to the built tx hash.
+  const submitted = (await rpc("sendRawTransaction", [raw])) as string | null;
+  const hash =
+    typeof submitted === "string" && submitted
+      ? submitted
+      : bytesToHex(tx.hash());
 
   // Confirm the node has seen the transaction (mempool or mined).
   let confirmed = false;

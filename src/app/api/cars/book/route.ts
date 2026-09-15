@@ -2,9 +2,12 @@
 import { duffelErrorMessage } from "@/lib/duffel";
 import type { CarBooking } from "@/lib/types";
 import { testPrice } from "@/lib/pricing";
+import { requireUser, unauthorized } from "@/lib/auth";
 import mockData from "@/lib/data.json";
 
 export async function POST(request: Request) {
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const body = await request.json();
 
@@ -44,12 +47,9 @@ export async function POST(request: Request) {
     // 2 NIM per 1 USDT, credited once per booking.
     try {
       const { getOrCreateUser, earnPoints } = await import("@/lib/db");
-      const user = await getOrCreateUser({
-        nimiqAddress: body.nimiqAddress,
-        deviceId: body.deviceId,
-      });
+      const created = await getOrCreateUser({ nimiqAddress: user.address });
       await earnPoints({
-        userKey: user.key,
+        userKey: created.key,
         amountUsd: testPrice(Number(booking.total_amount ?? 0)),
         bookingRef: booking.reference ?? booking.id,
         bookingKind: "car",

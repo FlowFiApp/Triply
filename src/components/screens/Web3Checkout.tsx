@@ -94,7 +94,7 @@ export default function Web3Checkout() {
   const [connecting, setConnecting] = useState(false);
   const [seconds, setSeconds] = useState(14 * 60 + 59);
   const { toast } = useToast();
-  const { state, connect, disconnect, pay } = useWalletState();
+  const { state, connectEvm, disconnect, pay } = useWalletState();
   const { flow, setFlow } = useFlow();
   const treasuryOk = clientConfig().find(
     (c) => c.key === "NEXT_PUBLIC_TREASURY_WALLET_ADDRESS",
@@ -117,8 +117,14 @@ export default function Web3Checkout() {
     setSheetOpen(false);
     setConnecting(true);
     try {
-      await connect();
-      const res = await pay(amount);
+      // Polygon/EVM is only requested here, at checkout.
+      const evmAddress = await connectEvm();
+      if (!evmAddress) {
+        throw new Error(
+          "No Polygon wallet available. Install MetaMask or another wallet with USDT.",
+        );
+      }
+      const res = await pay(amount, evmAddress);
       setFlow({ amount, txHash: res.hash, chain: res.chain });
       router.push("/processing");
     } catch (err) {
@@ -271,7 +277,7 @@ export default function Web3Checkout() {
           >
             {connecting ? (
               "Processing…"
-            ) : state.connected ? (
+            ) : state.evmAddress ? (
               <>
                 <Wallet size={18} />
                 Pay <UsdtAmount value={amount} />

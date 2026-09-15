@@ -7,7 +7,6 @@ import {
   type ReactNode,
 } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { loadDeviceId } from "@/lib/identity";
 import { useWalletState } from "@/lib/wallet-state";
 
 type PointsContextValue = {
@@ -33,18 +32,15 @@ export function usePoints() {
 
 export function PointsProvider({ children }: { children: ReactNode }) {
   const qc = useQueryClient();
-  const { state } = useWalletState();
-  const { data: deviceId } = useQuery({
-    queryKey: ["deviceId"],
-    queryFn: loadDeviceId,
-  });
-  const key = state.nimiqAddress ?? deviceId ?? "";
+  const { state, authState } = useWalletState();
+  const key =
+    authState === "authenticated" ? (state.nimiqAddress ?? "") : "";
 
   const { data } = useQuery({
     queryKey: ["points", key],
     enabled: Boolean(key),
     queryFn: async () => {
-      const res = await fetch(`/api/points?key=${encodeURIComponent(key)}`);
+      const res = await fetch(`/api/points`);
       if (!res.ok) return { earned: 0, available: 0 };
       return res.json();
     },
@@ -59,15 +55,14 @@ export function PointsProvider({ children }: { children: ReactNode }) {
 
   const redeem = useCallback(
     async (amount: number, recipient?: string) => {
-      const k = state.nimiqAddress ?? deviceId ?? "";
-      if (!k) {
+      if (!key) {
         return { ok: false, message: "Identity unavailable." };
       }
       try {
         const res = await fetch("/api/points/redeem", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ key: k, amount, recipient }),
+          body: JSON.stringify({ amount, recipient }),
         });
         const d = await res.json();
         if (!res.ok || !d.ok) {
@@ -79,7 +74,7 @@ export function PointsProvider({ children }: { children: ReactNode }) {
         return { ok: false, message: "Redeem failed." };
       }
     },
-    [refresh, state.nimiqAddress, deviceId],
+    [refresh, key],
   );
 
   return (

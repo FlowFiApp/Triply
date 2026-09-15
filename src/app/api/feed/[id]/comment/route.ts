@@ -4,14 +4,16 @@ import {
   earnMomentPoints,
   MOMENT_COMMENT_REWARD,
 } from "@/lib/db";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const body = await request.json();
-    const key = String(body.key ?? "");
+    const key = user.key;
     const text = String(body.text ?? "").trim();
-    if (!key) return Response.json({ error: "Missing identity." }, { status: 400 });
     if (!text || text.length > 200) {
       return Response.json({ error: "Comment must be 1-200 characters." }, { status: 400 });
     }
