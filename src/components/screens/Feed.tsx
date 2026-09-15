@@ -1,20 +1,25 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import {
   Bookmark,
   Heart,
+  Link2,
   MessageCircle,
   MoreHorizontal,
   Send,
   SquarePen,
-  X,
+  Trash2,
 } from "lucide-react";
 import { BottomTabBar, MobileShell } from "@/components/shell";
 import Identicon from "@/components/ui/identicon";
 import { SkeletonRows } from "@/components/ui/feedback";
 import { Sheet } from "@/components/ui";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 import ShareMomentSheet from "@/components/screens/ShareMomentSheet";
 import { useQueryParam } from "@/lib/query";
 import { useToast } from "@/lib/toast";
@@ -22,24 +27,63 @@ import { share } from "@/lib/share";
 import {
   addMomentComment,
   compactCount,
+  deleteMoment,
   fetchFeed,
   feedHandle,
+  feedKey,
   incrementMomentShare,
   timeAgo,
   toggleMomentLike,
 } from "@/lib/feed-client";
 import type { FeedMoment } from "@/lib/feed";
 
+function MomentImages({ images, alt }: { images: string[]; alt: string }) {
+  const list = images.slice(0, 2);
+  if (list.length === 0) return null;
+  return (
+    <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-card-2">
+      {list.length === 1 ? (
+        <Image src={list[0]} alt={alt} fill sizes="700px" className="object-cover" />
+      ) : (
+        <Swiper
+          modules={[Pagination]}
+          slidesPerView={1}
+          pagination={{ clickable: true }}
+          className="!h-full w-full [touch-action:pan-y]"
+          style={
+            {
+              "--swiper-pagination-color": "#cdff9b",
+              "--swiper-pagination-bullet-inactive-color": "#ffffff",
+              "--swiper-pagination-bullet-inactive-opacity": "0.6",
+              "--swiper-pagination-bottom": "10px",
+            } as CSSProperties
+          }
+        >
+          {list.map((src) => (
+            <SwiperSlide key={src} className="!h-full">
+              <div className="relative h-full w-full">
+                <Image src={src} alt={alt} fill sizes="700px" className="object-cover" />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
+    </div>
+  );
+}
+
 function MomentCard({
   moment,
   onLike,
   onComments,
   onShare,
+  onMenu,
 }: {
   moment: FeedMoment;
   onLike: (m: FeedMoment) => void;
   onComments: (m: FeedMoment) => void;
   onShare: (m: FeedMoment) => void;
+  onMenu: (m: FeedMoment) => void;
 }) {
   return (
     <article className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-3.5">
@@ -55,36 +99,16 @@ function MomentCard({
             ) : null}
           </div>
         </div>
-        <MoreHorizontal size={18} className="text-muted" />
+        <button
+          onClick={() => onMenu(moment)}
+          aria-label="More options"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-muted"
+        >
+          <MoreHorizontal size={18} />
+        </button>
       </div>
 
-      <div className="overflow-hidden rounded-xl bg-card-2">
-        {moment.images.length === 1 ? (
-          <div className="relative aspect-[5/3] w-full">
-            <Image
-              src={moment.images[0]}
-              alt={moment.caption || "Travel moment"}
-              fill
-              sizes="600px"
-              className="object-cover"
-            />
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-1.5 p-1.5">
-            {moment.images.slice(0, 2).map((src) => (
-              <div key={src} className="relative aspect-[5/4] w-full overflow-hidden rounded-lg">
-                <Image
-                  src={src}
-                  alt={moment.caption || "Travel moment"}
-                  fill
-                  sizes="300px"
-                  className="object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <MomentImages images={moment.images} alt={moment.caption || "Travel moment"} />
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -179,13 +203,6 @@ function CommentsSheet({
       <div className="flex flex-col px-5 pb-6 pt-1">
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-[16px] font-extrabold text-foreground">Comments</h2>
-          <button
-            onClick={onClose}
-            aria-label="Close comments"
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-card-2 text-muted"
-          >
-            <X size={15} />
-          </button>
         </div>
 
         <div className="flex flex-1 flex-col gap-3 overflow-y-auto">
@@ -238,6 +255,7 @@ export default function Feed() {
     useQueryParam("sheet", "") === "share",
   );
   const [commentsFor, setCommentsFor] = useState<FeedMoment | null>(null);
+  const [menuFor, setMenuFor] = useState<FeedMoment | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -287,6 +305,18 @@ export default function Feed() {
 
   const onPosted = (m: FeedMoment) => {
     setMoments((prev) => [m, ...prev]);
+  };
+
+  const handleDelete = async (m: FeedMoment) => {
+    if (!window.confirm("Delete this moment? This cannot be undone.")) return;
+    setMenuFor(null);
+    const result = await deleteMoment(m.id);
+    if (result.ok) {
+      setMoments((prev) => prev.filter((x) => x.id !== m.id));
+      toast("success", "Moment deleted.");
+    } else {
+      toast("error", result.error ?? "Could not delete this moment.");
+    }
   };
 
   const storyAuthors = Array.from(
@@ -364,6 +394,7 @@ export default function Feed() {
                   onLike={handleLike}
                   onComments={setCommentsFor}
                   onShare={handleShare}
+                  onMenu={setMenuFor}
                 />
               ))
             )}
@@ -390,6 +421,35 @@ export default function Feed() {
           }
         }}
       />
+
+      {menuFor ? (
+        <Sheet open onClose={() => setMenuFor(null)}>
+          <div className="flex flex-col px-5 pb-6 pt-1">
+            <h2 className="mb-2 text-[16px] font-extrabold text-foreground">
+              Moment options
+            </h2>
+            <button
+              onClick={() => {
+                handleShare(menuFor);
+                setMenuFor(null);
+              }}
+              className="flex items-center gap-3 rounded-xl px-3 py-3.5 text-left text-[15px] font-semibold text-foreground hover:bg-card-2"
+            >
+              <Link2 size={18} className="text-accent-2" />
+              Share link
+            </button>
+            {menuFor.userId === feedKey() ? (
+              <button
+                onClick={() => handleDelete(menuFor)}
+                className="flex items-center gap-3 rounded-xl px-3 py-3.5 text-left text-[15px] font-semibold text-red-500 hover:bg-card-2"
+              >
+                <Trash2 size={18} />
+                Delete post
+              </button>
+            ) : null}
+          </div>
+        </Sheet>
+      ) : null}
     </MobileShell>
   );
 }

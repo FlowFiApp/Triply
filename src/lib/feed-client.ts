@@ -79,6 +79,13 @@ export async function incrementMomentShare(id: string): Promise<boolean> {
   return res.ok;
 }
 
+export async function deleteMoment(id: string): Promise<{ ok: boolean; error?: string }> {
+  const res = await fetch(`/api/feed/${id}?key=${encodeURIComponent(feedKey())}`, {
+    method: "DELETE",
+  });
+  return res.json();
+}
+
 export function timeAgo(iso: string): string {
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return "";
