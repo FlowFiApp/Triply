@@ -89,6 +89,7 @@ export default function PassengerDetails() {
     useQueryParam("sheet", "") === "class",
   );
   const next = useQueryParam("next", "");
+  const passengerCount = readFlow().passengers ?? 1;
   const [form, setForm] = useState<PassengerInfo>(empty);
   const [invalid, setInvalid] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
@@ -140,7 +141,9 @@ export default function PassengerDetails() {
             <button
               onClick={() => {
                 const offerId = readFlow().offer?.id;
-                router.push(offerId ? `/flight?offer=${encodeURIComponent(offerId)}` : "/search");
+                const backTo =
+                  next || (offerId ? `/flight?offer=${encodeURIComponent(offerId)}` : "/search");
+                router.push(backTo);
               }}
               className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground"
             >
@@ -154,9 +157,14 @@ export default function PassengerDetails() {
                 />
               </svg>
             </button>
-            <h1 className="text-[18px] font-extrabold text-foreground">
-              Passenger Details
-            </h1>
+            <div className="flex flex-col">
+              <h1 className="text-[18px] font-extrabold leading-[21px] text-foreground">
+                Passenger Details
+              </h1>
+              <p className="text-[12px] font-normal leading-4 text-muted">
+                {passengerCount} Passenger{passengerCount > 1 ? "s" : ""}
+              </p>
+            </div>
           </div>
 
           <div className="px-5 py-3">
@@ -265,7 +273,7 @@ export default function PassengerDetails() {
         </div>
 
         <div aria-hidden className="h-[84px] w-full shrink-0" />
-        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-4 pt-3 pb-safe">
+        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-5 pt-3 pb-safe">
           <button
             onClick={continueTo}
             className="tap flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"

@@ -134,7 +134,8 @@ export default function FlightDetails() {
   const selectSimilar = (o: FlightOffer) => {
     setOffer(o);
     setSelected({});
-    writeFlow({ offer: o, amount: o.price });
+    setChosenSeat(null);
+    writeFlow({ offer: o, amount: o.price, selectedServiceIds: [], seat: undefined });
     window.scrollTo({ top: 0 });
   };
 
@@ -375,7 +376,7 @@ export default function FlightDetails() {
         </div>
 
         <div aria-hidden className="h-[84px] w-full shrink-0" />
-        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-4 pt-3 pb-safe">
+        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-5 pt-3 pb-safe">
           <div className="flex flex-col items-center gap-1">
             <span className="text-[12px] text-muted">
               Total ({passengerCount} Passenger{passengerCount > 1 ? "s" : ""})

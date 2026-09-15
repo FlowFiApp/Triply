@@ -256,7 +256,7 @@ export default function Web3Checkout() {
         </div>
 
         <div aria-hidden className="h-[84px] w-full shrink-0" />
-        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-4 pt-3 pb-safe">
+        <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-5 pb-5 pt-3 pb-safe">
           <div className="mb-3 flex flex-col items-center gap-0.5">
             <span className="text-[12px] text-muted">Total</span>
             <Price usd={amount} className="text-[18px] text-foreground" bold />
