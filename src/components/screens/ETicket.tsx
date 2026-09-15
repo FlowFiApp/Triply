@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Calendar, Check, Download, Share2 } from "lucide-react";
+import { BedDouble, Calendar, Car, Check, ChevronRight, Download, Share2 } from "lucide-react";
 import { BottomTabBar, MobileShell } from "@/components/shell";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import BookingQR from "@/components/ui/booking-qr";
@@ -259,6 +259,46 @@ useEffect(() => {
                 <Share2 size={14} className="text-accent-fg" />
                 Share
               </button>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <h3 className="text-[15px] font-bold text-foreground">
+                Complete your trip
+              </h3>
+              <Link
+                href="/stays"
+                className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-card-2">
+                  <BedDouble size={18} className="text-accent-fg" />
+                </span>
+                <span className="flex flex-1 flex-col">
+                  <span className="text-[14px] font-bold text-foreground">
+                    Book a stay
+                  </span>
+                  <span className="text-[12px] text-muted">
+                    Hotels in {order.arrCity || "your destination"}
+                  </span>
+                </span>
+                <ChevronRight size={16} className="text-muted" />
+              </Link>
+              <Link
+                href="/cars"
+                className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-card-2">
+                  <Car size={18} className="text-accent-fg" />
+                </span>
+                <span className="flex flex-1 flex-col">
+                  <span className="text-[14px] font-bold text-foreground">
+                    Rent a car
+                  </span>
+                  <span className="text-[12px] text-muted">
+                    Get around {order.arrCity || "your destination"}
+                  </span>
+                </span>
+                <ChevronRight size={16} className="text-muted" />
+              </Link>
             </div>
           </div>
         </div>

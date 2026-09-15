@@ -66,29 +66,27 @@ export default function Onboarding() {
       }
     >
       <div className="flex min-h-full flex-col justify-between">
-        <div className="w-full">
-          <div className="px-4 pt-3">
-            <div className="overflow-hidden rounded-3xl w-[120px] justify-center">
-              <div
-                className="flex transition-transform duration-300 ease-out"
-                style={{ transform: `translateX(-${step * 100}%)` }}
-              >
-                {SLIDES.map((s) => (
-                  <div
-                    key={s.title}
-                    className="relative h-[120px] w-[120px] shrink-0"
-                  >
-                    <Image
-                      src={s.img}
-                      alt=""
-                      fill
-                      priority
-                      sizes="120px"
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
+        <div className="flex flex-1 items-center justify-center px-4 pt-3">
+          <div className="overflow-hidden rounded-3xl w-[120px]">
+            <div
+              className="flex transition-transform duration-300 ease-out"
+              style={{ transform: `translateX(-${step * 100}%)` }}
+            >
+              {SLIDES.map((s) => (
+                <div
+                  key={s.title}
+                  className="relative h-[120px] w-[120px] shrink-0"
+                >
+                  <Image
+                    src={s.img}
+                    alt=""
+                    fill
+                    priority
+                    sizes="120px"
+                    className="object-cover"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>
