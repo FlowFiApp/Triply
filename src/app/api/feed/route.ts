@@ -1,4 +1,4 @@
-import { createMoment, listMoments } from "@/lib/db";
+import { createMoment, dbErrorMessage, listMoments } from "@/lib/db";
 import { serializeMoment, type FeedMoment } from "@/lib/feed";
 
 export async function GET(request: Request) {
@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     });
   } catch (err) {
     return Response.json(
-      { error: err instanceof Error ? err.message : "Feed unavailable", moments: [], live: false },
+      { error: dbErrorMessage(err), moments: [], live: false },
       { status: 502 },
     );
   }
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     return Response.json({ moment, live: true });
   } catch (err) {
     return Response.json(
-      { error: err instanceof Error ? err.message : "Post failed" },
+      { error: dbErrorMessage(err) },
       { status: 502 },
     );
   }

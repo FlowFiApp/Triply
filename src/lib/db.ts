@@ -8,9 +8,24 @@ let client: MongoClient | null = null;
 
 async function getDb() {
   if (!URI) throw new Error("MONGODB_URI is not configured");
-  if (!client) client = new MongoClient(URI);
+  if (!client) {
+    client = new MongoClient(URI, { serverSelectionTimeoutMS: 8000 });
+  }
   await client.connect();
   return client.db("triply");
+}
+
+/** Maps low-level driver/network failures to a friendly, actionable message. */
+export function dbErrorMessage(err: unknown): string {
+  const message = err instanceof Error ? err.message : String(err);
+  if (
+    /ssl|tlsv1|mongoserverselection|mongonetwork|econnrefused|enotfound|timed out|server selection/i.test(
+      message,
+    )
+  ) {
+    return "Storage is unavailable right now — check the MongoDB connection and Atlas IP allowlist.";
+  }
+  return message || "Database error";
 }
 
 export type UserDoc = {

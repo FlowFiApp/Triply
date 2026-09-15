@@ -12,11 +12,13 @@ export function feedHandle(key: string): string {
   return `Traveler ${compact || "Trip"}`;
 }
 
-export async function fetchFeed(): Promise<FeedMoment[]> {
+export async function fetchFeed(): Promise<{ moments: FeedMoment[]; error?: string }> {
   const res = await fetch(`/api/feed?key=${encodeURIComponent(feedKey())}`);
   const d = await res.json();
-  if (!res.ok || !d.live) return [];
-  return (d.moments ?? []) as FeedMoment[];
+  if (!res.ok || !d.live) {
+    return { moments: [], error: d.error ?? "Feed is unavailable right now." };
+  }
+  return { moments: (d.moments ?? []) as FeedMoment[] };
 }
 
 export async function uploadFeedImage(dataUrl: string): Promise<{ url: string; error?: string }> {

@@ -1,4 +1,4 @@
-import { toggleMomentLike } from "@/lib/db";
+import { dbErrorMessage, toggleMomentLike } from "@/lib/db";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -10,7 +10,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return Response.json({ ok: true, liked });
   } catch (err) {
     return Response.json(
-      { error: err instanceof Error ? err.message : "Like failed" },
+      { error: dbErrorMessage(err) },
       { status: 502 },
     );
   }

@@ -241,7 +241,9 @@ export default function Feed() {
 
   const load = useCallback(async () => {
     try {
-      setMoments(await fetchFeed());
+      const result = await fetchFeed();
+      setMoments(result.moments);
+      setError(result.error ?? "");
     } catch {
       setError("Feed is unavailable right now.");
     } finally {

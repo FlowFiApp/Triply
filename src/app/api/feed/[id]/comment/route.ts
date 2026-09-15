@@ -1,4 +1,4 @@
-import { addMomentComment } from "@/lib/db";
+import { addMomentComment, dbErrorMessage } from "@/lib/db";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -22,7 +22,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
   } catch (err) {
     return Response.json(
-      { error: err instanceof Error ? err.message : "Comment failed" },
+      { error: dbErrorMessage(err) },
       { status: 502 },
     );
   }
