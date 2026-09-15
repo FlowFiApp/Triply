@@ -23,6 +23,11 @@ const SLIDES = [
     body: "No login needed to access your bookings. Your e-tickets and boarding passes are saved securely on your device.",
     img: "https://images.unsplash.com/photo-1503220317375-aaad61436b1b?auto=format&fit=crop&w=800&q=70",
   },
+  {
+    title: "Earn Nimiq Points",
+    body: "Earn 2 NIM for every 1 USDT you spend on travel, plus bonus points for sharing your moments on the feed. Redeem your points for NIM straight to your wallet.",
+    img: "https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6?auto=format&fit=crop&w=800&q=70",
+  },
 ];
 
 export default function Onboarding() {

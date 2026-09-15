@@ -36,6 +36,8 @@ export type UserDoc = {
   customerUserId?: string;
   name?: string;
   email?: string;
+  username?: string;
+  avatar?: string;
   points: { earned: number; available: number };
   createdAt: Date;
   updatedAt: Date;
@@ -60,6 +62,26 @@ export async function getUser(key: string): Promise<UserDoc | null> {
   const db = await getDb();
   const doc = await db.collection<UserDoc>("users").findOne({ key });
   return doc ?? null;
+}
+
+export async function getUserProfile(key: string) {
+  const user = await getUser(key);
+  return user
+    ? { username: user.username ?? "", avatar: user.avatar ?? "" }
+    : { username: "", avatar: "" };
+}
+
+export async function updateProfile(
+  key: string,
+  patch: { username?: string; avatar?: string },
+): Promise<{ username: string; avatar: string }> {
+  await ensureUserByKey(key);
+  const db = await getDb();
+  const set: Record<string, unknown> = { updatedAt: new Date() };
+  if (patch.username !== undefined) set.username = patch.username;
+  if (patch.avatar !== undefined) set.avatar = patch.avatar;
+  await db.collection<UserDoc>("users").updateOne({ key }, { $set: set });
+  return getUserProfile(key);
 }
 
 export async function getOrCreateUser(
