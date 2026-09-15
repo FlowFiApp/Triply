@@ -12,6 +12,7 @@ import {
   User,
 } from "lucide-react";
 import Identicon from "@/components/ui/identicon";
+import TriplyLogo from "@/components/ui/triply-logo";
 import { useI18n } from "@/lib/i18n";
 import { useWalletState } from "@/lib/wallet-state";
 import { ensureDeviceId } from "@/lib/identity";
@@ -56,11 +57,9 @@ export function BrandHeader({
   return (
     <div className="sticky top-0 z-30 flex h-[60px] w-full items-center justify-between bg-background px-5 py-3">
       <div>
-        <h1 className="text-[26px] font-extrabold leading-[34px] text-foreground">
-          Triply
-        </h1>
+        <TriplyLogo size={36} />
         {subtitle ? (
-          <p className="text-[11px] font-medium text-muted">{subtitle}</p>
+          <p className="mt-0.5 text-[11px] font-medium text-muted">{subtitle}</p>
         ) : null}
       </div>
       {right}
