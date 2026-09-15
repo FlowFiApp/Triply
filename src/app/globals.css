@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap");
 @import "tailwindcss";
@@ -51,7 +51,7 @@
   --color-accent-fg: var(--accent-fg);
   --color-on-accent: var(--on-accent);
   --font-sans: "Host Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-script: "Lobster Two", cursive;
+  --font-script: "Lobster Two", sans-serif;
 }
 
 html,
@@ -198,7 +198,9 @@ textarea {
 }
 
 .tap {
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
 }
 .tap:active {
   transform: scale(0.97);
