@@ -16,7 +16,7 @@ const SLIDES = [
   {
     title: "Pay Seamlessly with USDT",
     body: "See prices in your local currency, pay in crypto. Ultra-low fees on Base, Polygon, Arbitrum & Solana. No wallet setup required.",
-    img: "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=800&q=70",
+    img: "/usdt.png",
   },
   {
     title: "Your Ticket, Saved Locally",
@@ -26,7 +26,7 @@ const SLIDES = [
   {
     title: "Earn Nimiq Points",
     body: "Earn 2 NIM for every 1 USDT you spend on travel, plus bonus points for sharing your moments on the feed. Redeem your points for NIM straight to your wallet.",
-    img: "https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6?auto=format&fit=crop&w=800&q=70",
+    img: "/nimiq.png",
   },
 ];
 
@@ -50,7 +50,10 @@ export default function Onboarding() {
   };
 
   return (
-    <MobileShell header={<><div className="flex h-[60px] items-center justify-between bg-background px-4">
+    <MobileShell
+      header={
+        <>
+          <div className="flex h-[60px] items-center justify-between bg-background px-4">
             <TriplyLogo size={27} />
             <button
               onClick={finish}
@@ -58,10 +61,13 @@ export default function Onboarding() {
             >
               Skip
             </button>
-          </div></>}>
+          </div>
+        </>
+      }
+    >
       <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
-                 <div className="px-4 pt-3">
+          <div className="px-4 pt-3">
             <div className="overflow-hidden rounded-3xl border border-border">
               <div
                 className="flex transition-transform duration-300 ease-out"
