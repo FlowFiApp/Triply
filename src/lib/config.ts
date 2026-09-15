@@ -17,6 +17,9 @@ export function serverConfig(): ConfigStatus[] {
     { key: "DUFFEL_WEBHOOK_SECRET", label: "Webhook secret", ok: Boolean(process.env.DUFFEL_WEBHOOK_SECRET), required: false },
     { key: "NIMIQ_REWARD_PRIVATE_KEY", label: "NIM reward wallet key", ok: Boolean(process.env.NIMIQ_REWARD_PRIVATE_KEY), required: false },
     { key: "NIMIQ_RPC_URL", label: "Nimiq RPC", ok: Boolean(process.env.NIMIQ_RPC_URL), required: false },
+    { key: "CLOUDINARY_CLOUD_NAME", label: "Cloudinary (feed images)", ok: Boolean(process.env.CLOUDINARY_CLOUD_NAME), required: false },
+    { key: "CLOUDINARY_API_KEY", label: "Cloudinary API key", ok: Boolean(process.env.CLOUDINARY_API_KEY), required: false },
+    { key: "CLOUDINARY_API_SECRET", label: "Cloudinary API secret", ok: Boolean(process.env.CLOUDINARY_API_SECRET), required: false },
   );
   return list;
 }

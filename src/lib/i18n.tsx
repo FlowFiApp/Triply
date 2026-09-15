@@ -13,6 +13,7 @@ const DICT: Record<Lang, Record<string, string>> = {
   en: {
     home: "Home",
     explore: "Explore",
+    feed: "Feed",
     bookmarks: "Bookmarks",
     profile: "Profile",
     searchFlights: "Search Flights",
@@ -39,6 +40,7 @@ const DICT: Record<Lang, Record<string, string>> = {
   es: {
     home: "Inicio",
     explore: "Explorar",
+    feed: "Feed",
     bookmarks: "Guardados",
     profile: "Perfil",
     searchFlights: "Buscar Vuelos",
@@ -65,6 +67,7 @@ const DICT: Record<Lang, Record<string, string>> = {
   fr: {
     home: "Accueil",
     explore: "Explorer",
+    feed: "Feed",
     bookmarks: "Favoris",
     profile: "Profil",
     searchFlights: "Rechercher des Vols",
@@ -91,6 +94,7 @@ const DICT: Record<Lang, Record<string, string>> = {
   de: {
     home: "Start",
     explore: "Entdecken",
+    feed: "Feed",
     bookmarks: "Lesezeichen",
     profile: "Profil",
     searchFlights: "Flüge Suchen",

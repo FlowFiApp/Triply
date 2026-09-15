@@ -167,6 +167,105 @@ export async function updateRewardStatus(
     .updateOne({ _id: new ObjectId(recordId) }, { $set: { ...patch, updatedAt: new Date() } });
 }
 
+// ---- Travel feed (moments) ----------------------------------------------
+
+export type MomentComment = {
+  id: string;
+  userKey: string;
+  text: string;
+  createdAt: Date;
+};
+
+export type MomentDoc = {
+  _id: ObjectId;
+  userId: string; // identity key (nimiqAddress or deviceId)
+  authorName?: string;
+  caption: string;
+  location?: string;
+  images: string[]; // Cloudinary URLs (1-2)
+  likes: string[]; // identity keys
+  comments: MomentComment[];
+  shareCount: number;
+  createdAt: Date;
+};
+
+export async function listMoments(limit = 50): Promise<MomentDoc[]> {
+  const db = await getDb();
+  return db
+    .collection<MomentDoc>("moments")
+    .find()
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .toArray();
+}
+
+export async function createMoment(input: {
+  userId: string;
+  authorName?: string;
+  caption: string;
+  location?: string;
+  images: string[];
+}): Promise<MomentDoc> {
+  const db = await getDb();
+  const doc: MomentDoc = {
+    _id: new ObjectId(),
+    userId: input.userId,
+    authorName: input.authorName,
+    caption: input.caption,
+    location: input.location,
+    images: input.images,
+    likes: [],
+    comments: [],
+    shareCount: 0,
+    createdAt: new Date(),
+  };
+  await db.collection<MomentDoc>("moments").insertOne(doc);
+  return doc;
+}
+
+export async function toggleMomentLike(momentId: string, userKey: string): Promise<boolean> {
+  const db = await getDb();
+  const existing = await db
+    .collection<MomentDoc>("moments")
+    .findOne({ _id: new ObjectId(momentId) });
+  if (!existing) throw new Error("Moment not found");
+  const liked = (existing.likes ?? []).includes(userKey);
+  if (liked) {
+    await db
+      .collection<MomentDoc>("moments")
+      .updateOne({ _id: new ObjectId(momentId) }, { $pull: { likes: userKey } });
+    return false;
+  }
+  await db
+    .collection<MomentDoc>("moments")
+    .updateOne({ _id: new ObjectId(momentId) }, { $addToSet: { likes: userKey } });
+  return true;
+}
+
+export async function addMomentComment(
+  momentId: string,
+  input: { userKey: string; text: string },
+): Promise<MomentComment> {
+  const db = await getDb();
+  const comment: MomentComment = {
+    id: new ObjectId().toHexString(),
+    userKey: input.userKey,
+    text: input.text,
+    createdAt: new Date(),
+  };
+  await db
+    .collection<MomentDoc>("moments")
+    .updateOne({ _id: new ObjectId(momentId) }, { $push: { comments: comment } });
+  return comment;
+}
+
+export async function incrementMomentShare(momentId: string): Promise<void> {
+  const db = await getDb();
+  await db
+    .collection<MomentDoc>("moments")
+    .updateOne({ _id: new ObjectId(momentId) }, { $inc: { shareCount: 1 } });
+}
+
 export async function getPoints(userKey: string) {
   const user = await getUser(userKey);
   return user

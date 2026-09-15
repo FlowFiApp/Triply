@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   ArrowLeft,
   Compass,
+  GalleryHorizontal,
   Home,
   Bookmark,
   User,
@@ -101,10 +102,11 @@ export function BackHeader({
 }
 
 const TABS = [
-  { key: "home", icon: Home, href: "/" },
-  { key: "explore", icon: Compass, href: "/stays" },
-  { key: "bookmarks", icon: Bookmark, href: "/trips" },
-  { key: "profile", icon: User, href: "/profile" },
+  { key: "home", icon: Home, href: "/", center: false },
+  { key: "explore", icon: Compass, href: "/stays", center: false },
+  { key: "feed", icon: GalleryHorizontal, href: "/feed", center: true },
+  { key: "bookmarks", icon: Bookmark, href: "/trips", center: false },
+  { key: "profile", icon: User, href: "/profile", center: false },
 ] as const;
 
 export function BottomTabBar({ active = "Home" }: { active?: string }) {
@@ -119,6 +121,22 @@ export function BottomTabBar({ active = "Home" }: { active?: string }) {
             const label = t(tab.key);
             const isActive = active === label || pathname === tab.href;
             const Icon = tab.icon;
+            if (tab.center) {
+              return (
+                <Link
+                  key={tab.key}
+                  href={tab.href}
+                  className="relative -top-4 flex w-16 flex-col items-center gap-1"
+                >
+                  <span className="flex h-[48px] w-[48px] items-center justify-center rounded-full bg-accent shadow-[0_4px_8px_rgba(0,0,0,0.20)]">
+                    <Icon size={22} className="text-accent-2" />
+                  </span>
+                  <span className="text-[10px] leading-[13px] font-semibold text-accent-2">
+                    {label}
+                  </span>
+                </Link>
+              );
+            }
             return (
               <Link
                 key={tab.key}
