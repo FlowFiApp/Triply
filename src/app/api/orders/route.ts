@@ -16,6 +16,10 @@ function normalizeOrder(o: any): OrderRecord {
     bookingRef: o.booking_ref ?? "",
     airline: seg.marketing_carrier?.name ?? "",
     airlineCode: seg.marketing_carrier?.iata_code ?? "",
+    airlineLogo:
+      seg.marketing_carrier?.logo_symbol_url ??
+      seg.marketing_carrier?.logo_lockup_url ??
+      undefined,
     flightNumber: seg.marketing_carrier_flight_number ?? "",
     cabin: p.cabin_class_marketing ?? "Economy",
     status: o.state ?? "confirmed",
@@ -24,8 +28,10 @@ function normalizeOrder(o: any): OrderRecord {
     arrTime: formatAMPM(seg.arriving_at),
     depCode: dep.iata_code ?? "",
     depCity: dep.city_name ?? "",
+    depAirport: dep.name ?? undefined,
     arrCode: arr.iata_code ?? "",
     arrCity: arr.city_name ?? "",
+    arrAirport: arr.name ?? undefined,
     duration: formatDuration(slice.duration),
     seat: p.seat ?? "—",
     gate: seg.gate ?? "—",
@@ -96,6 +102,7 @@ export async function POST(request: Request) {
       chain: body.chain,
       customerUserId: customerUserId ?? undefined,
       services: Array.isArray(body.selectedServiceIds) ? body.selectedServiceIds : [],
+      passengerIds: Array.isArray(body.passengerIds) ? body.passengerIds : [],
     });
     if (!order) {
       return Response.json({

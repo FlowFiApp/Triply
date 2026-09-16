@@ -23,6 +23,7 @@ export type FlightOffer = {
   id: string;
   airline: string;
   airlineCode: string;
+  airlineLogo?: string;
   flightNumber: string;
   price: number;
   currency: string;
@@ -32,11 +33,18 @@ export type FlightOffer = {
   arrTime: string;
   origin: string;
   destination: string;
+  originAirport?: string;
+  destinationAirport?: string;
+  originCity?: string;
+  destinationCity?: string;
   depDate: string;
   arrDate: string;
   duration: string;
   stops: string;
   direct: boolean;
+  emissionsKg?: string;
+  expiresAt?: string;
+  passengerIds?: string[];
   services: OfferService[];
   conditions?: OfferConditions;
   aircraft?: string;
@@ -64,6 +72,7 @@ export type OrderRecord = {
   bookingRef: string;
   airline: string;
   airlineCode: string;
+  airlineLogo?: string;
   flightNumber: string;
   cabin: string;
   status: string;
@@ -72,8 +81,10 @@ export type OrderRecord = {
   arrTime: string;
   depCode: string;
   depCity: string;
+  depAirport?: string;
   arrCode: string;
   arrCity: string;
+  arrAirport?: string;
   duration: string;
   seat: string;
   gate: string;

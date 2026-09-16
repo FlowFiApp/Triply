@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:flow": "node scripts/test_flow.mjs"
   },
   "dependencies": {
     "@duffel/api": "^4.29.1",

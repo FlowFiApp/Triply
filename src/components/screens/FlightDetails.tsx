@@ -146,7 +146,21 @@ export default function FlightDetails() {
                 </div>
                 <div className="flex flex-1 flex-col gap-1">
                   <span className="flex items-center gap-2 text-[14px] font-bold text-foreground">
-                    <Identicon seed={`${offer.airlineCode}${offer.flightNumber}`} size={18} />
+                    {offer.airlineLogo ? (
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded bg-white p-0.5">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={offer.airlineLogo}
+                          alt={offer.airline}
+                          className="h-full w-full object-contain"
+                        />
+                      </span>
+                    ) : (
+                      <Identicon
+                        seed={`${offer.airlineCode}${offer.flightNumber}`}
+                        size={18}
+                      />
+                    )}
                     {offer.airline} ({offer.origin})
                   </span>
                   <span className="text-[12px] text-muted">
@@ -202,17 +216,26 @@ export default function FlightDetails() {
                   <span className="text-[14px] font-bold text-foreground">
                     {offer.destination}
                   </span>
+                  <span className="text-[11px] text-muted">
+                    {offer.destinationAirport ?? offer.destinationCity ?? ""}
+                  </span>
                 </div>
               </div>
 
               {(offer.aircraft ||
                 offer.cabin ||
                 offer.seatsRemaining ||
-                offer.totalBaggages) ? (
+                offer.totalBaggages ||
+                offer.emissionsKg) ? (
                 <div className="flex flex-wrap gap-1.5">
                   {offer.aircraft ? (
                     <span className="rounded-full bg-card-2 px-2.5 py-1 text-[11px] font-medium text-foreground">
                       ✈ {offer.aircraft}
+                    </span>
+                  ) : null}
+                  {offer.emissionsKg ? (
+                    <span className="rounded-full bg-card-2 px-2.5 py-1 text-[11px] font-medium text-foreground">
+                      🌱 {offer.emissionsKg}kg CO₂
                     </span>
                   ) : null}
                   {offer.cabin ? (

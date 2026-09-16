@@ -28,7 +28,18 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
     <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-[0_4px_12px_rgba(0,0,0,0.25)]">
       <div className="flex items-center justify-between">
 <div className="flex items-center gap-2">
-          <Identicon seed={`${offer.airlineCode}${offer.flightNumber}`} size={36} />
+          {offer.airlineLogo ? (
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-1.5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={offer.airlineLogo}
+                alt={offer.airline}
+                className="h-full w-full object-contain"
+              />
+            </span>
+          ) : (
+            <Identicon seed={`${offer.airlineCode}${offer.flightNumber}`} size={36} />
+          )}
           <div className="flex flex-col">
             <span className="text-[13px] font-semibold leading-4 text-foreground">
               {offer.airline}
@@ -52,11 +63,14 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
       </div>
 
       <div className="flex items-center justify-between">
-        <div className="flex flex-col">
+<div className="flex flex-col">
           <span className="text-[18px] font-bold leading-6 text-foreground">
             {offer.depTime}
           </span>
-          <span className="text-[12px] text-muted">{offer.origin}</span>
+          <span className="text-[12px] text-muted">
+            {offer.origin}
+            {offer.originAirport ? ` · ${offer.originAirport}` : ""}
+          </span>
         </div>
         <div className="flex flex-1 flex-col items-center gap-1 px-4">
           <span className="text-[11px] text-muted">{offer.duration}</span>
@@ -71,11 +85,14 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
             {offer.stops}
           </span>
         </div>
-        <div className="flex flex-col items-end">
+<div className="flex flex-col items-end">
           <span className="text-[18px] font-bold leading-6 text-foreground">
             {offer.arrTime}
           </span>
-          <span className="text-[12px] text-muted">{offer.destination}</span>
+          <span className="text-[12px] text-muted">
+            {offer.destination}
+            {offer.destinationAirport ? ` · ${offer.destinationAirport}` : ""}
+          </span>
         </div>
       </div>
 

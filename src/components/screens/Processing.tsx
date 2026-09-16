@@ -85,6 +85,7 @@ export default function Processing() {
         from: payer,
         nimiqAddress: state.nimiqAddress,
         selectedServiceIds: flow.selectedServiceIds ?? [],
+        passengerIds: flow.offer?.passengerIds ?? [],
         passengers: (
           flow.passengersList ??
           (flow.passenger ? [flow.passenger] : [])

@@ -44,6 +44,7 @@ export type NormalizedFlight = {
   id: string;
   airline: string;
   airlineCode: string;
+  airlineLogo?: string;
   flightNumber: string;
   price: number;
   currency: string;
@@ -53,11 +54,18 @@ export type NormalizedFlight = {
   arrTime: string;
   origin: string;
   destination: string;
+  originAirport?: string;
+  destinationAirport?: string;
+  originCity?: string;
+  destinationCity?: string;
   depDate: string;
   arrDate: string;
   duration: string;
   stops: string;
   direct: boolean;
+  emissionsKg?: string;
+  expiresAt?: string;
+  passengerIds: string[];
   services: Array<{
     id: string;
     name: string;
@@ -120,10 +128,16 @@ export async function searchFlights(
     const tax = testPrice(Number(offer.tax_amount ?? offer.taxes?.[0]?.amount ?? 0));
     const total = testPrice(Number(offer.total_amount ?? 0));
     const stopsCount = (slice.segments?.length ?? 1) - 1;
+    const owner = offer.owner ?? seg.marketing_carrier ?? {};
     return {
       id: offer.id,
       airline: seg.operating_carrier?.name ?? seg.marketing_carrier?.name ?? "",
       airlineCode: seg.marketing_carrier?.iata_code ?? "",
+      airlineLogo:
+        owner.logo_symbol_url ??
+        owner.logo_lockup_url ??
+        seg.marketing_carrier?.logo_symbol_url ??
+        undefined,
       flightNumber: seg.marketing_carrier_flight_number ?? "",
       price: total,
       currency: offer.total_currency ?? "USD",
@@ -133,11 +147,18 @@ export async function searchFlights(
       arrTime: fmt24(seg.arriving_at),
       origin: seg.origin?.iata_code ?? fallbackOrigin,
       destination: seg.destination?.iata_code ?? fallbackDestination,
+      originAirport: seg.origin?.name ?? undefined,
+      destinationAirport: seg.destination?.name ?? undefined,
+      originCity: seg.origin?.city_name ?? slice.origin?.city_name ?? undefined,
+      destinationCity:
+        seg.destination?.city_name ?? slice.destination?.city_name ?? undefined,
       depDate: (seg.departing_at ?? "").slice(0, 10),
       arrDate: (seg.arriving_at ?? "").slice(0, 10),
       duration: formatDuration(slice.duration),
       stops: stopsCount === 0 ? "Direct" : `${stopsCount} Stop${stopsCount > 1 ? "s" : ""}`,
       direct: stopsCount === 0,
+      emissionsKg: offer.total_emissions_kg ?? undefined,
+      expiresAt: offer.expires_at ?? undefined,
       aircraft: seg.aircraft?.name ?? seg.aircraft?.code ?? "",
       cabin: offer.passengers?.[0]?.cabin_class_marketing ?? "Economy",
       seatsRemaining: Number(offer.seats_remaining ?? 0),
@@ -145,6 +166,9 @@ export async function searchFlights(
       totalBaggages: Number(offer.total_baggages ?? 0),
       partialRefundable: Boolean(offer.partial_refundable),
       partialChangeable: Boolean(offer.partial_changeable),
+      passengerIds: (offer.passengers ?? [])
+        .map((p: any) => p.id)
+        .filter(Boolean),
       services: (offer.available_services ?? []).map((s: any) => ({
         id: s.id,
         name: s.name,
@@ -216,6 +240,7 @@ export async function createFlightOrder({
   chain,
   customerUserId,
   services,
+  passengerIds,
 }: {
   offerId: string;
   passengers: CreateOrderPassenger[];
@@ -225,17 +250,35 @@ export async function createFlightOrder({
   chain?: string;
   customerUserId?: string;
   services?: string[];
+  passengerIds?: string[];
 }) {
   if (!duffelEnabled()) return null;
   const duffel = getDuffel();
   const cardId = process.env.DUFFEL_CARD_ID;
+  // The balance must exactly match the order total. Deriving it from the
+  // client amount can drift by cents when test pricing is enabled, so read
+  // the offer's real total (plus selected services) server-side instead.
+  let paymentTotal = realPrice(amount);
+  try {
+    const offer = await getFlightOffer(offerId);
+    if (offer) {
+      const base = Number(offer.total_amount ?? 0);
+      const svc = (offer.available_services ?? [])
+        .filter((s: any) => services?.includes(s.id))
+        .reduce((sum: number, s: any) => sum + Number(s.total_amount ?? 0), 0);
+      if (base > 0) paymentTotal = base + svc;
+    }
+  } catch {
+    // fall back to the client amount
+  }
   const payments: any[] = cardId
     ? [{ type: "card", card_id: cardId }]
     : [
         {
           type: "balance",
           currency,
-          amount: String(Math.round(realPrice(amount) * 100)),
+          // Balance payment amount is in major units (e.g. "329.61"), not cents.
+          amount: (Math.round(paymentTotal * 100) / 100).toFixed(2),
         },
       ];
   const { data } = await duffel.orders.create({
@@ -247,8 +290,10 @@ export async function createFlightOrder({
     ...(services?.length
       ? { services: services.map((id) => ({ id, quantity: 1 })) }
       : {}),
-    passengers: passengers.map((p) => ({
-      id: crypto.randomUUID(),
+    passengers: passengers.map((p, i) => ({
+      // Duffel requires the passenger id to reference the offer request's
+      // passenger record (pas_…), not an arbitrary UUID.
+      id: passengerIds?.[i] ?? crypto.randomUUID(),
       ...(customerUserId ? { user_id: customerUserId } : {}),
       given_name: p.given_name,
       family_name: p.family_name,

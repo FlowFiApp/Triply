@@ -128,7 +128,18 @@ useEffect(() => {
               <div className="flex flex-col gap-4 p-[18px]">
                 <div className="flex items-center justify-between">
 <div className="flex items-center gap-2">
-                    <Identicon seed={`${order.airlineCode}${order.flightNumber}`} size={24} />
+                    {order.airlineLogo ? (
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded bg-white p-0.5">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={order.airlineLogo}
+                          alt={order.airline}
+                          className="h-full w-full object-contain"
+                        />
+                      </span>
+                    ) : (
+                      <Identicon seed={`${order.airlineCode}${order.flightNumber}`} size={24} />
+                    )}
                     <span className="text-[14px] font-bold text-foreground">
                       {order.airline}
                     </span>
@@ -139,11 +150,14 @@ useEffect(() => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <div className="flex flex-col gap-1">
+<div className="flex flex-col gap-1">
                     <span className="text-[28px] font-extrabold leading-[37px] text-foreground">
                       {order.depCode}
                     </span>
-                    <span className="text-[12px] text-muted">{order.depCity}</span>
+                    <span className="text-[12px] text-muted">
+                      {order.depCity}
+                      {order.depAirport ? ` · ${order.depAirport}` : ""}
+                    </span>
                   </div>
                   <div className="flex flex-col items-center">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -158,11 +172,14 @@ useEffect(() => {
                     </svg>
                     <span className="text-[10px] text-muted">{order.duration}</span>
                   </div>
-                  <div className="flex flex-col items-end gap-1">
+<div className="flex flex-col items-end gap-1">
                     <span className="text-[28px] font-extrabold leading-[37px] text-foreground">
                       {order.arrCode}
                     </span>
-                    <span className="text-[12px] text-muted">{order.arrCity}</span>
+                    <span className="text-[12px] text-muted">
+                      {order.arrCity}
+                      {order.arrAirport ? ` · ${order.arrAirport}` : ""}
+                    </span>
                   </div>
                 </div>
 
