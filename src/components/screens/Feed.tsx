@@ -18,6 +18,7 @@ import { BottomTabBar, MobileShell } from "@/components/shell";
 import Identicon from "@/components/ui/identicon";
 import { SkeletonRows } from "@/components/ui/feedback";
 import { Sheet } from "@/components/ui";
+import { ProgressButton } from "@/components/ui/progress-button";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/css";
@@ -250,13 +251,15 @@ function CommentsSheet({
             placeholder="Add a comment..."
             className="w-full bg-transparent text-[16px] text-foreground outline-none placeholder:text-muted"
           />
-          <button
-            onClick={submit}
-            disabled={commentMoment.isPending || !text.trim()}
+          <ProgressButton
+            onAction={submit}
+            busy={commentMoment.isPending}
+            busyLabel="Posting…"
+            disabled={!text.trim()}
             className="shrink-0 text-[13px] font-bold text-accent-2 disabled:opacity-40"
           >
             Post
-          </button>
+          </ProgressButton>
         </div>
       }
     >

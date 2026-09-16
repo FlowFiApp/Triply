@@ -18,6 +18,7 @@ import {
   MobileShell,
 } from "@/components/shell";
 import Identicon from "@/components/ui/identicon";
+import { ProgressButton } from "@/components/ui/progress-button";
 import { useWalletState } from "@/lib/wallet-state";
 import { usePoints } from "@/lib/points";
 import { useToast } from "@/lib/toast";
@@ -164,8 +165,9 @@ export default function Profile() {
               address={state.evmAddress}
               isNimiq={false}
             />
-            <button
-              onClick={handleWalletAction}
+            <ProgressButton
+              onAction={handleWalletAction}
+              busyLabel="Connecting…"
               className={`flex h-10 items-center justify-center gap-1.5 rounded-xl border ${
                 signedIn
                   ? "border-border bg-card-2 text-foreground"
@@ -174,7 +176,7 @@ export default function Profile() {
             >
               <Wallet size={15} />
               {signedIn ? "Sign Out" : "Sign In with Nimiq"}
-            </button>
+            </ProgressButton>
           </div>
 
           <div className="flex flex-col gap-3 px-4 py-4">

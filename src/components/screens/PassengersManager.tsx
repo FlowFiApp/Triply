@@ -6,6 +6,7 @@ import { ChevronLeft, Pencil, Plus, Trash2, UserRound } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { Sheet } from "@/components/ui";
 import { AuthActionButton } from "@/components/ui/auth-action";
+import { ProgressButton } from "@/components/ui/progress-button";
 import PhoneInput from "@/components/ui/phone-input";
 import { SkeletonRows } from "@/components/ui/feedback";
 import { useToast } from "@/lib/toast";
@@ -160,13 +161,13 @@ export default function PassengersManager() {
                   >
                     <Pencil size={14} />
                   </button>
-                  <button
-                    onClick={() => remove(p.id)}
-                    aria-label="Delete passenger"
+                  <ProgressButton
+                    onAction={() => remove(p.id)}
+                    busy={deletePassenger.isPending}
                     className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card-2 text-red-500"
                   >
                     <Trash2 size={14} />
-                  </button>
+                  </ProgressButton>
                 </div>
               </div>
             ))
@@ -180,6 +181,7 @@ export default function PassengersManager() {
         footer={
           <AuthActionButton
             onAction={submit}
+            busyLabel="Saving…"
             disabled={savePassenger.isPending}
             className="tap flex h-[48px] w-full items-center justify-center rounded-xl bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
           >

@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { Camera, Loader2, MapPin, X } from "lucide-react";
+import { Camera, MapPin, X } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/css";
@@ -105,16 +105,12 @@ export default function ShareMomentSheet({
           </div>
           <AuthActionButton
             onAction={post}
+            busy={posting}
+            busyLabel="Posting…"
             disabled={posting || images.length < 1}
             className="tap flex h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
           >
-            {posting ? (
-              <>
-                <Loader2 size={18} className="animate-spin" /> Posting…
-              </>
-            ) : (
-              "Post Moment"
-            )}
+            Post Moment
           </AuthActionButton>
         </>
       }

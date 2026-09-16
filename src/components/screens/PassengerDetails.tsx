@@ -335,6 +335,7 @@ export default function PassengerDetails() {
         <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-4 pb-[calc(30px+env(safe-area-inset-bottom))] pt-3">
           <AuthActionButton
             onAction={continueTo}
+            busyLabel="Continuing…"
             className="tap flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"
           >
             Continue to Checkout

@@ -273,12 +273,12 @@ export default function Web3Checkout() {
           </div>
           <AuthActionButton
             disabled={connecting || !treasuryOk}
+            busy={connecting}
+            busyLabel="Processing…"
             onAction={() => setSheetOpen(true)}
             className="tap flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-60"
           >
-            {connecting ? (
-              "Processing…"
-            ) : state.evmAddress ? (
+            {state.evmAddress ? (
               <>
                 <Wallet size={18} />
                 Pay <UsdtAmount value={amount} />

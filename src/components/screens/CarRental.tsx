@@ -7,7 +7,6 @@ import Image from "next/image";
 import {
   Calendar,
   Check,
-  Loader2,
   Map as MapIcon,
   MapPin,
   Minus,
@@ -30,6 +29,7 @@ import PointsChip from "@/components/ui/points-chip";
 import LocationMapSheet from "@/components/ui/location-map-sheet";
 import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
 import { AuthActionButton } from "@/components/ui/auth-action";
+import { ProgressButton } from "@/components/ui/progress-button";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import ImageCarousel from "@/components/ui/image-carousel";
 import DateRangePicker, {
@@ -654,16 +654,12 @@ export function CarDetails() {
               haptic();
               book();
             }}
+            busy={booking}
+            busyLabel="Booking…"
             disabled={booking}
             className="tap mt-3 flex h-[49px] w-full items-center justify-center gap-2 rounded-xl border border-accent-2 bg-accent text-[16px] font-bold text-accent-2 disabled:opacity-60"
           >
-            {booking ? (
-              <>
-                <Loader2 size={18} className="animate-spin" /> Booking…
-              </>
-            ) : (
-              "Book This Car"
-            )}
+            Book This Car
           </AuthActionButton>
         </div>
       </div>
@@ -873,19 +869,21 @@ export function CarConfirmed() {
               >
                 Contact Supplier
               </button>
-              <button
-                onClick={shareBooking}
+              <ProgressButton
+                onAction={shareBooking}
+                busyLabel="Sharing…"
                 className="flex h-[43px] w-full items-center justify-center rounded-xl border border-border bg-card text-[14px] font-bold text-foreground"
               >
                 Share Booking
-              </button>
-              <button
-                onClick={cancelBooking}
-                disabled={cancelling}
+              </ProgressButton>
+              <ProgressButton
+                onAction={cancelBooking}
+                busy={cancelling}
+                busyLabel="Cancelling…"
                 className="flex h-[43px] w-full items-center justify-center rounded-xl border border-red-500/40 bg-red-500/10 text-[14px] font-bold text-red-500"
               >
-                {cancelling ? "Cancelling…" : "Cancel Booking"}
-              </button>
+                Cancel Booking
+              </ProgressButton>
             </div>
           </div>
         </div>

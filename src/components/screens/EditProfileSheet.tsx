@@ -67,10 +67,12 @@ export default function EditProfileSheet({
       footer={
         <AuthActionButton
           onAction={save}
+          busy={saving}
+          busyLabel="Saving…"
           disabled={saving}
           className="tap flex h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
         >
-          {saving ? <Loader2 size={18} className="animate-spin" /> : null} Save Profile
+          Save Profile
         </AuthActionButton>
       }
     >

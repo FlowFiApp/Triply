@@ -9,6 +9,7 @@ import { BottomTabBar, MobileShell } from "@/components/shell";
 import { EmptyState, SkeletonRows, Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import { Sheet } from "@/components/ui";
+import { ProgressButton } from "@/components/ui/progress-button";
 import AnimatedTabs from "@/components/ui/animated-tabs";
 import PointsChip from "@/components/ui/points-chip";
 import { useFlow } from "@/lib/flow-context";
@@ -125,22 +126,24 @@ function BookingCard({
             </button>
           ) : null}
           {isFlight && active && onChange ? (
-            <button
-              onClick={onChange}
-              disabled={changing}
+            <ProgressButton
+              onAction={onChange}
+              busy={changing}
+              busyLabel="…"
               className="flex h-[37px] items-center rounded-lg border border-border bg-card-2 px-4 text-[13px] font-semibold text-foreground"
             >
-              {changing ? "…" : "Change Flight"}
-            </button>
+              Change Flight
+            </ProgressButton>
           ) : null}
           {onCancel ? (
-            <button
-              onClick={onCancel}
-              disabled={cancelling}
+            <ProgressButton
+              onAction={onCancel}
+              busy={cancelling}
+              busyLabel="Cancelling…"
               className="flex h-[37px] items-center rounded-lg border border-red-500/40 bg-red-500/10 px-4 text-[13px] font-semibold text-red-500"
             >
-              {cancelling ? "…" : "Cancel"}
-            </button>
+              Cancel
+            </ProgressButton>
           ) : null}
         </div>
       </div>
@@ -412,13 +415,15 @@ export default function MyTrips() {
                   className="h-[43px] rounded-[10px] border border-border bg-card px-3 text-[16px] font-semibold text-foreground outline-none"
                 />
               </label>
-              <button
-                disabled={!changeDate || changeLoading}
-                onClick={submitChange}
+              <ProgressButton
+                disabled={!changeDate}
+                busy={changeLoading}
+                busyLabel="Searching…"
+                onAction={submitChange}
                 className="tap flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
               >
-                {changeLoading ? "Searching…" : "Find new flights"}
-              </button>
+                Find new flights
+              </ProgressButton>
             </div>
 
             {changeOffers.length > 0 ? (

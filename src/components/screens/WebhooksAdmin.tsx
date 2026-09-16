@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { EmptyState, SkeletonRows } from "@/components/ui/feedback";
+import { ProgressButton } from "@/components/ui/progress-button";
 import { useToast } from "@/lib/toast";
 
 type Delivery = {
@@ -133,13 +134,14 @@ export default function WebhooksAdmin() {
                             {d.event_id} · {d.created_at?.slice(0, 10)}
                           </span>
                         </span>
-                        <button
-                          onClick={() => redeliver(d.event_id)}
-                          disabled={redelivering === d.event_id}
+                        <ProgressButton
+                          onAction={() => redeliver(d.event_id)}
+                          busy={redelivering === d.event_id}
+                          busyLabel="Retrying…"
                           className="flex h-8 items-center gap-1 rounded-full border border-border bg-card-2 px-3 text-[11px] font-bold text-foreground disabled:opacity-50"
                         >
                           <RefreshCw size={12} /> Retry
-                        </button>
+                        </ProgressButton>
                       </div>
                     ))}
                   </div>

@@ -7,6 +7,7 @@ import { BottomTabBar, MobileShell } from "@/components/shell";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import BookingQR from "@/components/ui/booking-qr";
 import Identicon from "@/components/ui/identicon";
+import { ProgressButton } from "@/components/ui/progress-button";
 import { useFlow } from "@/lib/flow-context";
 import { useToast } from "@/lib/toast";
 import { share } from "@/lib/share";
@@ -252,13 +253,14 @@ useEffect(() => {
                 <Download size={14} className="text-accent-fg" />
                 Download PDF
               </button>
-              <button
-                onClick={handleShare}
+              <ProgressButton
+                onAction={handleShare}
+                busyLabel="Sharing…"
                 className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-card text-[12px] font-semibold text-foreground"
               >
                 <Share2 size={14} className="text-accent-fg" />
                 Share
-              </button>
+              </ProgressButton>
             </div>
 
             <div className="flex flex-col gap-3">

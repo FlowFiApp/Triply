@@ -7,6 +7,7 @@ import { Luggage, MonitorPlay } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { FareRulesSheet } from "@/components/screens/sheets";
 import SeatMapSheet from "@/components/screens/SeatMapSheet";
+import { ProgressButton } from "@/components/ui/progress-button";
 import Identicon from "@/components/ui/identicon";
 import { Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
@@ -341,12 +342,13 @@ export default function FlightDetails() {
               <NimiqIcon size={13} />
             </span>
           </div>
-          <button
-            onClick={proceed}
+          <ProgressButton
+            onAction={proceed}
+            busyLabel="Continuing…"
             className="tap mt-3 flex h-12 w-full items-center justify-center rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2"
           >
             Proceed to Passenger Details
-          </button>
+          </ProgressButton>
         </div>
       </div>
 

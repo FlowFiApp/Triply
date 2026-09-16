@@ -54,6 +54,7 @@ export default function RedeemSheet({
       footer={
         <AuthActionButton
           onAction={onRedeem}
+          busyLabel="Redeeming…"
           disabled={available <= 0}
           className="tap flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-50"
         >

@@ -2,43 +2,48 @@
 
 import { useState, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { Wallet } from "lucide-react";
+import { HiveSpinner } from "@/components/ui/hive-spinner";
 import { useWalletState } from "@/lib/wallet-state";
 import { useToast } from "@/lib/toast";
 
 /**
  * A mutation CTA that requires a signed-in Nimiq identity. When the user is
  * not authenticated, the button shows "Connect Wallet" and triggers the sign-in
- * first; once authenticated it flips to the real action.
+ * first; once authenticated it flips to the real action. While the action (or
+ * the identity connect) is in flight, a spinner is shown instead of the label.
  */
 export function AuthActionButton({
   onAction,
   children,
   className,
   disabled = false,
+  busy = false,
   busyLabel = "Connecting…",
 }: {
   onAction: () => void | Promise<void>;
   children: ReactNode;
   className?: string;
   disabled?: boolean;
+  busy?: boolean;
   busyLabel?: string;
 } & Pick<ButtonHTMLAttributes<HTMLButtonElement>, "aria-label">) {
   const { authState, connectIdentity } = useWalletState();
   const { toast } = useToast();
-  const [busy, setBusy] = useState(false);
+  const [connecting, setConnecting] = useState(false);
   const authenticated = authState === "authenticated";
+  const isLoading = connecting || busy;
 
   const handle = async () => {
-    if (busy) return;
+    if (isLoading) return;
     if (!authenticated) {
-      setBusy(true);
+      setConnecting(true);
       try {
         const result = await connectIdentity();
         if (result.authenticated) return;
       } catch {
         // fall through
       } finally {
-        setBusy(false);
+        setConnecting(false);
       }
       toast(
         "info",
@@ -46,18 +51,26 @@ export function AuthActionButton({
       );
       return;
     }
-    await onAction();
+    setConnecting(true);
+    try {
+      await onAction();
+    } finally {
+      setConnecting(false);
+    }
   };
 
   return (
     <button
       onClick={handle}
-      disabled={disabled || busy}
+      disabled={disabled || isLoading}
       className={className}
       aria-label={authenticated ? undefined : "Connect Wallet"}
     >
-      {busy ? (
-        busyLabel
+      {isLoading ? (
+        <>
+          <HiveSpinner size={18} />
+          <span>{busyLabel}</span>
+        </>
       ) : !authenticated ? (
         <>
           <Wallet size={16} />
