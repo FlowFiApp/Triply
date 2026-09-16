@@ -63,16 +63,10 @@ const KIND_META = {
 
 function BookingCard({
   item,
-  onCancel,
-  onChange,
-  cancelling,
-  changing,
+  onActions,
 }: {
   item: BookingItem;
-  onCancel?: () => void;
-  onChange?: () => void;
-  cancelling?: boolean;
-  changing?: boolean;
+  onActions: () => void;
 }) {
   const router = useRouter();
   const { setFlow } = useFlow();
@@ -80,7 +74,6 @@ function BookingCard({
   const Icon = meta.icon;
   const isFlight = item.kind === "flight";
   const active = ACTIVE.test(item.status);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const openTicket = () => {
     setFlow({ orderId: item.id });
@@ -119,7 +112,7 @@ function BookingCard({
         </button>
         <StatusPill status={item.status} />
         <button
-          onClick={() => setMenuOpen(true)}
+          onClick={onActions}
           aria-label="Booking actions"
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted"
         >
@@ -159,19 +152,6 @@ function BookingCard({
           </button>
         ) : null}
       </div>
-
-      <BookingActionsSheet
-        open={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        item={item}
-        active={active}
-        onView={openDetails}
-        onBoardingPass={openTicket}
-        onChange={onChange}
-        changing={changing}
-        onCancel={onCancel}
-        cancelling={cancelling}
-      />
     </div>
   );
 }
@@ -180,7 +160,6 @@ function BookingActionsSheet({
   open,
   onClose,
   item,
-  active,
   onView,
   onBoardingPass,
   onChange,
@@ -190,8 +169,7 @@ function BookingActionsSheet({
 }: {
   open: boolean;
   onClose: () => void;
-  item: BookingItem;
-  active: boolean;
+  item: BookingItem | null;
   onView: () => void;
   onBoardingPass: () => void;
   onChange?: () => void;
@@ -199,7 +177,9 @@ function BookingActionsSheet({
   onCancel?: () => void;
   cancelling?: boolean;
 }) {
+  if (!item) return null;
   const isFlight = item.kind === "flight";
+  const active = ACTIVE.test(item.status);
   const canChange = isFlight && (item.actions?.includes("change") ?? false);
   const canCancel = isFlight ? item.actions?.includes("cancel") ?? false : true;
   return (
@@ -271,6 +251,8 @@ function BookingActionsSheet({
 }
 
 export default function MyTrips() {
+  const router = useRouter();
+  const { setFlow } = useFlow();
   const email = readFlow().passenger?.email ?? "";
   const qc = useQueryClient();
   const { data, isLoading, error } = useBookings(email);
@@ -279,6 +261,7 @@ export default function MyTrips() {
   const [lookedUp, setLookedUp] = useState<BookingItem | null>(null);
   const [cancelling, setCancelling] = useState<string | null>(null);
   const [changing, setChanging] = useState<BookingItem | null>(null);
+  const [actionsFor, setActionsFor] = useState<BookingItem | null>(null);
   const [cancelQuote, setCancelQuote] = useState<{
     item: BookingItem;
     quote: {
@@ -553,10 +536,7 @@ export default function MyTrips() {
                 >
                   <BookingCard
                     item={b}
-                    onChange={b.kind === "flight" ? () => startChange(b) : undefined}
-                    onCancel={() => cancel(b)}
-                    cancelling={cancelling === b.id}
-                    changing={changing?.id === b.id}
+                    onActions={() => setActionsFor(b)}
                   />
                 </div>
               ))}
@@ -684,6 +664,29 @@ export default function MyTrips() {
           </>
         ) : null}
       </Sheet>
+
+      <BookingActionsSheet
+        open={Boolean(actionsFor)}
+        onClose={() => setActionsFor(null)}
+        item={actionsFor}
+        onView={() => {
+          setActionsFor(null);
+          if (actionsFor?.kind === "flight") router.push(`/trip/${actionsFor.id}`);
+        }}
+        onBoardingPass={() => {
+          setActionsFor(null);
+          if (actionsFor) {
+            setFlow({ orderId: actionsFor.id });
+            router.push("/ticket");
+          }
+        }}
+        onChange={
+          actionsFor?.kind === "flight" ? () => startChange(actionsFor) : undefined
+        }
+        changing={changing?.id === actionsFor?.id}
+        onCancel={actionsFor ? () => cancel(actionsFor) : undefined}
+        cancelling={cancelling === actionsFor?.id}
+      />
     </MobileShell>
   );
 }

@@ -60,8 +60,8 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
-<div className="flex flex-col">
+<div className="flex items-stretch justify-between">
+        <div className="flex min-w-0 flex-col text-left">
           <span className="text-[18px] font-bold leading-6 text-foreground">
             {offer.depTime}
           </span>
@@ -70,20 +70,22 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
             {offer.originAirport ? ` · ${offer.originAirport}` : ""}
           </span>
         </div>
-        <div className="flex flex-1 flex-col items-center gap-1 px-4">
+        <div className="flex flex-1 flex-col items-center gap-1 px-3">
           <span className="text-[11px] text-muted">{offer.duration}</span>
-          <div className="flex w-full items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-muted" />
+          <div className="flex w-full items-center">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted" />
             <span className="h-px flex-1 bg-border" />
-            <Plane size={12} className="text-accent-fg" />
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-2/20">
+              <Plane size={12} className="rotate-90 text-accent-fg" />
+            </span>
             <span className="h-px flex-1 bg-border" />
-            <span className="h-1.5 w-1.5 rounded-full bg-muted" />
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted" />
           </div>
           <span className="text-[10px] font-semibold text-accent-fg">
             {offer.stops}
           </span>
         </div>
-<div className="flex flex-col items-end">
+        <div className="flex min-w-0 flex-col items-end text-right">
           <span className="text-[18px] font-bold leading-6 text-foreground">
             {offer.arrTime}
           </span>
