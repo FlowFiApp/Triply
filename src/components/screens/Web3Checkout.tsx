@@ -13,7 +13,7 @@ import { NimiqIcon } from "@/components/ui/Nimiq";
 import { useToast } from "@/lib/toast";
 import { useWalletState } from "@/lib/wallet-state";
 import { useFlow } from "@/lib/flow-context";
-import { CHAINS } from "@/lib/wallet";
+import { CHAINS, estimateGasInPol } from "@/lib/wallet";
 import { clientConfig } from "@/lib/config";
 import { copyNimiqAddress, copyText } from "@/lib/nimiq";
 
@@ -94,6 +94,7 @@ export default function Web3Checkout() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [seconds, setSeconds] = useState(14 * 60 + 59);
+  const [gasPol, setGasPol] = useState<number | null>(null);
   const { toast } = useToast();
   const { state, connectEvm, disconnect, pay } = useWalletState();
   const { flow, setFlow } = useFlow();
@@ -111,6 +112,20 @@ export default function Web3Checkout() {
   const base = offer ? offer.price - offer.taxAmount : amount;
   const taxes = offer?.taxAmount ?? 0;
   const extras = Math.max(0, amount - (offer?.price ?? 0));
+
+  // Estimate the network fee (in POL) once the wallet is connected.
+  useEffect(() => {
+    if (!state.evmAddress) return;
+    let cancelled = false;
+    estimateGasInPol({ from: state.evmAddress, amount })
+      .then((pol) => {
+        if (!cancelled) setGasPol(pol);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [state.evmAddress, amount]);
 
   const mm = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 
@@ -237,14 +252,23 @@ export default function Web3Checkout() {
                     Pay with Crypto Wallet
                   </span>
                 </span>
-                <span className="text-[10px] font-bold text-accent-fg">
-                  Fast &amp; Gasless
-                </span>
-              </span>
-              <span className="flex items-center gap-2 pl-7">
                 <span className="flex h-[21px] items-center rounded-md border border-border bg-card-2 px-2 text-[10px] font-semibold text-accent-fg">
                   Polygon
                 </span>
+              </span>
+              <span className="flex items-center gap-2 pl-7">
+                {state.evmAddress && gasPol !== null ? (
+                  <span className="text-[11px] text-muted">
+                    Network fee ≈{" "}
+                    <span className="font-semibold text-foreground">
+                      {gasPol.toFixed(5)} POL
+                    </span>
+                  </span>
+                ) : state.evmAddress ? (
+                  <span className="text-[11px] text-muted">
+                    Estimating network fee…
+                  </span>
+                ) : null}
               </span>
             </div>
 

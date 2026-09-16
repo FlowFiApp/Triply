@@ -108,6 +108,38 @@ function padded(address: string): string {
   return "0x" + address.toLowerCase().replace(/^0x/, "").padStart(64, "0");
 }
 
+/**
+ * Estimates the network fee (in POL, Polygon's native token) for the USDT
+ * transfer: gas units × gas price, converted from wei to POL.
+ */
+export async function estimateGasInPol({
+  from,
+  amount,
+}: {
+  from: string;
+  amount: number;
+}): Promise<number | null> {
+  const provider = getEvmProvider();
+  if (!provider) return null;
+  const chain = CHAINS.polygon;
+  if (!chain.usdt || !chain.decimals) return null;
+  try {
+    const treasury = treasuryAddress();
+    const data = encodeUsdtTransfer(treasury, amount, chain.decimals);
+    const gas = (await provider.request({
+      method: "eth_estimateGas",
+      params: [{ from, to: chain.usdt, data, value: "0x0" }],
+    })) as string;
+    const gasPrice = (await provider.request({
+      method: "eth_gasPrice",
+    })) as string;
+    const wei = BigInt(gas) * BigInt(gasPrice);
+    return Number(wei) / 1e18;
+  } catch {
+    return null;
+  }
+}
+
 async function switchToChain(provider: Eip1193, chain: ChainConfig) {
   if (!chain.chainIdHex) throw new Error("Chain not configured");
   try {
