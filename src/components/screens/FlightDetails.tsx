@@ -95,6 +95,8 @@ export default function FlightDetails() {
       offer: { ...offer, services: addons },
       amount: total,
       passengers: passengerCount,
+      selectedServiceIds: Object.keys(selected).filter((k) => selected[k]),
+      seat: chosenSeat ?? undefined,
     });
     router.push("/passengers");
   };

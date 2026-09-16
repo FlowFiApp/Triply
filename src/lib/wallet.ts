@@ -77,6 +77,33 @@ function parseHexAmount(hex: string): bigint {
   }
 }
 
+/**
+ * Reads an ERC-20 balance with retries. Providers (esp. after a network
+ * switch) can answer the first `eth_call` with an empty/zero hex; returning
+ * null lets callers distinguish "couldn't read" from a genuine 0 balance.
+ */
+async function readUsdtBalance(
+  provider: Eip1193,
+  from: string,
+  usdt: string,
+): Promise<bigint | null> {
+  for (let i = 0; i < 4; i++) {
+    try {
+      const raw = (await provider.request({
+        method: "eth_call",
+        params: [{ to: usdt, data: encodeBalanceOf(from) }, "latest"],
+      })) as string;
+      if (raw && raw !== "0x" && raw !== "0x0") {
+        return parseHexAmount(raw);
+      }
+    } catch {
+      // provider not ready — retry
+    }
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  return null;
+}
+
 function padded(address: string): string {
   return "0x" + address.toLowerCase().replace(/^0x/, "").padStart(64, "0");
 }
@@ -209,15 +236,20 @@ export async function payUsdt({
     throw new Error(`Wrong network: expected ${chain.name}.`);
   }
 
-  // Check the user has enough USDT.
-  const balance = (await provider.request({
-    method: "eth_call",
-    params: [{ to: chain.usdt, data: encodeBalanceOf(from) }, "latest"],
-  })) as string;
-  const balanceBig = parseHexAmount(balance);
+  // The wallet provider can return an empty/zero balance for the first read
+  // right after switching networks — retry so a genuine zero (or the real
+  // balance) is what we compare against.
   const needed = BigInt(Math.round(amount * 10 ** chain.decimals));
-  if (balanceBig < needed) {
-    throw new Error(`Insufficient USDT balance on ${chain.name}.`);
+  const balance = await readUsdtBalance(provider, from, chain.usdt);
+  if (balance === null) {
+    throw new Error(
+      `Could not read your USDT balance on ${chain.name}. Confirm the network switch and try again.`,
+    );
+  }
+  if (balance < needed) {
+    throw new Error(
+      `Insufficient USDT balance on ${chain.name} — you need ${amount} USDT.`,
+    );
   }
 
   const data = encodeUsdtTransfer(treasury, amount, chain.decimals);

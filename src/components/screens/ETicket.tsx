@@ -12,6 +12,7 @@ import { useFlow } from "@/lib/flow-context";
 import { useToast } from "@/lib/toast";
 import { share } from "@/lib/share";
 import { downloadIcs } from "@/lib/calendar";
+import { shortHash } from "@/lib/nimiq";
 import { CHAINS } from "@/lib/wallet";
 import type { OrderRecord } from "@/lib/types";
 
@@ -222,7 +223,7 @@ useEffect(() => {
                     target="_blank"
                     className="truncate text-[12px] font-semibold text-accent-fg"
                   >
-                    {txHash}
+{shortHash(txHash)}
                   </Link>
                 </div>
               </div>

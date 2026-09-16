@@ -36,6 +36,13 @@ export function copyNimiqAddress(address?: string): boolean {
   return normalized ? copyText(normalized) : false;
 }
 
+/** Shortens a long hash/address to `0x1234…abcd` for compact display. */
+export function shortHash(value: string, head = 6, tail = 4): string {
+  if (!value) return value;
+  if (value.length <= head + tail + 1) return value;
+  return `${value.slice(0, head)}…${value.slice(-tail)}`;
+}
+
 export function formatAmount(value: number, maxDecimals = 2): string {
   try {
     return new FormattableNumber(String(value)).toString({

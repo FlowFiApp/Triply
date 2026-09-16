@@ -215,6 +215,7 @@ export async function createFlightOrder({
   txHash,
   chain,
   customerUserId,
+  services,
 }: {
   offerId: string;
   passengers: CreateOrderPassenger[];
@@ -223,6 +224,7 @@ export async function createFlightOrder({
   txHash?: string;
   chain?: string;
   customerUserId?: string;
+  services?: string[];
 }) {
   if (!duffelEnabled()) return null;
   const duffel = getDuffel();
@@ -240,6 +242,8 @@ export async function createFlightOrder({
     type: "instant",
     selected_offers: [offerId],
     ...(customerUserId ? { users: [customerUserId] } : {}),
+    // Book the chosen add-ons (baggage, seat) alongside the offer.
+    services: (services ?? []).map((id) => ({ id, quantity: 1 })),
     passengers: passengers.map((p) => ({
       id: crypto.randomUUID(),
       ...(customerUserId ? { user_id: customerUserId } : {}),

@@ -95,6 +95,7 @@ export async function POST(request: Request) {
       txHash: body.txHash,
       chain: body.chain,
       customerUserId: customerUserId ?? undefined,
+      services: Array.isArray(body.selectedServiceIds) ? body.selectedServiceIds : [],
     });
     if (!order) {
       return Response.json({

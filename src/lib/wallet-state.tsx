@@ -51,6 +51,8 @@ export function useWalletState() {
 }
 
 const STORAGE_KEY = "triply-wallet";
+// Set when the user explicitly signs out so we don't re-prompt on next open.
+const AUTO_SKIP_KEY = "triply-skip-auth";
 
 function loadState(): WalletState {
   if (typeof window === "undefined") return { connected: false };
@@ -124,6 +126,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       return { state: { connected: false }, authenticated: false };
     }
     signerRef.current = identity.sign;
+    try {
+      localStorage.removeItem(AUTO_SKIP_KEY);
+    } catch {}
     const next: WalletState = {
       ...loadState(),
       connected: true,
@@ -147,6 +152,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     signerRef.current = null;
     setState({ connected: false });
     setAuthState("unauthenticated");
+    try {
+      localStorage.setItem(AUTO_SKIP_KEY, "1");
+    } catch {}
     void signOut();
   }, []);
 
@@ -165,27 +173,32 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     [state.evmAddress],
   );
 
-  // No auto-connect: the app is fully browsable without a wallet. The Nimiq
-  // identity is only requested when the user explicitly signs in (Profile) or
-  // performs an action that needs it (posting, redeeming, booking).
-  // Silently restore an existing JWT session on open — no wallet prompt.
+  // Auto-connect the Nimiq identity and authenticate on app open. Inside
+  // Nimiq Pay this resolves the signer and reuses an existing JWT session
+  // (no signature prompt) or completes a fresh sign-in. Skipped when the user
+  // explicitly signed out, and a no-op in a plain browser (no Nimiq provider).
   useEffect(() => {
+    if (typeof window === "undefined") return;
     let cancelled = false;
     (async () => {
-      const session = await getSession();
-      if (cancelled || !session.authenticated || !session.address) return;
+      try {
+        if (localStorage.getItem(AUTO_SKIP_KEY) === "1") return;
+      } catch {}
+      const identity = await connectNimiqIdentity();
+      if (cancelled || !identity) return;
+      signerRef.current = identity.sign;
       setState((s) => ({
         ...s,
         connected: true,
-        nimiqAddress: session.address ?? undefined,
+        nimiqAddress: identity.address,
         source: "Nimiq Pay",
       }));
-      setAuthState("authenticated");
+      await runSignIn(identity.address);
     })();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [runSignIn]);
 
   return (
     <WalletContext.Provider

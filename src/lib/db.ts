@@ -70,6 +70,7 @@ export type UserDoc = {
 };
 
 export type RewardDoc = {
+  _id?: ObjectId;
   userId: string;
   type: "earn" | "redeem";
   amountNim: number;
@@ -79,9 +80,10 @@ export type RewardDoc = {
   txHash?: string;
   recipient?: string;
   error?: string;
-  status: "pending" | "sent" | "failed";
+  status: "pending" | "sent" | "failed" | "reversed";
   createdAt: Date;
   updatedAt?: Date;
+  reversedAt?: Date;
 };
 
 export async function getUser(key: string): Promise<UserDoc | null> {
@@ -260,6 +262,40 @@ export async function earnPoints({
     },
   );
   return nim;
+}
+
+/** Finds an earn ledger entry by booking reference or order id. */
+export async function findRewardByRef(ref: string): Promise<RewardDoc | null> {
+  if (!ref) return null;
+  const db = await getDb();
+  return db.collection<RewardDoc>("rewards").findOne({
+    $or: [{ bookingRef: ref }, { orderId: ref }],
+  });
+}
+
+/**
+ * Reverses a credited earn entry (booking cancelled / payment failed).
+ * Idempotent: returns false when no earn entry exists or it is already
+ * reversed, so webhook redeliveries are safe.
+ */
+export async function reversePoints(ref: string): Promise<boolean> {
+  const db = await getDb();
+  const reward = await findRewardByRef(ref);
+  if (!reward || reward.type !== "earn" || reward.status === "reversed") return false;
+  await db.collection<UserDoc>("users").updateOne(
+    { key: reward.userId },
+    {
+      $inc: { "points.earned": -reward.amountNim, "points.available": -reward.amountNim },
+      $set: { updatedAt: new Date() },
+    },
+  );
+  await db.collection<RewardDoc>("rewards").updateOne(
+    { _id: reward._id },
+    {
+      $set: { status: "reversed", reversedAt: new Date(), updatedAt: new Date() },
+    },
+  );
+  return true;
 }
 
 export async function redeemPoints({

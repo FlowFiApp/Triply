@@ -21,6 +21,55 @@ function verify(raw: string, header: string): boolean {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
+// Events that mean a booking fell through — reverse any points already earned.
+const REVERSE_EVENTS = new Set([
+  "order.creation_failed",
+  "air.payment.failed",
+  "air.payment.cancelled",
+  "order_cancellation.created",
+  "order_cancellation.confirmed",
+  "stays.booking_creation_failed",
+  "stays.booking.cancelled",
+  "cars.booking.cancelled",
+]);
+
+// Events that confirm a booking — points are credited synchronously at booking
+// time, so these only act as an idempotent confirmation.
+const SUCCESS_EVENTS = new Set([
+  "order.created",
+  "air.payment.succeeded",
+  "air.payment.pending",
+  "stays.booking.created",
+  "cars.booking.created",
+]);
+
+/** Collects every string value for the given keys, recursively. */
+function collectValues(
+  obj: unknown,
+  keys: string[],
+  acc: string[] = [],
+): string[] {
+  if (Array.isArray(obj)) {
+    obj.forEach((v) => collectValues(v, keys, acc));
+  } else if (obj && typeof obj === "object") {
+    for (const [k, v] of Object.entries(obj)) {
+      if (keys.includes(k) && typeof v === "string") acc.push(v);
+      if (v && typeof v === "object") collectValues(v, keys, acc);
+    }
+  }
+  return acc;
+}
+
+/** Best-effort booking/order identifier from any webhook payload shape. */
+function extractRef(event: Record<string, unknown>): string {
+  const refs = collectValues(event, ["booking_ref", "reference"]);
+  if (refs[0]) return refs[0];
+  const ids = collectValues(event, ["order_id", "booking_id"]);
+  if (ids[0]) return ids[0];
+  const allIds = collectValues(event, ["id"]);
+  return allIds.find((id) => /^(ord|bok)_/i.test(id)) ?? "";
+}
+
 export async function POST(request: Request) {
   const raw = await request.text();
   const signature = request.headers.get("x-duffel-signature") ?? "";
@@ -30,16 +79,33 @@ export async function POST(request: Request) {
     return Response.json({ success: false }, { status: 400 });
   }
 
-  let event: { type?: string; id?: string; idempotency_key?: string } = {};
+  let event: Record<string, unknown> = {};
   try {
     event = JSON.parse(raw);
   } catch {
     // non-JSON payload — ignore
   }
 
-  const type = event?.type ?? "unknown";
+  const type = typeof event?.type === "string" ? event.type : "unknown";
+  const ref = extractRef(event);
+  let reversed = false;
+
+  if (REVERSE_EVENTS.has(type) && ref) {
+    try {
+      const { reversePoints } = await import("@/lib/db");
+      reversed = await reversePoints(ref);
+    } catch (err) {
+      console.error(
+        `duffel webhook: failed to reverse points for ${ref}`,
+        err instanceof Error ? err.message : err,
+      );
+    }
+  } else if (SUCCESS_EVENTS.has(type)) {
+    // Points are credited synchronously at booking time; nothing to add here.
+  }
+
   console.log(
-    `duffel webhook: ${type} event=${event?.id ?? ""} idempotency=${event?.idempotency_key ?? ""}`,
+    `duffel webhook: ${type} event=${String(event?.id ?? "")} ref=${ref} reversed=${reversed}`,
   );
 
   return Response.json({ success: true });
