@@ -57,13 +57,9 @@ You don't just spend with Nimiq — you earn it back on every trip.
 
 ### Builder Story
 
-We noticed a strange gap: millions of people hold crypto and pay for everything with it online — except travel. The biggest travel platforms still demand credit cards, KYC, and bank accounts, which locks out a huge share of the world and forces crypto users to off-ramp into fiat just to book a hotel.
+Millions of people pay for everything with crypto — except travel. OTAs still demand cards, KYC, and bank accounts, forcing crypto users to off-ramp just to book a hotel.
 
-So we built Triply: a travel marketplace where your wallet **is** your account. Search real flights through Duffel's live inventory, book stays and cars, and pay with USDT on Polygon — fully settled on-chain in minutes. No account creation, no KYC, no card required.
-
-We deliberately built it as a Nimiq Mini App to prove the ecosystem can power real-world commerce. Nimiq's identity is the login (a signed message becomes a JWT session), Nimiq is the loyalty backbone (points accrue per booking and reward payouts go out in NIM), and the whole flow behaves natively inside Nimiq Pay on mobile. From search to boarding pass, it's a finished product — not a demo.
-
-The harder it is to move money, the more people need apps like this. We built the app we'd want to fly with.
+So we built Triply: a travel marketplace where your wallet **is** your account. Search real flights through Duffel, book stays and cars, pay with USDT on Polygon, and earn NIM cashback — all settled on-chain in minutes. We built it as a Nimiq Mini App to prove the ecosystem can power real-world commerce: Nimiq identity is the login, Nimiq points are the loyalty loop, and the flow feels native in Nimiq Pay. We built the app we'd want to fly with.
 
 ---
 
