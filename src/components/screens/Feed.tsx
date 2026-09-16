@@ -438,7 +438,7 @@ export default function Feed() {
                 key={m.userId}
                 className="flex w-[58px] shrink-0 flex-col items-center gap-1.5"
               >
-                <span className="rounded-full border-2 border-accent p-0.5">
+                <span className="rounded-full">
                   <Identicon seed={m.userId} size={52} />
                 </span>
                 <span className="w-full truncate text-center text-[11px] text-muted">
