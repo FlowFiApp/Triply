@@ -10,6 +10,7 @@ import { QueryProvider } from "@/lib/query-client";
 import { OfflineBanner } from "@/components/ui/feedback";
 import OnboardingGate from "@/components/OnboardingGate";
 import ConfigBanner from "@/components/ConfigBanner";
+import SandboxBadge from "@/components/SandboxBadge";
 import PageTransition from "@/components/PageTransition";
 import "./globals.css";
 
@@ -40,6 +41,7 @@ export default function RootLayout({
                     <FlowProvider>
                       <OnboardingGate />
                       <ConfigBanner />
+                      <SandboxBadge />
                       <OfflineBanner />
                       <PageTransition>{children}</PageTransition>
                     </FlowProvider>
