@@ -17,9 +17,11 @@ function parseSignature(
     })
     .filter((p) => p.length === 2 && p[0] && p[1]);
   if (!pairs.length) return null;
+  // Duffel signs with `v<N>` where N matches the API version (v1, v2, …).
+  const v = pairs.find(([k]) => /^v\d+$/.test(k))?.[1];
   return {
     t: pairs.find(([k]) => k === "t")?.[1],
-    v1: pairs.find(([k]) => k === "v1")?.[1],
+    v1: v,
   };
 }
 
