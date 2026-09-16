@@ -15,7 +15,7 @@ design file.
 - **Host Grotesk** typeface
 - **`@duffel/api`** — flights, stays and cars (server-side)
 - **`@nimiq/mini-app-sdk`** — Nimiq Pay provider + injected EVM provider
-- **Google Maps JS API** — interactive, theme-aware maps on stay & car screens
+- **OpenStreetMap** — keyless map embeds on stay & car screens
 - **lucide-react** icons
 
 ## Getting started
@@ -93,21 +93,15 @@ The flight flow wires through end to end: search → select (`?offer=`) →
 passengers → USDT checkout → on-chain settlement → `POST /api/orders` with the
 transaction hash attached as order metadata.
 
-## Google Maps
+## Maps & city search
 
-Stay details, car pickup locations and "Get Directions" actions use the
-**Google Maps JavaScript API** (`src/components/GoogleMap.tsx`) with a custom
-Triply marker and light/dark map styles that follow the app theme.
+Stay details and car pickup locations use **keyless OpenStreetMap** embeds
+(`src/components/OsmMap.tsx`), and "Get Directions" opens an OSM directions
+route to the property / pickup point.
 
-Set an API key to enable the interactive map:
-
-```bash
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=AIza...
-```
-
-Without a key, the components gracefully fall back to a no-key Google Maps
-embed (`src/components/MapEmbed.tsx`), so maps still render in development.
-"Get Directions" opens a Google Maps route to the property / pickup point.
+City selection (flight origin/destination, stay destinations, car pickup
+locations) uses a bottom sheet backed by Duffel's **List Cities** endpoint
+(`GET /api/cities`), so no Google services are used anywhere.
 
 ## Nimiq Pay
 

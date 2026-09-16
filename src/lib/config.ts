@@ -13,7 +13,6 @@ export function serverConfig(): ConfigStatus[] {
   }
   list.push(
     { key: "MONGODB_URI", label: "MongoDB (points ledger)", ok: Boolean(process.env.MONGODB_URI), required: false },
-    { key: "GOOGLE_MAPS_API_KEY", label: "Google Maps (server geocoding)", ok: Boolean(process.env.GOOGLE_MAPS_API_KEY), required: false },
     { key: "DUFFEL_WEBHOOK_SECRET", label: "Webhook secret", ok: Boolean(process.env.DUFFEL_WEBHOOK_SECRET), required: false },
     { key: "NIMIQ_REWARD_MNEMONIC", label: "NIM reward mnemonic", ok: Boolean(process.env.NIMIQ_REWARD_MNEMONIC), required: false },
     { key: "NIMIQ_RPC_URL", label: "Nimiq RPC", ok: Boolean(process.env.NIMIQ_RPC_URL), required: false },
@@ -40,7 +39,6 @@ export function paymentsReady() {
 export function clientConfig(): ConfigStatus[] {
   return [
     { key: "NEXT_PUBLIC_TREASURY_WALLET_ADDRESS", label: "USDT treasury address", ok: Boolean(process.env.NEXT_PUBLIC_TREASURY_WALLET_ADDRESS), required: true },
-    { key: "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY", label: "Google Maps key", ok: Boolean(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY), required: false },
   ];
 }
 
@@ -48,8 +46,4 @@ export function treasuryAddress(): string {
   const addr = process.env.NEXT_PUBLIC_TREASURY_WALLET_ADDRESS;
   if (!addr) throw new Error("NEXT_PUBLIC_TREASURY_WALLET_ADDRESS is not set");
   return addr;
-}
-
-export function googleMapsKey(): string | undefined {
-  return process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 }

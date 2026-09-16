@@ -9,7 +9,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Sheet } from "@/components/ui";
 import { AuthActionButton } from "@/components/ui/auth-action";
-import PlacesCombobox from "@/components/ui/places-combobox";
+import CitiesSheet from "@/components/ui/cities-sheet";
 import { NimiqIcon } from "@/components/ui/Nimiq";
 import { useToast } from "@/lib/toast";
 import { compressImage } from "@/lib/image";
@@ -29,6 +29,7 @@ export default function ShareMomentSheet({
   const [images, setImages] = useState<string[]>([]);
   const [caption, setCaption] = useState("");
   const [location, setLocation] = useState("");
+  const [cityOpen, setCityOpen] = useState(false);
   const createMoment = useCreateMoment();
   const uploadImage = useUploadFeedImage();
 
@@ -195,13 +196,20 @@ export default function ShareMomentSheet({
 
         <div className="mt-3 flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5">
           <MapPin size={18} className="shrink-0 text-accent-fg" />
-          <PlacesCombobox
-            value={location}
-            onChange={setLocation}
-            onSelect={(p) => setLocation(p.name)}
-            placeholder="Add Location"
-          />
+          <button
+            onClick={() => setCityOpen(true)}
+            className="flex-1 text-left text-[14px] font-semibold text-foreground"
+          >
+            {location || "Add Location"}
+          </button>
         </div>
+
+        <CitiesSheet
+          open={cityOpen}
+          onClose={() => setCityOpen(false)}
+          title="Where was this moment?"
+          onSelect={(c) => setLocation(c.name)}
+        />
       </div>
     </Sheet>
   );

@@ -7,7 +7,6 @@ import Image from "next/image";
 import {
   Calendar,
   Check,
-  Map as MapIcon,
   MapPin,
   Minus,
   Plus,
@@ -24,19 +23,16 @@ import { Sheet } from "@/components/ui";
 import { AuthActionButton } from "@/components/ui/auth-action";
 import { ProgressButton } from "@/components/ui/progress-button";
 import { directionsUrl } from "@/components/MapEmbed";
-import GoogleMap from "@/components/GoogleMap";
+import OsmMap from "@/components/OsmMap";
 import ExploreTabs from "@/components/ui/explore-tabs";
 import PointsChip from "@/components/ui/points-chip";
-import LocationMapSheet from "@/components/ui/location-map-sheet";
+import CitiesSheet from "@/components/ui/cities-sheet";
 import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import DateRangePicker, {
   formatDateLabel,
 } from "@/components/ui/date-range-picker";
 import ImageCarousel from "@/components/ui/image-carousel";
-import PlacesCombobox, {
-  type PlaceSelection,
-} from "@/components/ui/places-combobox";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useFlow } from "@/lib/flow-context";
 import { useStaySearch } from "@/lib/api/hooks";
@@ -164,8 +160,8 @@ export function AccSearch() {
   const [guestCount, setGuestCount] = useState({ Adults: 2, Children: 0 });
   const [rooms, setRooms] = useState(1);
   const [grOpen, setGrOpen] = useState(false);
-  const [place, setPlace] = useState<PlaceSelection | null>(null);
-  const [mapOpen, setMapOpen] = useState(false);
+  const [place, setPlace] = useState<{ latitude?: number; longitude?: number } | null>(null);
+  const [cityOpen, setCityOpen] = useState(false);
 
   const staySearch = useStaySearch();
   const runSearch = (dest: string, r = range, test = testMode) => {
@@ -214,24 +210,13 @@ export function AccSearch() {
               <SearchField
                 icon={<MapPin size={20} className="text-accent-fg" />}
                 label="Destination"
-                right={
-                  <button
-                    onClick={() => setMapOpen(true)}
-                    aria-label="Pick on map"
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground"
-                  >
-                    <MapIcon size={15} className="text-accent-fg" />
-                  </button>
-                }
               >
-                <PlacesCombobox
-                  value={destination}
-                  onChange={setDestination}
-                  onSelect={(p) => {
-                    setDestination(p.name);
-                    setPlace(p);
-                  }}
-                />
+                <button
+                  onClick={() => setCityOpen(true)}
+                  className="text-left text-[14px] font-semibold text-foreground"
+                >
+                  {destination}
+                </button>
               </SearchField>
               <button
                 onClick={() => setDateOpen(true)}
@@ -412,17 +397,13 @@ export function AccSearch() {
         }}
       />
 
-      <LocationMapSheet
-        open={mapOpen}
-        onClose={() => setMapOpen(false)}
-        initial={{
-          name: destination,
-          latitude: place?.latitude ?? 51.5072,
-          longitude: place?.longitude ?? -0.1276,
-        }}
-        onSelect={(p) => {
-          setPlace(p);
-          setDestination(p.name);
+      <CitiesSheet
+        open={cityOpen}
+        onClose={() => setCityOpen(false)}
+        title="Where do you want to go?"
+        onSelect={(c) => {
+          setDestination(c.name);
+          setPlace({ latitude: c.latitude, longitude: c.longitude });
         }}
       />
     </MobileShell>
@@ -664,7 +645,7 @@ export function AccDetails() {
               <h3 className="text-[14px] font-bold text-foreground">
                 Location
               </h3>
-              <GoogleMap
+              <OsmMap
                 center={{
                   lat: stay.latitude || 51.5072,
                   lng: stay.longitude || -0.1276,

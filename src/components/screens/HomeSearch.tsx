@@ -21,7 +21,13 @@ import {
   BrandHeader,
   MobileShell,
 } from "@/components/shell";
-import AirportCombobox from "@/components/ui/airport-combobox";
+import {
+  Avatar,
+  BottomTabBar,
+  BrandHeader,
+  MobileShell,
+} from "@/components/shell";
+import CitiesSheet from "@/components/ui/cities-sheet";
 import DateRangePicker, { formatDateLabel } from "@/components/ui/date-range-picker";
 import { PassengerClassSheet } from "@/components/screens/sheets";
 import PointsChip from "@/components/ui/points-chip";
@@ -72,6 +78,11 @@ const [destinations, setDestinations] = useState<Destination[]>([]);
   const [destinationsLive, setDestinationsLive] = useState(false);
   const [destLoading, setDestLoading] = useState(true);
   const [recent] = useState<string[]>(() => getRecentSearches());
+  const [pickerFor, setPickerFor] = useState<
+    | { kind: "main"; side: "from" | "to" }
+    | { kind: "leg"; leg: number; side: "from" | "to" }
+    | null
+  >(null);
 
   useEffect(() => {
     let ignore = false;
@@ -176,10 +187,15 @@ return (
                   selectedTextClassName="text-accent-2"
                 />
 
-              <div className="flex items-center gap-4">
+<div className="flex items-center gap-4">
                 <div className="flex flex-1 flex-col gap-1">
                   <span className="text-[11px] font-medium text-muted">Origin</span>
-                  <AirportCombobox key={`from-${from}`} value={from} onChange={setFrom} placeholder="IATA" />
+                  <button
+                    onClick={() => setPickerFor({ kind: "main", side: "from" })}
+                    className="text-left text-[28px] font-extrabold leading-[37px] text-foreground"
+                  >
+                    {from || "IATA"}
+                  </button>
                 </div>
 
                 <motion.button
@@ -197,7 +213,12 @@ return (
                   <span className="text-[11px] font-medium text-muted">
                     Destination
                   </span>
-                  <AirportCombobox key={`to-${to}`} value={to} onChange={setTo} placeholder="IATA" align="right" />
+                  <button
+                    onClick={() => setPickerFor({ kind: "main", side: "to" })}
+                    className="text-right text-[28px] font-extrabold leading-[37px] text-foreground"
+                  >
+                    {to || "IATA"}
+                  </button>
                 </div>
               </div>
 
@@ -253,18 +274,23 @@ return (
                         </button>
                       </div>
                       <div className="flex items-center gap-2">
-                        <AirportCombobox
-                          value={leg.from}
-                          onChange={(v) => updateLeg(i, { from: v })}
-                          placeholder="IATA"
-                        />
+                        <button
+                          onClick={() =>
+                            setPickerFor({ kind: "leg", leg: i, side: "from" })
+                          }
+                          className="min-w-0 flex-1 text-left text-[16px] font-bold text-foreground"
+                        >
+                          {leg.from || "IATA"}
+                        </button>
                         <ArrowLeftRight size={16} className="shrink-0 text-accent-fg" />
-                        <AirportCombobox
-                          value={leg.to}
-                          onChange={(v) => updateLeg(i, { to: v })}
-                          placeholder="IATA"
-                          align="right"
-                        />
+                        <button
+                          onClick={() =>
+                            setPickerFor({ kind: "leg", leg: i, side: "to" })
+                          }
+                          className="min-w-0 flex-1 text-right text-[16px] font-bold text-foreground"
+                        >
+                          {leg.to || "IATA"}
+                        </button>
                       </div>
                       <button
                         onClick={() => {
@@ -391,6 +417,22 @@ return (
           setLegDateOpen(false);
         }}
         onClose={() => setLegDateOpen(false)}
+      />
+
+      <CitiesSheet
+        open={pickerFor !== null}
+        onClose={() => setPickerFor(null)}
+        title="Select a city"
+        onSelect={(c) => {
+          if (pickerFor?.kind === "main") {
+            if (pickerFor.side === "from") setFrom(c.code);
+            else setTo(c.code);
+          } else if (pickerFor?.kind === "leg") {
+            updateLeg(pickerFor.leg, {
+              [pickerFor.side]: c.code,
+            });
+          }
+        }}
       />
 
       <PassengerClassSheet

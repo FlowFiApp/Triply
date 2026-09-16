@@ -4,6 +4,7 @@ import "server-only";
 import { Duffel } from "@duffel/api";
 import { formatDuration, format24 } from "@/lib/format";
 import { realPrice, testPrice } from "@/lib/pricing";
+import type { CityOption } from "@/lib/cities";
 
 const TOKEN = process.env.DUFFEL_ACCESS_TOKEN;
 
@@ -568,28 +569,59 @@ export async function confirmOrderChange(changeId: string) {
 
 // ---- Places / suggestions ------------------------------------------------
 
-export type Place = {
-  code: string;
-  name: string;
-  city: string;
-  country: string;
-};
-
-export async function searchPlaces(query: string): Promise<Place[]> {
-  if (!duffelEnabled() || query.trim().length < 2) return [];
-  const duffel = getDuffel();
-  const { data } = (await duffel.suggestions.list({
-    query,
-    type: "airport",
-  } as any)) as { data: any[] };
-  return (data ?? [])
-    .map((p: any) => ({
-      code: p.iata_code ?? "",
-      name: p.name ?? "",
-      city: p.city_name ?? p.name ?? "",
-      country: p.country_name ?? "",
-    }))
-    .filter((p) => p.code);
+export async function searchCities(query: string, limit = 100): Promise<CityOption[]> {
+  if (!duffelEnabled()) return [];
+  const q = query.trim().toLowerCase();
+  const results: CityOption[] = [];
+  let after: string | undefined;
+  for (let page = 0; page < 20; page++) {
+    const params = new URLSearchParams({ limit: "200" });
+    if (after) params.set("after", after);
+    const res = await fetch(`https://api.duffel.com/air/cities?${params.toString()}`, {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        "Duffel-Version": "v2",
+        Accept: "application/json",
+      },
+    });
+    if (!res.ok) break;
+    const json = (await res.json()) as {
+      data: Array<{
+        id: string;
+        name: string;
+        iata_country_code?: string;
+        iata_code?: string;
+        airports?: Array<{
+          iata_code?: string;
+          name?: string;
+          latitude?: number;
+          longitude?: number;
+        }>;
+      }>;
+      meta?: { after?: string };
+    };
+    for (const c of json.data ?? []) {
+      const name = c.name ?? "";
+      const iata = c.iata_code ?? "";
+      const airports = (c.airports ?? []).filter((a) => a.iata_code);
+      const airport = airports[0];
+      if (q && !name.toLowerCase().includes(q) && !iata.toLowerCase().includes(q)) {
+        continue;
+      }
+      results.push({
+        id: c.id,
+        name,
+        country: c.iata_country_code ?? "",
+        code: iata || airport?.iata_code || "",
+        latitude: airport ? Number(airport.latitude) : undefined,
+        longitude: airport ? Number(airport.longitude) : undefined,
+      });
+      if (results.length >= limit) return results;
+    }
+    after = json.meta?.after;
+    if (!after) break;
+  }
+  return results;
 }
 
 export async function getDestinations(queries: string[]) {
@@ -624,31 +656,7 @@ export async function geocode(query: string): Promise<{
   longitude: number;
   name: string;
 } | null> {
-  const googleKey = process.env.GOOGLE_MAPS_API_KEY;
   try {
-    if (googleKey) {
-      const res = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-          query,
-        )}&key=${googleKey}`,
-      );
-      if (!res.ok) return null;
-      const json = (await res.json()) as {
-        status: string;
-        results: Array<{
-          geometry: { location: { lat: number; lng: number } };
-          formatted_address: string;
-        }>;
-      };
-      if (json.status !== "OK" || !json.results?.length) return null;
-      const loc = json.results[0].geometry.location;
-      return {
-        latitude: loc.lat,
-        longitude: loc.lng,
-        name: json.results[0].formatted_address,
-      };
-    }
-    // Fallback only when the Google key is not configured.
     const res = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(
         query,

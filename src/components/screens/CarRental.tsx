@@ -7,7 +7,6 @@ import Image from "next/image";
 import {
   Calendar,
   Check,
-  Map as MapIcon,
   MapPin,
   Minus,
   Plus,
@@ -23,10 +22,10 @@ import {
   MobileShell,
 } from "@/components/shell";
 import { directionsUrl } from "@/components/MapEmbed";
-import GoogleMap from "@/components/GoogleMap";
+import OsmMap from "@/components/OsmMap";
 import ExploreTabs from "@/components/ui/explore-tabs";
 import PointsChip from "@/components/ui/points-chip";
-import LocationMapSheet from "@/components/ui/location-map-sheet";
+import CitiesSheet from "@/components/ui/cities-sheet";
 import { EmptyState, Price, SkeletonRows } from "@/components/ui/feedback";
 import { AuthActionButton } from "@/components/ui/auth-action";
 import { ProgressButton } from "@/components/ui/progress-button";
@@ -100,8 +99,8 @@ export function CarSearch() {
   const [error, setError] = useState("");
   const [testMode, setTestMode] = useState(false);
   const [pickupLocation, setPickupLocation] = useState("London Heathrow (LHR)");
-  const [pickupPlace, setPickupPlace] = useState<PlaceSelection | null>(null);
-  const [mapOpen, setMapOpen] = useState(false);
+  const [pickupPlace, setPickupPlace] = useState<{ latitude?: number; longitude?: number } | null>(null);
+  const [cityOpen, setCityOpen] = useState(false);
   const [range, setRange] = useState({
     start: "2026-10-24",
     end: "2026-10-29",
@@ -159,24 +158,13 @@ export function CarSearch() {
               <SearchField
                 icon={<MapPin size={20} className="text-accent-fg" />}
                 label="Pickup Location"
-                right={
-                  <button
-                    onClick={() => setMapOpen(true)}
-                    aria-label="Pick on map"
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground"
-                  >
-                    <MapIcon size={15} className="text-accent-fg" />
-                  </button>
-                }
               >
-                <PlacesCombobox
-                  value={pickupLocation}
-                  onChange={setPickupLocation}
-                  onSelect={(p) => {
-                    setPickupLocation(p.name);
-                    setPickupPlace(p);
-                  }}
-                />
+                <button
+                  onClick={() => setCityOpen(true)}
+                  className="text-left text-[14px] font-semibold text-foreground"
+                >
+                  {pickupLocation}
+                </button>
               </SearchField>
               <button
                 onClick={() => setDateOpen(true)}
@@ -375,17 +363,13 @@ export function CarSearch() {
         onClose={() => setDateOpen(false)}
       />
 
-      <LocationMapSheet
-        open={mapOpen}
-        onClose={() => setMapOpen(false)}
-        initial={{
-          name: pickupLocation,
-          latitude: pickupPlace?.latitude ?? 51.47,
-          longitude: pickupPlace?.longitude ?? -0.4543,
-        }}
-        onSelect={(p) => {
-          setPickupPlace(p);
-          setPickupLocation(p.name);
+      <CitiesSheet
+        open={cityOpen}
+        onClose={() => setCityOpen(false)}
+        title="Where do you want to pick up?"
+        onSelect={(c) => {
+          setPickupLocation(c.name);
+          setPickupPlace({ latitude: c.latitude, longitude: c.longitude });
         }}
       />
     </MobileShell>
@@ -584,22 +568,12 @@ export function CarDetails() {
               <h3 className="text-[14px] font-bold text-foreground">
                 Pickup Location
               </h3>
-              <GoogleMap
+              <OsmMap
                 center={{
                   lat: car.pickupLatitude || 51.47,
                   lng: car.pickupLongitude || -0.4543,
                 }}
-                query={car.pickup}
-                markers={[
-                  {
-                    lat: car.pickupLatitude || 51.47,
-                    lng: car.pickupLongitude || -0.4543,
-                  },
-                  {
-                    lat: car.dropoffLatitude || car.pickupLatitude || 51.47,
-                    lng: car.dropoffLongitude || car.pickupLongitude || -0.4543,
-                  },
-                ]}
+                query={`${car.pickup} → ${car.dropoff}`}
               />
             </div>
 
