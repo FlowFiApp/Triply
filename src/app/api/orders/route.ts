@@ -74,7 +74,10 @@ export async function POST(request: Request) {
     const p = allPassengers[0];
 
     // Create a separate customer user for every passenger with an email —
-    // Duffel rejects duplicate user ids across passengers.
+    // Duffel rejects duplicate user ids across passengers. Passengers who
+    // share an email resolve to the same customer user, so only the first
+    // keeps the link and later duplicates get no user_id.
+    const usedUserIds = new Set<string>();
     const userIds = (
       await Promise.all(
         allPassengers.map(async (pg: any) => {
@@ -91,7 +94,12 @@ export async function POST(request: Request) {
           }
         }),
       )
-    ).map((id) => id ?? undefined);
+    ).map((id) => {
+      if (!id) return undefined;
+      if (usedUserIds.has(id)) return undefined;
+      usedUserIds.add(id);
+      return id;
+    });
     const customerUserId = userIds.find(Boolean) as string | undefined;
 
     const identity = {

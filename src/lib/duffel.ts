@@ -631,15 +631,26 @@ export async function createOrderChangeRequest(
 ) {
   if (!duffelEnabled()) return null;
   const duffel = getDuffel();
+  // Duffel's create order change request takes a `slices` OBJECT with `add`
+// (list of new itinerary slices) and/or `remove` (list of existing slice ids).
+  const slice = slices?.[0] ?? {
+    origin: "",
+    destination: "",
+    departure_date: "",
+  };
   const { data } = await duffel.orderChangeRequests.create({
     order_id: orderId,
-    slices: slices.map((s) => ({
-      origin: s.origin,
-      destination: s.destination,
-      departure_date: s.departure_date,
-      departure_time: null,
-      arrival_time: null,
-    })),
+    slices: {
+      add: [
+        {
+          origin: slice.origin,
+          destination: slice.destination,
+          departure_date: slice.departure_date,
+          departure_time: null,
+          arrival_time: null,
+        },
+      ],
+    },
   } as any);
   return data as any;
 }

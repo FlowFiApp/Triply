@@ -184,8 +184,8 @@ async function createOrder(label, offerId, passengerId, total, extra = {}) {
     return cu.ok ? cu.json?.data?.id : undefined;
   };
   const user1 = await makeUser("jane.doe@example.com", "Jane", "Doe");
-  const user2 = await makeUser("john.smith@example.com", "John", "Smith");
-  console.log("Customer user ids:", user1, user2);
+  const user2 = await makeUser("jane.doe@example.com", "John", "Smith");
+  console.log("Customer user ids (same email):", user1, user2);
 
   const pax1 = {
     id: ids2[0],
@@ -200,13 +200,14 @@ async function createOrder(label, offerId, passengerId, total, extra = {}) {
   };
   const pax2 = {
     id: ids2[1],
-    ...(user2 ? { user_id: user2 } : {}),
+    // Same email → same user id → the app only links the FIRST passenger.
+    ...(user2 && user2 !== user1 ? { user_id: user2 } : {}),
     given_name: "John",
     family_name: "Smith",
     born_on: "1985-05-10",
     gender: "m",
     title: "mr",
-    email: "john.smith@example.com",
+    email: "jane.doe@example.com",
     phone_number: "+2348012345678",
   };
   const appLike = await call(
@@ -235,6 +236,53 @@ async function createOrder(label, offerId, passengerId, total, extra = {}) {
     );
   } else {
     console.log("\nApp-like order failed:", summarizeError(appLike.json));
+  }
+}
+
+// --- Scenario: order change request -----------------------------------------
+{
+  const { offerId, passengerIds, total } = await searchAndOffer();
+  const res = await createOrder("for change", offerId, passengerIds[0], total);
+  if (res.ok) {
+    const orderId = res.json?.data?.id;
+    console.log("\nOrder available_actions:", res.json?.data?.available_actions);
+    const change = await call(
+      "Create order change request",
+      "POST",
+      "/order_change_requests",
+      {
+        data: {
+          order_id: orderId,
+          slices: {
+            add: [
+              {
+                origin,
+                destination,
+                departure_date: "2026-10-25",
+                departure_time: null,
+                arrival_time: null,
+              },
+            ],
+          },
+        },
+      },
+    );
+    if (change.ok) {
+      console.log("\nOrder change request SUCCEEDED:", change.json?.data?.id);
+      const offers = await call(
+        "List order change offers",
+        "GET",
+        "/order_change_offers?limit=50",
+      );
+      if (offers.ok) {
+        const relevant = (offers.json?.data ?? []).filter(
+          (o) => o.order_change_request_id === change.json?.data?.id,
+        );
+        console.log("\nRelevant change offers:", relevant.length);
+      }
+    } else {
+      console.log("\nOrder change request failed:", summarizeError(change.json));
+    }
   }
 }
 

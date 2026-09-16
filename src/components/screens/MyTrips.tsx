@@ -4,7 +4,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { BedDouble, Car, Loader2, Plane, Search } from "lucide-react";
+import { BedDouble, Car, Loader2, MoreHorizontal, Plane, Search, Trash2 } from "lucide-react";
 import { BottomTabBar, MobileShell } from "@/components/shell";
 import { EmptyState, SkeletonRows, Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
@@ -32,19 +32,25 @@ type BookingItem = {
   arr: string;
   amount: number;
   airlineLogo?: string;
+  actions?: string[];
 };
 
 const ACTIVE = /confirm|issued|paid|delivered|booked/i;
 
 function StatusPill({ status }: { status: string }) {
   const active = ACTIVE.test(status);
+  const cancelled = /cancel/i.test(status);
   return (
     <span
-      className={`flex h-[21px] items-center rounded-md px-2 text-[10px] font-bold ${
-        active ? "bg-accent-2 text-accent" : "bg-card-3 text-muted"
+      className={`flex h-[21px] shrink-0 items-center rounded-md px-2 text-[10px] font-bold ${
+        cancelled
+          ? "bg-red-500/10 text-red-500"
+          : active
+            ? "bg-accent-2 text-accent"
+            : "bg-card-3 text-muted"
       }`}
     >
-      {active ? "Confirmed" : status || "Completed"}
+      {active ? "Confirmed" : cancelled ? "Cancelled" : status || "Completed"}
     </span>
   );
 }
@@ -74,15 +80,23 @@ function BookingCard({
   const Icon = meta.icon;
   const isFlight = item.kind === "flight";
   const active = ACTIVE.test(item.status);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const openTicket = () => {
+    setFlow({ orderId: item.id });
+    router.push("/ticket");
+  };
+  const openDetails = () => {
+    if (isFlight) router.push(`/trip/${item.id}`);
+  };
+
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
         <button
-          onClick={() =>
-            isFlight ? router.push(`/trip/${item.id}`) : undefined
-          }
+          onClick={openDetails}
           disabled={!isFlight}
-          className={`flex items-center gap-2 text-left ${isFlight ? "flex-1" : ""}`}
+          className="flex min-w-0 flex-1 items-center gap-2 text-left"
         >
           {isFlight && item.airlineLogo ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -92,18 +106,25 @@ function BookingCard({
               className="h-9 w-9 shrink-0 object-contain"
             />
           ) : (
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#5b7cfa] text-accent-2">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#5b7cfa] text-accent-2">
               <Icon size={16} />
             </span>
           )}
-          <span className="flex flex-col">
-            <span className="text-[13px] font-semibold text-foreground">
+          <span className="flex min-w-0 flex-col">
+            <span className="truncate text-[13px] font-semibold text-foreground">
               {item.title}
             </span>
-            <span className="text-[11px] text-muted">{item.subtitle}</span>
+            <span className="truncate text-[11px] text-muted">{item.subtitle}</span>
           </span>
         </button>
         <StatusPill status={item.status} />
+        <button
+          onClick={() => setMenuOpen(true)}
+          aria-label="Booking actions"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted"
+        >
+          <MoreHorizontal size={18} />
+        </button>
       </div>
 
       <div className="flex items-center justify-between">
@@ -129,41 +150,123 @@ function BookingCard({
         <span className="text-[12px] text-muted">
           <Price usd={item.amount} className="text-foreground" />
         </span>
-        <div className="flex gap-2">
+        {isFlight && active ? (
+          <button
+            onClick={openTicket}
+            className="flex h-[37px] items-center rounded-lg border border-border bg-accent px-4 text-[13px] font-semibold text-accent-2"
+          >
+            Boarding Pass
+          </button>
+        ) : null}
+      </div>
+
+      <BookingActionsSheet
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        item={item}
+        active={active}
+        onView={openDetails}
+        onBoardingPass={openTicket}
+        onChange={onChange}
+        changing={changing}
+        onCancel={onCancel}
+        cancelling={cancelling}
+      />
+    </div>
+  );
+}
+
+function BookingActionsSheet({
+  open,
+  onClose,
+  item,
+  active,
+  onView,
+  onBoardingPass,
+  onChange,
+  changing,
+  onCancel,
+  cancelling,
+}: {
+  open: boolean;
+  onClose: () => void;
+  item: BookingItem;
+  active: boolean;
+  onView: () => void;
+  onBoardingPass: () => void;
+  onChange?: () => void;
+  changing?: boolean;
+  onCancel?: () => void;
+  cancelling?: boolean;
+}) {
+  const isFlight = item.kind === "flight";
+  const canChange = isFlight && (item.actions?.includes("change") ?? false);
+  const canCancel = isFlight ? item.actions?.includes("cancel") ?? false : true;
+  return (
+    <Sheet open={open} onClose={onClose}>
+      <div className="flex flex-col px-4 pb-6 pt-1">
+        <h2 className="mb-2 text-[16px] font-extrabold text-foreground">
+          {item.title}
+        </h2>
+        <span className="mb-2 text-[11px] text-muted">
+          {item.reference} · {item.subtitle}
+        </span>
+        <div className="flex flex-col">
+          {isFlight ? (
+            <button
+              onClick={() => {
+                onClose();
+                onView();
+              }}
+              className="flex items-center gap-3 rounded-xl px-3 py-3.5 text-left text-[15px] font-semibold text-foreground hover:bg-card-2"
+            >
+              <Search size={18} className="text-accent-fg" />
+              View details
+            </button>
+          ) : null}
           {isFlight && active ? (
             <button
               onClick={() => {
-                setFlow({ orderId: item.id });
-                router.push("/ticket");
+                onClose();
+                onBoardingPass();
               }}
-              className="flex h-[37px] items-center rounded-lg border border-border bg-accent px-4 text-[13px] font-semibold text-accent-2"
+              className="flex items-center gap-3 rounded-xl px-3 py-3.5 text-left text-[15px] font-semibold text-foreground hover:bg-card-2"
             >
-              Boarding Pass
+              <Plane size={18} className="text-accent-fg" />
+              Boarding pass
             </button>
           ) : null}
-          {isFlight && active && onChange ? (
+          {isFlight && active && canChange && onChange ? (
             <ProgressButton
-              onAction={onChange}
+              onAction={() => {
+                onClose();
+                onChange();
+              }}
               busy={changing}
               busyLabel="…"
-              className="flex h-[37px] items-center rounded-lg border border-border bg-card-2 px-4 text-[13px] font-semibold text-foreground"
+              className="flex items-center gap-3 rounded-xl px-3 py-3.5 text-left text-[15px] font-semibold text-foreground hover:bg-card-2"
             >
-              Change Flight
+              <Car size={18} className="text-accent-fg" />
+              Change flight
             </ProgressButton>
           ) : null}
-          {onCancel ? (
+          {active && canCancel && onCancel ? (
             <ProgressButton
-              onAction={onCancel}
+              onAction={() => {
+                onClose();
+                onCancel();
+              }}
               busy={cancelling}
               busyLabel="Cancelling…"
-              className="flex h-[37px] items-center rounded-lg border border-red-500/40 bg-red-500/10 px-4 text-[13px] font-semibold text-red-500"
+              className="flex items-center gap-3 rounded-xl px-3 py-3.5 text-left text-[15px] font-semibold text-red-500 hover:bg-card-2"
             >
-              Cancel
+              <Trash2 size={18} />
+              Cancel booking
             </ProgressButton>
           ) : null}
         </div>
       </div>
-    </div>
+    </Sheet>
   );
 }
 

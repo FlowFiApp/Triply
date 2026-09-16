@@ -137,6 +137,8 @@ export default function PassengerDetails() {
       "phone",
     ];
     const nextInvalid: Record<string, boolean> = {};
+    let dupEmail = false;
+    const seenEmails = new Map<string, number>();
     for (let i = 0; i < forms.length; i++) {
       const f = forms[i];
       for (const k of required) {
@@ -144,17 +146,33 @@ export default function PassengerDetails() {
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) {
         nextInvalid[`${i}-email`] = true;
+      } else {
+        const key = f.email.trim().toLowerCase();
+        const first = seenEmails.get(key);
+        if (first !== undefined) {
+          // Duffel links one customer user per email — duplicates are rejected.
+          nextInvalid[`${i}-email`] = true;
+          nextInvalid[`${first}-email`] = true;
+          dupEmail = true;
+        } else {
+          seenEmails.set(key, i);
+        }
       }
       if (f.phone.replace(/\D/g, "").length < 7) {
         nextInvalid[`${i}-phone`] = true;
       }
       if (!f.dob) nextInvalid[`${i}-dob`] = true;
+      // Duffel caps names at 20 characters per part.
+      if (f.first.trim().length > 20) nextInvalid[`${i}-first`] = true;
+      if (f.last.trim().length > 20) nextInvalid[`${i}-last`] = true;
     }
     if (Object.keys(nextInvalid).length) {
       setInvalid(nextInvalid);
       toast(
         "error",
-        "Please fill in all required fields for every passenger before continuing.",
+        dupEmail
+          ? "Each passenger needs a different email address."
+          : "Please fill in all required fields for every passenger before continuing.",
       );
       return;
     }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createOrderChangeRequest, duffelErrorMessage, listOrderChangeOffers } from "@/lib/duffel";
+import { createOrderChangeRequest, listOrderChangeOffers } from "@/lib/duffel";
 
 export async function POST(
   request: Request,
@@ -15,8 +15,19 @@ export async function POST(
     );
     return Response.json({ live: true, changeRequest, offers: relevant });
   } catch (err) {
+    const e = err as {
+      message?: string;
+      errors?: Array<{ title?: string; detail?: string; source?: unknown }>;
+      status?: number;
+    };
+    console.error("POST /api/orders/:id/change failed", {
+      orderId: id,
+      message: e?.message,
+      status: e?.status,
+      errors: e?.errors,
+    });
     return Response.json(
-      { error: duffelErrorMessage(err, "Change request failed") },
+      { error: e?.message || "Change request failed" },
       { status: 502 },
     );
   }

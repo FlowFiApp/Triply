@@ -21,6 +21,7 @@ function normalizeOrder(o: any) {
       : o.payment_status?.awaiting_payment === true
         ? "awaiting_payment"
         : "confirmed",
+    actions: Array.isArray(o.available_actions) ? o.available_actions : [],
     depTime: seg.departing_at ?? "",
     arrTime: seg.arriving_at ?? "",
     dep: seg.origin?.iata_code ?? "",

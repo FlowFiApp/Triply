@@ -4,21 +4,39 @@ const SECRET = process.env.DUFFEL_WEBHOOK_SECRET;
 
 // X-Duffel-Signature format: t=<timestamp>,v1=<hex hmac-sha256>
 // signed payload = `<timestamp>.<raw body>`
-function verify(raw: string, header: string): boolean {
-  if (!SECRET) return true;
+// The secret is only shown ONCE when the webhook is created in the Duffel
+// dashboard — DUFFEL_WEBHOOK_SECRET must be that exact value.
+function parseSignature(
+  header: string,
+): { t?: string; v1?: string } | null {
   const pairs = header
     .split(",")
-    .map((p) => p.split("="))
+    .map((p) => p.trim().split("="))
     .filter((p) => p.length === 2);
-  const t = pairs.find(([k]) => k === "t")?.[1];
-  const v1 = pairs.find(([k]) => k === "v1")?.[1];
-  if (!t || !v1) return false;
-  const local = createHmac("sha256", SECRET)
+  if (!pairs.length) return null;
+  return {
+    t: pairs.find(([k]) => k === "t")?.[1],
+    v1: pairs.find(([k]) => k === "v1")?.[1],
+  };
+}
+
+function computeSignature(raw: string, t: string): string {
+  return createHmac("sha256", SECRET as string)
     .update(`${t}.${raw}`)
     .digest("hex");
-  const a = Buffer.from(local, "utf8");
-  const b = Buffer.from(v1, "utf8");
-  return a.length === b.length && timingSafeEqual(a, b);
+}
+
+function safeEqual(a: string, b: string): boolean {
+  const ab = Buffer.from(a, "utf8");
+  const bb = Buffer.from(b, "utf8");
+  return ab.length === bb.length && timingSafeEqual(ab, bb);
+}
+
+function verify(raw: string, header: string): boolean {
+  if (!SECRET) return true;
+  const sig = parseSignature(header);
+  if (!sig?.t || !sig.v1) return false;
+  return safeEqual(computeSignature(raw, sig.t), sig.v1);
 }
 
 // Events that mean a booking fell through — reverse any points already earned.
@@ -75,7 +93,19 @@ export async function POST(request: Request) {
   const signature = request.headers.get("x-duffel-signature") ?? "";
 
   if (signature && !verify(raw, signature)) {
-    console.error("duffel webhook: signature mismatch — rejecting payload");
+    const sig = parseSignature(signature);
+    const local = sig?.t ? computeSignature(raw, sig.t) : "";
+    console.error("duffel webhook: signature mismatch — rejecting payload", {
+      secretSet: Boolean(SECRET),
+      secretLength: SECRET?.length ?? 0,
+      bodyLength: raw.length,
+      headerLength: signature.length,
+      t: sig?.t,
+      v1Prefix: sig?.v1?.slice(0, 8),
+      localPrefix: local.slice(0, 8),
+      matchLengths: sig?.v1 ? safeEqual(local, sig.v1) : undefined,
+      hint: "DUFFEL_WEBHOOK_SECRET must be the secret Duffel returned when the webhook was created (shown only once). Re-create the webhook to get it, or compare a v1/local prefix mismatch.",
+    });
     return Response.json({ success: false }, { status: 400 });
   }
 

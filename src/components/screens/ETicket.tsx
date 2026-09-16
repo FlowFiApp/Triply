@@ -35,6 +35,9 @@ export default function ETicket() {
   const txHash = flow.txHash ?? "";
   const chain = CHAINS.polygon;
 
+  const cancelled = order?.status === "cancelled";
+  const awaiting = order?.status === "awaiting_payment";
+
   const handleShare = async () => {
     const result = await share({
       title: `Triply · ${order?.bookingRef ?? "E-Ticket"}`,
@@ -110,16 +113,48 @@ useEffect(() => {
       <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
                  <div className="flex flex-col gap-4 px-4 py-5">
-            <div className="flex items-center gap-3 rounded-xl bg-[#22c55e] px-3 py-3">
-              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#22c55e]">
-                <Check size={14} strokeWidth={3} className="text-white" />
+<div
+              className={`flex items-center gap-3 rounded-xl px-3 py-3 ${
+                cancelled
+                  ? "bg-red-500/15"
+                  : awaiting
+                    ? "bg-amber-500/15"
+                    : "bg-[#22c55e]"
+              }`}
+            >
+              <span
+                className={`flex h-6 w-6 items-center justify-center rounded-lg ${
+                  cancelled ? "bg-red-500" : awaiting ? "bg-amber-500" : "bg-[#22c55e]"
+                }`}
+              >
+                <Check
+                  size={14}
+                  strokeWidth={3}
+                  className={cancelled || awaiting ? "text-white" : "text-white"}
+                />
               </span>
               <div className="flex flex-col">
-                <span className="text-[16px] font-bold text-white">
-                  Booking Confirmed!
+                <span
+                  className={`text-[16px] font-bold ${
+                    cancelled || awaiting ? "text-red-500" : "text-white"
+                  } ${awaiting && !cancelled ? "!text-amber-500" : ""}`}
+                >
+                  {cancelled
+                    ? "Booking Cancelled"
+                    : awaiting
+                      ? "Payment Pending"
+                      : "Booking Confirmed!"}
                 </span>
-                <span className="text-[12px] text-white/80">
-                  Your flight ticket is secured on-chain
+                <span
+                  className={`text-[12px] ${
+                    cancelled || awaiting ? "text-muted" : "text-white/80"
+                  }`}
+                >
+                  {cancelled
+                    ? "This flight was cancelled and the refund applied."
+                    : awaiting
+                      ? "Awaiting payment confirmation."
+                      : "Your flight ticket is secured on-chain"}
                 </span>
               </div>
             </div>
