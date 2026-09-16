@@ -14,7 +14,7 @@ Lifestyle
 Book real flights, stays, and cars with crypto — settled on-chain in minutes.
 
 ## Short Description
-Triply is a web3 travel marketplace where you search real flights, hotels, and rental cars and pay with USDT on Polygon — no sign-up, no KYC, no card required. Your wallet is your account. Built for crypto-native travelers who want real-world utility from their on-chain assets.
+Triply is a web3 travel marketplace where you search real flights, hotels, and rental cars and pay with USDT on Polygon, cashback points in NIM — no sign-up, no KYC, no card required. Your wallet is your account. Built for crypto-native travelers who want real-world utility from their on-chain assets.
 
 **Who it's for:** The 600M+ crypto owners who travel, and Nimiq Pay users who want a wallet-first, checkout-fast booking experience that traditional OTAs can't offer.
 
