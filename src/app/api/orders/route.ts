@@ -121,6 +121,10 @@ export async function POST(request: Request) {
 
     return Response.json({ live: true, order: normalizeOrder(order) });
   } catch (err) {
+    console.error(
+      "POST /api/orders failed",
+      err instanceof Error ? err.stack ?? err.message : err,
+    );
     return Response.json(
       { error: err instanceof Error ? err.message : "order failed" },
       { status: 500 },

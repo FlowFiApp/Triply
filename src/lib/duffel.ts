@@ -242,8 +242,11 @@ export async function createFlightOrder({
     type: "instant",
     selected_offers: [offerId],
     ...(customerUserId ? { users: [customerUserId] } : {}),
-    // Book the chosen add-ons (baggage, seat) alongside the offer.
-    services: (services ?? []).map((id) => ({ id, quantity: 1 })),
+    // Book the chosen add-ons (baggage, seat) alongside the offer. Only sent
+    // when something is actually selected — Duffel rejects an empty array.
+    ...(services?.length
+      ? { services: services.map((id) => ({ id, quantity: 1 })) }
+      : {}),
     passengers: passengers.map((p) => ({
       id: crypto.randomUUID(),
       ...(customerUserId ? { user_id: customerUserId } : {}),
