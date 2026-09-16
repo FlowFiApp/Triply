@@ -63,8 +63,12 @@ export default function RedeemSheet({
       }
     >
       <div className="px-4 py-3">
-        <h2 className="text-[18px] font-extrabold text-foreground">Redeem Nimiq</h2>
-        <p className="text-[12px] text-muted">Use your NIM rewards.</p>
+        <h2 className="text-[18px] font-extrabold text-foreground">
+          Redeem Nimiq
+        </h2>
+        <p className="text-[12px] text-muted">
+          Withdraw and spend reward from your wallet.
+        </p>
       </div>
 
       <div className="mx-5 flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
