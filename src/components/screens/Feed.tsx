@@ -7,6 +7,7 @@ import {
   Bookmark,
   Heart,
   Link2,
+  Loader2,
   MessageCircle,
   MoreHorizontal,
   Send,
@@ -310,7 +311,7 @@ function CommentsSheet({
 export default function Feed() {
   const router = useRouter();
   const { toast } = useToast();
-  const { data: moments = [], isLoading, error } = useFeed();
+  const { data: moments = [], isLoading, error, refetch, isRefetching } = useFeed();
   const { data: profile } = useProfile();
   const myAvatar = profile?.avatar;
   const myName = profile?.username;
@@ -404,6 +405,12 @@ export default function Feed() {
               </button>
             ))}
           </div>
+
+          {isRefetching && (
+            <div className="flex items-center justify-center gap-2 py-2 text-[12px] text-muted">
+              <Loader2 size={14} className="animate-spin" /> Refreshing…
+            </div>
+          )}
 
           <div className="flex gap-3.5 overflow-x-auto px-4 py-3 no-scrollbar">
             <button
