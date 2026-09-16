@@ -93,6 +93,71 @@ export type OrderRecord = {
   amountUsd: number;
 };
 
+export type OrderSlice = {
+  id: string;
+  origin: { code: string; name: string; city: string; terminal: string };
+  destination: { code: string; name: string; city: string; terminal: string };
+  depTime: string;
+  arrTime: string;
+  depDate: string;
+  arrDate: string;
+  duration: string;
+  stops: number;
+  carrier: string;
+  carrierCode: string;
+  flightNumber: string;
+  aircraft: string;
+};
+
+export type OrderPassenger = {
+  id: string;
+  givenName: string;
+  familyName: string;
+  title: string;
+  gender: string;
+  bornOn: string;
+  email: string;
+  phone: string;
+  seat?: string;
+  cabin: string;
+};
+
+export type OrderService = {
+  id: string;
+  name: string;
+  type: string;
+  totalAmount: number;
+  currency: string;
+  quantity: number;
+  segmentIds: string[];
+  passengerIds: string[];
+};
+
+export type OrderCondition = {
+  allowed: boolean;
+  penaltyAmount?: number;
+  penaltyCurrency?: string;
+};
+
+export type OrderDetail = {
+  id: string;
+  bookingRef: string;
+  status: string;
+  airline: string;
+  airlineCode: string;
+  airlineLogo?: string;
+  totalAmount: number;
+  currency: string;
+  createdAt: string;
+  slices: OrderSlice[];
+  passengers: OrderPassenger[];
+  services: OrderService[];
+  conditions: { refund?: OrderCondition; change?: OrderCondition };
+  metadata: Record<string, unknown>;
+  availableActions: string[];
+  documents?: { type: string; uniqueIdentifier: string }[];
+};
+
 export type StayOffer = {
   id: string;
   resultId: string;

@@ -8,7 +8,7 @@ function normalizeOrder(o: any) {
   return {
     kind: "flight" as const,
     id: o.id,
-    reference: o.booking_ref ?? "",
+    reference: o.booking_reference ?? o.booking_ref ?? "",
     email: p.email ?? "",
     title: seg.marketing_carrier?.name ?? "Flight",
     subtitle: `${seg.marketing_carrier_flight_number ?? ""} • ${p.cabin_class_marketing ?? "Economy"}`,
@@ -16,7 +16,11 @@ function normalizeOrder(o: any) {
       seg.marketing_carrier?.logo_symbol_url ??
       seg.marketing_carrier?.logo_lockup_url ??
       undefined,
-    status: o.state ?? "confirmed",
+    status: o.cancelled_at || o.cancellation
+      ? "cancelled"
+      : o.payment_status?.awaiting_payment === true
+        ? "awaiting_payment"
+        : "confirmed",
     depTime: seg.departing_at ?? "",
     arrTime: seg.arriving_at ?? "",
     dep: seg.origin?.iata_code ?? "",

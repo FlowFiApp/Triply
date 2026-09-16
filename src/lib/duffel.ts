@@ -238,7 +238,7 @@ export async function createFlightOrder({
   currency = "USD",
   txHash,
   chain,
-  customerUserId,
+  userIds,
   services,
   passengerIds,
 }: {
@@ -248,7 +248,7 @@ export async function createFlightOrder({
   currency?: string;
   txHash?: string;
   chain?: string;
-  customerUserId?: string;
+  userIds?: (string | undefined)[];
   services?: string[];
   passengerIds?: string[];
 }) {
@@ -290,7 +290,9 @@ export async function createFlightOrder({
   const { data } = await duffel.orders.create({
     type: "instant",
     selected_offers: [offerId],
-    ...(customerUserId ? { users: [customerUserId] } : {}),
+    // Customer users are attached per-passenger (user_id) — listing them in
+    // the top-level `users` array too makes Duffel reject the order
+    // ("user already associated with passenger").
     // Book the chosen add-ons (baggage, seat) alongside the offer. Only sent
     // when something is actually selected — Duffel rejects an empty array.
     ...(services?.length
@@ -300,7 +302,9 @@ export async function createFlightOrder({
       // Duffel requires the passenger id to reference the offer request's
       // passenger record (pas_…), not an arbitrary UUID.
       id: offerPassengerIds[i] ?? crypto.randomUUID(),
-      ...(customerUserId ? { user_id: customerUserId } : {}),
+      // Each passenger gets its OWN customer user id — Duffel rejects
+      // duplicate user ids across passengers.
+      ...(userIds?.[i] ? { user_id: userIds[i] } : {}),
       given_name: p.given_name,
       family_name: p.family_name,
       born_on: p.born_on,
@@ -329,6 +333,50 @@ export async function getOrder(orderId: string) {
   const duffel = getDuffel();
   const { data } = await duffel.orders.get(orderId);
   return data as any;
+}
+
+/** Services that can be added to an existing order (baggage, seats, …). */
+export async function getOrderAvailableServices(orderId: string) {
+  if (!duffelEnabled()) return [];
+  const duffel = getDuffel();
+  const { data } = await duffel.orders.getAvailableServices(orderId);
+  return (data ?? []) as any[];
+}
+
+/** Adds services (by id) to an existing order. */
+export async function addOrderServices(orderId: string, serviceIds: string[]) {
+  if (!duffelEnabled()) return null;
+  const duffel = getDuffel();
+  const { data } = await duffel.orders.addServices(orderId, {
+    services: serviceIds.map((id) => ({ id, quantity: 1 })),
+  } as any);
+  return data as any;
+}
+
+/** Updates an order's metadata (Duffel PATCH /air/orders/{id}). */
+export async function updateOrderMetadata(
+  orderId: string,
+  metadata: Record<string, unknown>,
+) {
+  if (!duffelEnabled()) return null;
+  const res = await fetch(`https://api.duffel.com/air/orders/${orderId}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+      "Content-Type": "application/json",
+      "Duffel-Version": "v2",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ data: { metadata } }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(
+      `Duffel order update failed (${res.status}): ${body.slice(0, 300)}`,
+    );
+  }
+  const json = await res.json();
+  return json.data as any;
 }
 
 /** Creates a PENDING order cancellation — returns the refund quote. */

@@ -5,6 +5,12 @@ import { testPrice } from "@/lib/pricing";
 import type { OrderRecord } from "@/lib/types";
 import { requireUser, unauthorized } from "@/lib/auth";
 
+function orderStatus(o: any): string {
+  if (o.cancelled_at || o.cancellation) return "cancelled";
+  if (o.payment_status?.awaiting_payment === true) return "awaiting_payment";
+  return "confirmed";
+}
+
 function normalizeOrder(o: any): OrderRecord {
   const seg = o.slices?.[0]?.segments?.[0] ?? {};
   const p = o.passengers?.[0] ?? {};
@@ -13,7 +19,7 @@ function normalizeOrder(o: any): OrderRecord {
   const slice = o.slices?.[0] ?? {};
   return {
     id: o.id,
-    bookingRef: o.booking_ref ?? "",
+    bookingRef: o.booking_reference ?? o.booking_ref ?? "",
     airline: seg.marketing_carrier?.name ?? "",
     airlineCode: seg.marketing_carrier?.iata_code ?? "",
     airlineLogo:
@@ -22,7 +28,7 @@ function normalizeOrder(o: any): OrderRecord {
       undefined,
     flightNumber: seg.marketing_carrier_flight_number ?? "",
     cabin: p.cabin_class_marketing ?? "Economy",
-    status: o.state ?? "confirmed",
+    status: orderStatus(o),
     passengerName: `${p.given_name ?? ""} ${p.family_name ?? ""}`.trim(),
     depTime: formatAMPM(seg.departing_at),
     arrTime: formatAMPM(seg.arriving_at),
@@ -64,15 +70,29 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { createFlightOrder, ensureCustomerUser } = await import("@/lib/duffel");
     const { getOrCreateUser, updateUser, earnPoints } = await import("@/lib/db");
-    const p = body.passengers?.[0];
-    const customerUserId = p?.email
-      ? await ensureCustomerUser({
-          email: p.email,
-          given_name: p.given_name ?? "",
-          family_name: p.family_name ?? "",
-          phone_number: p.phone_number,
-        })
-      : undefined;
+    const allPassengers: any[] = Array.isArray(body.passengers) ? body.passengers : [];
+    const p = allPassengers[0];
+
+    // Create a separate customer user for every passenger with an email —
+    // Duffel rejects duplicate user ids across passengers.
+    const userIds = (
+      await Promise.all(
+        allPassengers.map(async (pg: any) => {
+          if (!pg?.email) return undefined;
+          try {
+            return await ensureCustomerUser({
+              email: pg.email,
+              given_name: pg.given_name ?? "",
+              family_name: pg.family_name ?? "",
+              phone_number: pg.phone_number,
+            });
+          } catch {
+            return undefined;
+          }
+        }),
+      )
+    ).map((id) => id ?? undefined);
+    const customerUserId = userIds.find(Boolean) as string | undefined;
 
     const identity = {
       nimiqAddress: user.address,
@@ -95,12 +115,12 @@ export async function POST(request: Request) {
 
     const order = await createFlightOrder({
       offerId: body.offerId,
-      passengers: body.passengers,
+      passengers: allPassengers,
       amount: body.amount ?? 885,
       currency: body.currency ?? "USD",
       txHash: body.txHash,
       chain: body.chain,
-      customerUserId: customerUserId ?? undefined,
+      userIds,
       services: Array.isArray(body.selectedServiceIds) ? body.selectedServiceIds : [],
       passengerIds: Array.isArray(body.passengerIds) ? body.passengerIds : [],
     });

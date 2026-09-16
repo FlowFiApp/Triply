@@ -29,7 +29,7 @@ if (existsSync(envPath)) {
 
 const TOKEN = env.DUFFEL_ACCESS_TOKEN;
 if (!TOKEN) {
-  console.error("✗ DUFFEL_ACCESS_TOKEN not found (env or .env.local).");
+  console.error("DUFFEL_ACCESS_TOKEN not found (env or .env.local).");
   process.exit(1);
 }
 
@@ -41,7 +41,8 @@ const HEADERS = {
 };
 
 async function call(label, method, path, body) {
-  const res = await fetch(`${BASE}${path}`, {
+  const url = path.startsWith("http") ? path : `${BASE}${path}`;
+  const res = await fetch(url, {
     method,
     headers: { ...HEADERS, ...(body ? { "Content-Type": "application/json" } : {}) },
     body: body ? JSON.stringify(body) : undefined,
@@ -53,7 +54,7 @@ async function call(label, method, path, body) {
   } catch {
     json = text;
   }
-  console.log(`\n=== ${label} → ${method} ${path} [${res.status}]`);
+  console.log(`\n=== ${label} -> ${method} ${path} [${res.status}]`);
   if (res.ok) {
     console.log("OK:", JSON.stringify(json, null, 2).slice(0, 1600));
   } else {
@@ -92,9 +93,9 @@ function paxFor(offerId) {
   };
 }
 
-async function searchAndOffer() {
+async function searchAndOffer(passengerCount = 1) {
   const search = await call(
-    "Search offers",
+    `Search offers (${passengerCount} pax)`,
     "POST",
     "/offer_requests",
     {
@@ -108,7 +109,7 @@ async function searchAndOffer() {
             arrival_time: null,
           },
         ],
-        passengers: [{ type: "adult" }],
+        passengers: Array.from({ length: passengerCount }, () => ({ type: "adult" })),
         cabin_class: "economy",
         return_offers: true,
       },
@@ -116,7 +117,7 @@ async function searchAndOffer() {
   );
   const offers = search.json?.data?.offers ?? search.json?.offers ?? [];
   if (!offers.length) {
-    console.log("\n✗ No offers returned.");
+    console.log("\nNo offers returned.");
     process.exit(1);
   }
   const offerId = offers[0].id;
@@ -139,9 +140,7 @@ async function createOrder(label, offerId, passengerId, total, extra = {}) {
       type: "instant",
       selected_offers: [offerId],
       passengers: [pax],
-      payments: [
-        { type: "balance", currency: "USD", amount: total.toFixed(2) },
-      ],
+      payments: [{ type: "balance", currency: "USD", amount: total.toFixed(2) }],
       ...extra,
     },
   });
@@ -150,121 +149,175 @@ async function createOrder(label, offerId, passengerId, total, extra = {}) {
 
 // --- Scenario: app-like payload (2 adults, customer user, metadata) ---------
 {
-  const search = await call(
-    "Search offers (2 adults)",
-    "POST",
-    "/offer_requests",
-    {
-      data: {
-        slices: [
-          {
-            origin,
-            destination,
-            departure_date: date,
-            departure_time: null,
-            arrival_time: null,
-          },
-        ],
-        passengers: [{ type: "adult" }, { type: "adult" }],
-        cabin_class: "economy",
-        return_offers: true,
-      },
-    },
+  const { offerId, passengerIds, total } = await searchAndOffer(2);
+  const offer2 = await call(
+    "Get offer (2 adults)",
+    "GET",
+    `/offers/${offerId}?return_available_services=true`,
   );
-  const offers = search.json?.data?.offers ?? [];
-  if (!offers.length) {
-    console.log("\n✗ No offers returned (2 adults).");
-  } else {
-    const offerId = offers[0].id;
-    const offer = await call(
-      "Get offer (2 adults)",
-      "GET",
-      `/offers/${offerId}?return_available_services=true`,
-    );
-    const passengerIds = (offer.json?.data?.passengers ?? [])
-      .map((p) => p.id)
-      .filter(Boolean);
-    const total2 = Number(offers[0].total_amount ?? 0);
-    console.log("\nOffer passenger ids (2 adults):", passengerIds);
+  const ids2 = (offer2.json?.data?.passengers ?? []).map((p) => p.id).filter(Boolean);
+  console.log("\nOffer passenger ids (2 adults):", ids2);
 
-    // Mirror ensureCustomerUser (identity/customer/users).
+  // Create a separate customer user per passenger (mirrors the app).
+  const makeUser = async (email, given, family) => {
+    const existing = await call(
+      `List customer user (${email})`,
+      "GET",
+      `https://api.duffel.com/identity/customer/users?email=${encodeURIComponent(email)}`,
+    );
+    if (existing.ok && existing.json?.data?.length) {
+      return existing.json.data[0].id;
+    }
     const cu = await call(
-      "Create customer user",
+      `Create customer user (${email})`,
       "POST",
-      "/identity/customer/users",
+      "https://api.duffel.com/identity/customer/users",
       {
         data: {
-          email: "jane.doe@example.com",
-          given_name: "Jane",
-          family_name: "Doe",
+          email,
+          given_name: given,
+          family_name: family,
           phone_number: "+2348012345678",
         },
       },
     );
-    const customerUserId = cu.json?.data?.id;
+    return cu.ok ? cu.json?.data?.id : undefined;
+  };
+  const user1 = await makeUser("jane.doe@example.com", "Jane", "Doe");
+  const user2 = await makeUser("john.smith@example.com", "John", "Smith");
+  console.log("Customer user ids:", user1, user2);
 
-    const pax1 = {
-      id: passengerIds[0],
-      user_id: customerUserId,
-      given_name: "Jane",
-      family_name: "Doe",
-      born_on: "1990-01-01",
-      gender: "f",
-      title: "mr",
-      email: "jane.doe@example.com",
-      phone_number: "+2348012345678",
-    };
-    const pax2 = {
-      id: passengerIds[1],
-      user_id: customerUserId,
-      given_name: "John",
-      family_name: "Smith",
-      born_on: "1985-05-10",
-      gender: "m",
-      title: "mr",
-      email: "john.smith@example.com",
-      phone_number: "+2348012345678",
-    };
-    const appLike = await call(
-      "Create order (app-like payload)",
-      "POST",
-      "/orders",
-      {
-        data: {
-          type: "instant",
-          selected_offers: [offerId],
-          passengers: [pax1, pax2],
-          payments: [
-            {
-              type: "balance",
-              currency: "USD",
-              amount: (Math.round(total2 * 100) / 100).toFixed(2),
-            },
-          ],
-          metadata: { onchain_payment_tx: "0xabc123", chain: "polygon" },
-        },
+  const pax1 = {
+    id: ids2[0],
+    ...(user1 ? { user_id: user1 } : {}),
+    given_name: "Jane",
+    family_name: "Doe",
+    born_on: "1990-01-01",
+    gender: "f",
+    title: "mr",
+    email: "jane.doe@example.com",
+    phone_number: "+2348012345678",
+  };
+  const pax2 = {
+    id: ids2[1],
+    ...(user2 ? { user_id: user2 } : {}),
+    given_name: "John",
+    family_name: "Smith",
+    born_on: "1985-05-10",
+    gender: "m",
+    title: "mr",
+    email: "john.smith@example.com",
+    phone_number: "+2348012345678",
+  };
+  const appLike = await call(
+    "Create order (app-like payload)",
+    "POST",
+    "/orders",
+    {
+      data: {
+        type: "instant",
+        selected_offers: [offerId],
+        passengers: [pax1, pax2],
+        payments: [
+          {
+            type: "balance",
+            currency: "USD",
+            amount: (Math.round(total * 100) / 100).toFixed(2),
+          },
+        ],
+        metadata: { onchain_payment_tx: "0xabc123", chain: "polygon" },
       },
+    },
+  );
+  if (appLike.ok) {
+    console.log(
+      `\nApp-like order (2 adults, distinct user ids) SUCCEEDED - bookingRef ${appLike.json?.data?.booking_reference}`,
     );
-    if (appLike.ok) {
-      console.log(
-        `\n✓ App-like order (2 adults) SUCCEEDED — bookingRef ${appLike.json?.data?.booking_ref}`,
-      );
-    } else {
-      console.log("\n✗ App-like order failed:", summarizeError(appLike.json));
-    }
+  } else {
+    console.log("\nApp-like order failed:", summarizeError(appLike.json));
   }
 }
 
-// --- Scenario: no services (the app's plain flight booking) ----------------
+// --- Scenario: order detail + available services + update metadata ----------
+{
+  const { offerId, passengerIds, total } = await searchAndOffer();
+  const res = await createOrder("for management", offerId, passengerIds[0], total);
+  if (res.ok) {
+    const orderId = res.json?.data?.id;
+    if (orderId) {
+      const detail = await call("Get order", "GET", `/orders/${orderId}`);
+      if (detail.ok) {
+        const status = detail.json?.data?.cancelled_at
+          ? "cancelled"
+          : detail.json?.data?.payment_status?.awaiting_payment
+            ? "awaiting_payment"
+            : "confirmed";
+        console.log(
+          `\nOrder detail loaded - status ${status} · booking_reference ${detail.json?.data?.booking_reference} · slices ${detail.json?.data?.slices?.length} · passengers ${detail.json?.data?.passengers?.length}`,
+        );
+      } else {
+        console.log("\nGet order failed:", summarizeError(detail.json));
+      }
+
+      const avail = await call(
+        "Get order available services",
+        "GET",
+        `/orders/${orderId}/available_services`,
+      );
+      if (avail.ok) {
+        const list = avail.json?.data ?? [];
+        console.log(`\nAvailable services: ${list.length}`);
+        if (list.length) {
+          const added = await call(
+            "Add services to order",
+            "POST",
+            `/orders/${orderId}/services`,
+            { data: { services: [{ id: list[0].id, quantity: 1 }] } },
+          );
+          if (added.ok) {
+            console.log("\nAdded service to order");
+          } else {
+            console.log("\nAdd services failed:", summarizeError(added.json));
+          }
+        }
+      } else {
+        console.log("\nAvailable services failed:", summarizeError(avail.json));
+      }
+
+      const patched = await call(
+        "Update order metadata",
+        "PATCH",
+        `/orders/${orderId}`,
+        {
+          data: {
+            metadata: {
+              contactEmail: "jane.doe@example.com",
+              contactPhone: "+2348012345678",
+            },
+          },
+        },
+      );
+      if (patched.ok) {
+        console.log(
+          `\nOrder metadata updated - ${JSON.stringify(patched.json?.data?.metadata)}`,
+        );
+      } else {
+        console.log("\nUpdate order metadata failed:", summarizeError(patched.json));
+      }
+    }
+  } else {
+    console.log("\nManagement order failed:", summarizeError(res.json));
+  }
+}
+
+// --- Scenario: no services + two-step cancellation --------------------------
 {
   const { offerId, passengerIds, total } = await searchAndOffer();
   const res = await createOrder("no services", offerId, passengerIds[0], total);
   if (res.ok) {
     console.log(
-      `\n✓ No-services order SUCCEEDED (${total.toFixed(2)} USD) — bookingRef ${res.json?.data?.booking_ref}`,
+      `\nNo-services order SUCCEEDED (${total.toFixed(2)} USD) - bookingRef ${res.json?.data?.booking_reference}`,
     );
-
-    // --- Test the two-step cancellation flow ------------------------------
     const orderId = res.json?.data?.id;
     if (orderId) {
       const pending = await call(
@@ -276,7 +329,7 @@ async function createOrder(label, offerId, passengerId, total, extra = {}) {
       if (pending.ok) {
         const c = pending.json?.data;
         console.log(
-          `\nCancellation quote: refund ${c?.refund_amount} ${c?.refund_currency} → ${c?.refund_to}`,
+          `\nCancellation quote: refund ${c?.refund_amount} ${c?.refund_currency} -> ${c?.refund_to}`,
         );
         const confirmed = await call(
           "Confirm cancellation",
@@ -285,23 +338,23 @@ async function createOrder(label, offerId, passengerId, total, extra = {}) {
         );
         if (confirmed.ok) {
           console.log(
-            `\n✓ Cancellation confirmed — refund ${confirmed.json?.data?.refund_amount} ${confirmed.json?.data?.refund_currency}`,
+            `\nCancellation confirmed - refund ${confirmed.json?.data?.refund_amount} ${confirmed.json?.data?.refund_currency}`,
           );
         } else {
           console.log(
-            "\n✗ Confirm cancellation failed:",
+            "\nConfirm cancellation failed:",
             summarizeError(confirmed.json),
           );
         }
       } else {
         console.log(
-          "\n✗ Create pending cancellation failed:",
+          "\nCreate pending cancellation failed:",
           summarizeError(pending.json),
         );
       }
     }
   } else {
-    console.log("\n✗ No-services order failed:", summarizeError(res.json));
+    console.log("\nNo-services order failed:", summarizeError(res.json));
   }
 }
 
@@ -337,12 +390,12 @@ async function createOrder(label, offerId, passengerId, total, extra = {}) {
       },
     );
     if (res.ok) {
-      console.log("\n✓ Baggage order SUCCEEDED");
+      console.log("\nBaggage order SUCCEEDED");
     } else {
-      console.log("\n✗ Baggage order failed:", summarizeError(res.json));
+      console.log("\nBaggage order failed:", summarizeError(res.json));
     }
   } else {
-    console.log("\n– No baggage services available on this offer; skipping.");
+    console.log("\nNo baggage services available on this offer; skipping.");
   }
 
   if (seats.length) {
@@ -350,7 +403,6 @@ async function createOrder(label, offerId, passengerId, total, extra = {}) {
     const svcTotal = total + Number(seat.total_amount ?? 0);
     const pax = paxFor(offerId);
     pax.id = passengerIds[0];
-
     const top = await call(
       `Create order (top-level seat ${seat.id})`,
       "POST",
@@ -368,15 +420,12 @@ async function createOrder(label, offerId, passengerId, total, extra = {}) {
       },
     );
     if (top.ok) {
-      console.log("\n✓ Seat order (top-level services) SUCCEEDED");
+      console.log("\nSeat order (top-level services) SUCCEEDED");
     } else {
-      console.log(
-        "\n✗ Seat order (top-level) failed:",
-        summarizeError(top.json),
-      );
+      console.log("\nSeat order (top-level) failed:", summarizeError(top.json));
     }
   } else {
-    console.log("\n– No seat services available on this offer; skipping.");
+    console.log("\nNo seat services available on this offer; skipping.");
   }
 }
 

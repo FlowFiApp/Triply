@@ -77,7 +77,13 @@ function BookingCard({
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <button
+          onClick={() =>
+            isFlight ? router.push(`/trip/${item.id}`) : undefined
+          }
+          disabled={!isFlight}
+          className={`flex items-center gap-2 text-left ${isFlight ? "flex-1" : ""}`}
+        >
           {isFlight && item.airlineLogo ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -90,13 +96,13 @@ function BookingCard({
               <Icon size={16} />
             </span>
           )}
-          <div className="flex flex-col">
+          <span className="flex flex-col">
             <span className="text-[13px] font-semibold text-foreground">
               {item.title}
             </span>
             <span className="text-[11px] text-muted">{item.subtitle}</span>
-          </div>
-        </div>
+          </span>
+        </button>
         <StatusPill status={item.status} />
       </div>
 
