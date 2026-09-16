@@ -2,7 +2,7 @@ import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 
 export const AUTH_COOKIE = "triply-auth";
-const MAX_AGE_SECONDS = 60 * 60 * 24 * 30; // 30 days
+const MAX_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 days
 const NONCE_TTL_MS = 5 * 60 * 1000;
 
 const JWT_SECRET =

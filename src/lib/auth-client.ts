@@ -8,24 +8,57 @@ export type NimiqSigner = (
   message: string,
 ) => Promise<{ publicKey: string; signature: string }>;
 
+const SESSION_KEY = "triply-session";
+
+type StoredSession = { address: string };
+
+function readLocalSession(): Session {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return { authenticated: false, address: null };
+    const parsed = JSON.parse(raw) as StoredSession;
+    if (parsed.address) return { authenticated: true, address: parsed.address };
+  } catch {}
+  return { authenticated: false, address: null };
+}
+
+function writeLocalSession(address: string | null) {
+  try {
+    if (address) {
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ address }));
+    } else {
+      localStorage.removeItem(SESSION_KEY);
+    }
+  } catch {}
+}
+
 let cachedSession: Session | null = null;
 let inflight: Promise<Session> | null = null;
+
+export function getStoredSession(): Session {
+  if (cachedSession) return cachedSession;
+  return readLocalSession();
+}
 
 export async function getSession(force = false): Promise<Session> {
   if (!force && cachedSession) return cachedSession;
   if (inflight) return inflight;
   inflight = fetch("/api/auth/session", { cache: "no-store" })
     .then((r) => r.json())
-    .then(
-      (d) =>
-        (cachedSession = {
-          authenticated: Boolean(d.authenticated),
-          address: d.address ?? null,
-        }),
-    )
-    .catch(
-      () => (cachedSession = { authenticated: false, address: null }),
-    )
+    .then((d) => {
+      const s: Session = {
+        authenticated: Boolean(d.authenticated),
+        address: d.address ?? null,
+      };
+      cachedSession = s;
+      writeLocalSession(s.address);
+      return s;
+    })
+    .catch(() => {
+      const fallback = readLocalSession();
+      cachedSession = fallback;
+      return fallback;
+    })
     .finally(() => {
       inflight = null;
     });
@@ -57,12 +90,17 @@ export async function signInWithNimiq(
       }),
     });
     const ok = res.ok && Boolean((await res.json()).ok);
-    cachedSession = ok
-      ? { authenticated: true, address }
-      : { authenticated: false, address: null };
+    if (ok) {
+      cachedSession = { authenticated: true, address };
+      writeLocalSession(address);
+    } else {
+      cachedSession = { authenticated: false, address: null };
+      writeLocalSession(null);
+    }
     return ok;
   } catch {
     cachedSession = { authenticated: false, address: null };
+    writeLocalSession(null);
     return false;
   }
 }
@@ -74,4 +112,5 @@ export async function signOut(): Promise<void> {
     // ignore
   }
   cachedSession = { authenticated: false, address: null };
+  writeLocalSession(null);
 }

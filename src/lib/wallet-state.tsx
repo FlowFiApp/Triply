@@ -17,7 +17,7 @@ import {
   type NimiqSigner,
 } from "@/lib/wallet";
 import type { PaymentResult } from "@/lib/wallet";
-import { getSession, signInWithNimiq, signOut } from "@/lib/auth-client";
+import { getSession, getStoredSession, signInWithNimiq, signOut } from "@/lib/auth-client";
 
 export type WalletState = {
   connected: boolean;
@@ -65,8 +65,23 @@ function loadState(): WalletState {
 }
 
 export function WalletProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<WalletState>(() => loadState());
-  const [authState, setAuthState] = useState<AuthState>("idle");
+  const [state, setState] = useState<WalletState>(() => {
+    const local = loadState();
+    const session = getStoredSession();
+    if (session.authenticated && session.address) {
+      return {
+        ...local,
+        connected: true,
+        nimiqAddress: session.address,
+        source: "Nimiq Pay",
+      };
+    }
+    return local;
+  });
+  const [authState, setAuthState] = useState<AuthState>(() => {
+    const session = getStoredSession();
+    return session.authenticated ? "authenticated" : "idle";
+  });
   const signerRef = useRef<NimiqSigner | null>(null);
 
   useEffect(() => {
