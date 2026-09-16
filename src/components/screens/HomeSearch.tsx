@@ -21,12 +21,6 @@ import {
   BrandHeader,
   MobileShell,
 } from "@/components/shell";
-import {
-  Avatar,
-  BottomTabBar,
-  BrandHeader,
-  MobileShell,
-} from "@/components/shell";
 import CitiesSheet from "@/components/ui/cities-sheet";
 import DateRangePicker, { formatDateLabel } from "@/components/ui/date-range-picker";
 import { PassengerClassSheet } from "@/components/screens/sheets";

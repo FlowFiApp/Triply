@@ -34,9 +34,6 @@ import ImageCarousel from "@/components/ui/image-carousel";
 import DateRangePicker, {
   formatDateLabel,
 } from "@/components/ui/date-range-picker";
-import PlacesCombobox, {
-  type PlaceSelection,
-} from "@/components/ui/places-combobox";
 import { readFlow, writeFlow } from "@/lib/store";
 import { useFlow } from "@/lib/flow-context";
 import { useCarSearch } from "@/lib/api/hooks";

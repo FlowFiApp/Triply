@@ -25,11 +25,35 @@ export default function CitiesSheet({
   const [noLive, setNoLive] = useState(false);
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Reset the picker each time the sheet opens.
+  useEffect(() => {
+    if (!open) return;
+    const reset = setTimeout(() => {
+      setQuery("");
+      setCities([]);
+      setNoLive(false);
+      setLoading(false);
+    }, 0);
+    return () => clearTimeout(reset);
+  }, [open]);
+
+  const onQueryChange = (v: string) => {
+    setQuery(v);
+    const trimmed = v.trim();
+    setLoading(trimmed.length > 0);
+    if (!trimmed) {
+      setCities([]);
+      setNoLive(false);
+    }
+  };
+
+  // Debounced city lookup — only fires while typing.
   useEffect(() => {
     if (debounce.current) clearTimeout(debounce.current);
-    setLoading(true);
+    const q = query.trim();
+    if (!q) return;
     debounce.current = setTimeout(() => {
-      fetch(`/api/cities?query=${encodeURIComponent(query.trim())}`)
+      fetch(`/api/cities?query=${encodeURIComponent(q)}`)
         .then((r) => r.json())
         .then((d) => {
           const list = (d.cities ?? []) as CityOption[];
@@ -37,7 +61,7 @@ export default function CitiesSheet({
             ? list.filter((c) => !exclude.includes(c.id))
             : list;
           setCities(filtered);
-          setNoLive(!d.live && Boolean(query.trim()));
+          setNoLive(!d.live);
         })
         .catch(() => {
           setCities([]);
@@ -50,13 +74,6 @@ export default function CitiesSheet({
     };
   }, [query, exclude]);
 
-  useEffect(() => {
-    if (open) {
-      setQuery("");
-      setCities([]);
-    }
-  }, [open]);
-
   return (
     <Sheet open={open} onClose={onClose} height="85vh">
       <div className="sticky top-0 z-10 bg-card px-4 pb-2">
@@ -67,7 +84,7 @@ export default function CitiesSheet({
           <Search size={16} className="shrink-0 text-muted" />
           <input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => onQueryChange(e.target.value)}
             placeholder="Search cities…"
             autoFocus
             className="h-11 w-full bg-transparent text-[16px] font-semibold text-foreground outline-none placeholder:font-normal placeholder:text-muted"
