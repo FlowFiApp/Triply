@@ -169,18 +169,45 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   // identity is only requested when the user explicitly signs in (Profile) or
   // performs an action that needs it (posting, redeeming, booking).
   // Silently restore an existing JWT session on open — no wallet prompt.
+  // If wallet was connected but JWT expired, auto-prompt re-authentication.
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const session = await getSession();
-      if (cancelled || !session.authenticated || !session.address) return;
-      setState((s) => ({
-        ...s,
-        connected: true,
-        nimiqAddress: session.address ?? undefined,
-        source: "Nimiq Pay",
-      }));
-      setAuthState("authenticated");
+      if (cancelled) return;
+
+      if (session.authenticated && session.address) {
+        setState((s) => ({
+          ...s,
+          connected: true,
+          nimiqAddress: session.address ?? undefined,
+          source: "Nimiq Pay",
+        }));
+        setAuthState("authenticated");
+        return;
+      }
+
+      // Session invalid — check if wallet was previously connected.
+      const local = loadState();
+      if (!local.connected || !local.nimiqAddress) return;
+
+      // Wallet connected but JWT expired/missing → prompt re-authentication.
+      setAuthState("authenticating");
+      const identity = await connectNimiqIdentity();
+      if (cancelled) return;
+
+      if (identity) {
+        signerRef.current = identity.sign;
+        setState((s) => ({
+          ...s,
+          connected: true,
+          nimiqAddress: identity.address,
+          source: "Nimiq Pay",
+        }));
+        await runSignIn(identity.address);
+      } else {
+        setAuthState("unauthenticated");
+      }
     })();
     return () => {
       cancelled = true;
