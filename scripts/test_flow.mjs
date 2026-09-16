@@ -148,6 +148,113 @@ async function createOrder(label, offerId, passengerId, total, extra = {}) {
   return res;
 }
 
+// --- Scenario: app-like payload (2 adults, customer user, metadata) ---------
+{
+  const search = await call(
+    "Search offers (2 adults)",
+    "POST",
+    "/offer_requests",
+    {
+      data: {
+        slices: [
+          {
+            origin,
+            destination,
+            departure_date: date,
+            departure_time: null,
+            arrival_time: null,
+          },
+        ],
+        passengers: [{ type: "adult" }, { type: "adult" }],
+        cabin_class: "economy",
+        return_offers: true,
+      },
+    },
+  );
+  const offers = search.json?.data?.offers ?? [];
+  if (!offers.length) {
+    console.log("\n✗ No offers returned (2 adults).");
+  } else {
+    const offerId = offers[0].id;
+    const offer = await call(
+      "Get offer (2 adults)",
+      "GET",
+      `/offers/${offerId}?return_available_services=true`,
+    );
+    const passengerIds = (offer.json?.data?.passengers ?? [])
+      .map((p) => p.id)
+      .filter(Boolean);
+    const total2 = Number(offers[0].total_amount ?? 0);
+    console.log("\nOffer passenger ids (2 adults):", passengerIds);
+
+    // Mirror ensureCustomerUser (identity/customer/users).
+    const cu = await call(
+      "Create customer user",
+      "POST",
+      "/identity/customer/users",
+      {
+        data: {
+          email: "jane.doe@example.com",
+          given_name: "Jane",
+          family_name: "Doe",
+          phone_number: "+2348012345678",
+        },
+      },
+    );
+    const customerUserId = cu.json?.data?.id;
+
+    const pax1 = {
+      id: passengerIds[0],
+      user_id: customerUserId,
+      given_name: "Jane",
+      family_name: "Doe",
+      born_on: "1990-01-01",
+      gender: "f",
+      title: "mr",
+      email: "jane.doe@example.com",
+      phone_number: "+2348012345678",
+    };
+    const pax2 = {
+      id: passengerIds[1],
+      user_id: customerUserId,
+      given_name: "John",
+      family_name: "Smith",
+      born_on: "1985-05-10",
+      gender: "m",
+      title: "mr",
+      email: "john.smith@example.com",
+      phone_number: "+2348012345678",
+    };
+    const appLike = await call(
+      "Create order (app-like payload)",
+      "POST",
+      "/orders",
+      {
+        data: {
+          type: "instant",
+          selected_offers: [offerId],
+          passengers: [pax1, pax2],
+          payments: [
+            {
+              type: "balance",
+              currency: "USD",
+              amount: (Math.round(total2 * 100) / 100).toFixed(2),
+            },
+          ],
+          metadata: { onchain_payment_tx: "0xabc123", chain: "polygon" },
+        },
+      },
+    );
+    if (appLike.ok) {
+      console.log(
+        `\n✓ App-like order (2 adults) SUCCEEDED — bookingRef ${appLike.json?.data?.booking_ref}`,
+      );
+    } else {
+      console.log("\n✗ App-like order failed:", summarizeError(appLike.json));
+    }
+  }
+}
+
 // --- Scenario: no services (the app's plain flight booking) ----------------
 {
   const { offerId, passengerIds, total } = await searchAndOffer();
@@ -156,6 +263,43 @@ async function createOrder(label, offerId, passengerId, total, extra = {}) {
     console.log(
       `\n✓ No-services order SUCCEEDED (${total.toFixed(2)} USD) — bookingRef ${res.json?.data?.booking_ref}`,
     );
+
+    // --- Test the two-step cancellation flow ------------------------------
+    const orderId = res.json?.data?.id;
+    if (orderId) {
+      const pending = await call(
+        "Create pending cancellation",
+        "POST",
+        "/order_cancellations",
+        { data: { order_id: orderId } },
+      );
+      if (pending.ok) {
+        const c = pending.json?.data;
+        console.log(
+          `\nCancellation quote: refund ${c?.refund_amount} ${c?.refund_currency} → ${c?.refund_to}`,
+        );
+        const confirmed = await call(
+          "Confirm cancellation",
+          "POST",
+          `/order_cancellations/${c?.id}/actions/confirm`,
+        );
+        if (confirmed.ok) {
+          console.log(
+            `\n✓ Cancellation confirmed — refund ${confirmed.json?.data?.refund_amount} ${confirmed.json?.data?.refund_currency}`,
+          );
+        } else {
+          console.log(
+            "\n✗ Confirm cancellation failed:",
+            summarizeError(confirmed.json),
+          );
+        }
+      } else {
+        console.log(
+          "\n✗ Create pending cancellation failed:",
+          summarizeError(pending.json),
+        );
+      }
+    }
   } else {
     console.log("\n✗ No-services order failed:", summarizeError(res.json));
   }

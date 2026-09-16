@@ -31,6 +31,7 @@ type BookingItem = {
   dep: string;
   arr: string;
   amount: number;
+  airlineLogo?: string;
 };
 
 const ACTIVE = /confirm|issued|paid|delivered|booked/i;
@@ -77,9 +78,18 @@ function BookingCard({
     <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#5b7cfa] text-accent-2">
-            <Icon size={16} />
-          </span>
+          {isFlight && item.airlineLogo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={item.airlineLogo}
+              alt={item.title}
+              className="h-9 w-9 shrink-0 object-contain"
+            />
+          ) : (
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#5b7cfa] text-accent-2">
+              <Icon size={16} />
+            </span>
+          )}
           <div className="flex flex-col">
             <span className="text-[13px] font-semibold text-foreground">
               {item.title}
@@ -160,6 +170,15 @@ export default function MyTrips() {
   const [lookedUp, setLookedUp] = useState<BookingItem | null>(null);
   const [cancelling, setCancelling] = useState<string | null>(null);
   const [changing, setChanging] = useState<BookingItem | null>(null);
+  const [cancelQuote, setCancelQuote] = useState<{
+    item: BookingItem;
+    quote: {
+      cancellationId: string;
+      refundAmount: number;
+      currency: string;
+      refundTo: string;
+    };
+  } | null>(null);
   const [changeDate, setChangeDate] = useState("");
   const [changeOffers, setChangeOffers] = useState<any[]>([]);
   const [changeLoading, setChangeLoading] = useState(false);
@@ -210,18 +229,64 @@ export default function MyTrips() {
   const cancel = async (item: BookingItem) => {
     if (!window.confirm(`Cancel booking ${item.reference}?`)) return;
     setCancelling(item.id);
+    // Stays/cars cancel in one step; flights quote the refund first (Duffel
+    // requires a pending cancellation to be confirmed before it takes effect).
+    if (item.kind === "flight") {
+      try {
+        const res = await fetch(
+          `/api/orders/${encodeURIComponent(item.id)}/cancel`,
+          { method: "POST" },
+        );
+        const d = await res.json();
+        if (!res.ok || d.error) throw new Error(d.error ?? "Cancellation failed");
+        setCancelQuote({ item, quote: d });
+      } catch (err) {
+        toast("error", err instanceof Error ? err.message : "Cancellation failed");
+      } finally {
+        setCancelling(null);
+      }
+      return;
+    }
     const path =
-      item.kind === "flight"
-        ? `/api/orders/${encodeURIComponent(item.id)}/cancel`
-        : item.kind === "stay"
-          ? `/api/stays/book/${encodeURIComponent(item.id)}/cancel`
-          : `/api/cars/book/${encodeURIComponent(item.id)}/cancel`;
+      item.kind === "stay"
+        ? `/api/stays/book/${encodeURIComponent(item.id)}/cancel`
+        : `/api/cars/book/${encodeURIComponent(item.id)}/cancel`;
     try {
       const res = await fetch(path, { method: "POST" });
       const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Cancellation failed");
       await qc.invalidateQueries({ queryKey: ["bookings"] });
       toast("success", `Booking ${item.reference} cancelled.`);
+    } catch (err) {
+      toast("error", err instanceof Error ? err.message : "Cancellation failed");
+    } finally {
+      setCancelling(null);
+    }
+  };
+
+  const confirmCancel = async () => {
+    if (!cancelQuote) return;
+    setCancelling(cancelQuote.item.id);
+    try {
+      const res = await fetch(
+        `/api/orders/${encodeURIComponent(cancelQuote.item.id)}/cancel/confirm`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cancellationId: cancelQuote.quote.cancellationId }),
+        },
+      );
+      const d = await res.json();
+      if (!res.ok || d.error) throw new Error(d.error ?? "Cancellation failed");
+      await qc.invalidateQueries({ queryKey: ["bookings"] });
+      const refund = Number(d.refundAmount ?? cancelQuote.quote.refundAmount ?? 0);
+      toast(
+        "success",
+        `Booking ${cancelQuote.item.reference} cancelled.${
+          refund > 0 ? ` Refund ${refund.toLocaleString()} ${d.currency ?? cancelQuote.quote.currency ?? "USD"}.` : ""
+        }`,
+      );
+      setCancelQuote(null);
     } catch (err) {
       toast("error", err instanceof Error ? err.message : "Cancellation failed");
     } finally {
@@ -453,6 +518,60 @@ export default function MyTrips() {
                 ))}
               </div>
             ) : null}
+          </>
+        ) : null}
+      </Sheet>
+
+      <Sheet
+        open={Boolean(cancelQuote)}
+        onClose={() => setCancelQuote(null)}
+      >
+        {cancelQuote ? (
+          <>
+            <div className="px-4 py-3">
+              <h2 className="text-[18px] font-extrabold text-foreground">
+                Cancel booking
+              </h2>
+              <p className="text-[12px] text-muted">
+                {cancelQuote.item.title} · {cancelQuote.item.reference}
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 px-4 py-4">
+              <div className="rounded-xl border border-border bg-card-2 p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] font-semibold text-foreground">
+                    Estimated refund
+                  </span>
+                  <span className="text-[16px] font-extrabold text-accent-fg">
+                    {Number(cancelQuote.quote.refundAmount ?? 0) > 0 ? (
+                      <UsdtAmount value={Number(cancelQuote.quote.refundAmount)} />
+                    ) : (
+                      "Non-refundable"
+                    )}
+                  </span>
+                </div>
+                <p className="mt-1 text-[11px] text-muted">
+                  Refunded to{" "}
+                  {cancelQuote.quote.refundTo === "balance"
+                    ? "your Duffel balance"
+                    : cancelQuote.quote.refundTo ?? "original payment method"}
+                  {" "}— this is a final action.
+                </p>
+              </div>
+              <button
+                onClick={() => void confirmCancel()}
+                disabled={cancelling === cancelQuote.item.id}
+                className="tap flex h-12 w-full items-center justify-center rounded-xl border border-red-500/40 bg-red-500/10 text-[15px] font-bold text-red-500 disabled:opacity-50"
+              >
+                {cancelling === cancelQuote.item.id ? "Cancelling…" : "Confirm Cancellation"}
+              </button>
+              <button
+                onClick={() => setCancelQuote(null)}
+                className="flex h-12 w-full items-center justify-center rounded-xl border border-border bg-card-2 text-[15px] font-semibold text-foreground"
+              >
+                Keep Booking
+              </button>
+            </div>
           </>
         ) : null}
       </Sheet>

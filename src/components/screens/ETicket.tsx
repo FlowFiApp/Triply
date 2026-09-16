@@ -129,14 +129,12 @@ useEffect(() => {
                 <div className="flex items-center justify-between">
 <div className="flex items-center gap-2">
                     {order.airlineLogo ? (
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded bg-white p-0.5">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={order.airlineLogo}
-                          alt={order.airline}
-                          className="h-full w-full object-contain"
-                        />
-                      </span>
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={order.airlineLogo}
+                        alt={order.airline}
+                        className="h-6 w-6 shrink-0 object-contain"
+                      />
                     ) : (
                       <Identicon seed={`${order.airlineCode}${order.flightNumber}`} size={24} />
                     )}

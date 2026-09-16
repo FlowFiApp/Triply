@@ -29,14 +29,12 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
       <div className="flex items-center justify-between">
 <div className="flex items-center gap-2">
           {offer.airlineLogo ? (
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-1.5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={offer.airlineLogo}
-                alt={offer.airline}
-                className="h-full w-full object-contain"
-              />
-            </span>
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={offer.airlineLogo}
+              alt={offer.airline}
+              className="h-9 w-9 shrink-0 object-contain"
+            />
           ) : (
             <Identicon seed={`${offer.airlineCode}${offer.flightNumber}`} size={36} />
           )}

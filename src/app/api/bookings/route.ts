@@ -12,6 +12,10 @@ function normalizeOrder(o: any) {
     email: p.email ?? "",
     title: seg.marketing_carrier?.name ?? "Flight",
     subtitle: `${seg.marketing_carrier_flight_number ?? ""} • ${p.cabin_class_marketing ?? "Economy"}`,
+    airlineLogo:
+      seg.marketing_carrier?.logo_symbol_url ??
+      seg.marketing_carrier?.logo_lockup_url ??
+      undefined,
     status: o.state ?? "confirmed",
     depTime: seg.departing_at ?? "",
     arrTime: seg.arriving_at ?? "",

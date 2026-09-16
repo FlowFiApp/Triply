@@ -255,10 +255,12 @@ export async function createFlightOrder({
   if (!duffelEnabled()) return null;
   const duffel = getDuffel();
   const cardId = process.env.DUFFEL_CARD_ID;
-  // The balance must exactly match the order total. Deriving it from the
-  // client amount can drift by cents when test pricing is enabled, so read
-  // the offer's real total (plus selected services) server-side instead.
+  // The balance must exactly match the order total, and the order's passengers
+  // must reference the offer's passenger records (pas_…). Both come from the
+  // offer, so read it server-side once — falling back to the client values
+  // (which may be stale if the flow predates these fields).
   let paymentTotal = realPrice(amount);
+  let offerPassengerIds = passengerIds ?? [];
   try {
     const offer = await getFlightOffer(offerId);
     if (offer) {
@@ -267,9 +269,13 @@ export async function createFlightOrder({
         .filter((s: any) => services?.includes(s.id))
         .reduce((sum: number, s: any) => sum + Number(s.total_amount ?? 0), 0);
       if (base > 0) paymentTotal = base + svc;
+      const ids = (offer.passengers ?? [])
+        .map((p: any) => p.id)
+        .filter(Boolean);
+      if (ids.length) offerPassengerIds = ids;
     }
   } catch {
-    // fall back to the client amount
+    // fall back to the client-provided values
   }
   const payments: any[] = cardId
     ? [{ type: "card", card_id: cardId }]
@@ -293,7 +299,7 @@ export async function createFlightOrder({
     passengers: passengers.map((p, i) => ({
       // Duffel requires the passenger id to reference the offer request's
       // passenger record (pas_…), not an arbitrary UUID.
-      id: passengerIds?.[i] ?? crypto.randomUUID(),
+      id: offerPassengerIds[i] ?? crypto.randomUUID(),
       ...(customerUserId ? { user_id: customerUserId } : {}),
       given_name: p.given_name,
       family_name: p.family_name,
@@ -325,17 +331,21 @@ export async function getOrder(orderId: string) {
   return data as any;
 }
 
-export async function cancelOrder(orderId: string) {
+/** Creates a PENDING order cancellation — returns the refund quote. */
+export async function createOrderCancellation(orderId: string) {
   if (!duffelEnabled()) return null;
   const duffel = getDuffel();
   const { data } = await duffel.orderCancellations.create({
     order_id: orderId,
   } as any);
-  try {
-    await duffel.orderCancellations.confirm(data.id);
-  } catch {
-    // some cancellations are confirmed immediately
-  }
+  return data as any;
+}
+
+/** Confirms a pending order cancellation — the order is cancelled + refunded. */
+export async function confirmOrderCancellation(cancellationId: string) {
+  if (!duffelEnabled()) return null;
+  const duffel = getDuffel();
+  const { data } = await duffel.orderCancellations.confirm(cancellationId);
   return data as any;
 }
 

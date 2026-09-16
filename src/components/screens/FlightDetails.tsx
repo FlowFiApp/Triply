@@ -147,14 +147,12 @@ export default function FlightDetails() {
                 <div className="flex flex-1 flex-col gap-1">
                   <span className="flex items-center gap-2 text-[14px] font-bold text-foreground">
                     {offer.airlineLogo ? (
-                      <span className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded bg-white p-0.5">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={offer.airlineLogo}
-                          alt={offer.airline}
-                          className="h-full w-full object-contain"
-                        />
-                      </span>
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={offer.airlineLogo}
+                        alt={offer.airline}
+                        className="h-[18px] w-[18px] shrink-0 object-contain"
+                      />
                     ) : (
                       <Identicon
                         seed={`${offer.airlineCode}${offer.flightNumber}`}
@@ -334,7 +332,19 @@ export default function FlightDetails() {
                     style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}
                   >
                     <span className="flex items-center gap-2 text-[12px] font-bold text-foreground">
-                      <Identicon seed={`${s.airlineCode}${s.flightNumber}`} size={18} />
+                      {s.airlineLogo ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={s.airlineLogo}
+                          alt={s.airline}
+                          className="h-[18px] w-[18px] shrink-0 object-contain"
+                        />
+                      ) : (
+                        <Identicon
+                          seed={`${s.airlineCode}${s.flightNumber}`}
+                          size={18}
+                        />
+                      )}
                       {s.airline} · {s.flightNumber}
                     </span>
                     <span className="text-[11px] text-muted">

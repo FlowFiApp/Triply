@@ -104,6 +104,13 @@ export async function POST(request: Request) {
       services: Array.isArray(body.selectedServiceIds) ? body.selectedServiceIds : [],
       passengerIds: Array.isArray(body.passengerIds) ? body.passengerIds : [],
     });
+    console.log("POST /api/orders created", {
+      offerId: body.offerId,
+      passengers: body.passengers?.length,
+      passengerIds: (Array.isArray(body.passengerIds) ? body.passengerIds : []).length,
+      services: Array.isArray(body.selectedServiceIds) ? body.selectedServiceIds : [],
+      bookingRef: order?.booking_ref,
+    });
     if (!order) {
       return Response.json({
         live: false,
@@ -128,12 +135,20 @@ export async function POST(request: Request) {
 
     return Response.json({ live: true, order: normalizeOrder(order) });
   } catch (err) {
-    console.error(
-      "POST /api/orders failed",
-      err instanceof Error ? err.stack ?? err.message : err,
-    );
+    const e = err as {
+      message?: string;
+      errors?: Array<{ title?: string; detail?: string; source?: unknown }>;
+      status?: number;
+      meta?: unknown;
+    };
+    console.error("POST /api/orders failed", {
+      message: e?.message,
+      status: e?.status,
+      errors: e?.errors,
+      meta: e?.meta,
+    });
     return Response.json(
-      { error: err instanceof Error ? err.message : "order failed" },
+      { error: e?.message || "order failed" },
       { status: 500 },
     );
   }
