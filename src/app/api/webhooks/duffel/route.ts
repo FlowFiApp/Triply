@@ -11,8 +11,11 @@ function parseSignature(
 ): { t?: string; v1?: string } | null {
   const pairs = header
     .split(",")
-    .map((p) => p.trim().split("="))
-    .filter((p) => p.length === 2);
+    .map((p) => {
+      const [k, ...rest] = p.trim().split("=");
+      return [k.trim(), rest.join("=").trim()];
+    })
+    .filter((p) => p.length === 2 && p[0] && p[1]);
   if (!pairs.length) return null;
   return {
     t: pairs.find(([k]) => k === "t")?.[1],
@@ -100,6 +103,11 @@ export async function POST(request: Request) {
       secretLength: SECRET?.length ?? 0,
       bodyLength: raw.length,
       headerLength: signature.length,
+      rawSignature: signature,
+      pairs: signature
+        .split(",")
+        .map((p) => p.trim().split("="))
+        .map((p) => [p[0], `${(p[1] ?? "").slice(0, 8)}…`]),
       t: sig?.t,
       v1Prefix: sig?.v1?.slice(0, 8),
       localPrefix: local.slice(0, 8),

@@ -138,7 +138,21 @@ export default function PassengerDetails() {
     ];
     const nextInvalid: Record<string, boolean> = {};
     let dupEmail = false;
+    let underage = false;
     const seenEmails = new Map<string, number>();
+    // Flights are searched/booked as adult passengers, so each traveller must
+    // be at least 12 years old at the departure date — otherwise Duffel rejects
+    // the order ("date of birth does not match passenger type").
+    const depDate =
+      flow.offer?.depDate ?? flow.search?.date ?? new Date().toISOString().slice(0, 10);
+    const ageAt = (dob: string) => {
+      const d = new Date(dob);
+      const ref = new Date(depDate);
+      let age = ref.getFullYear() - d.getFullYear();
+      const m = ref.getMonth() - d.getMonth();
+      if (m < 0 || (m === 0 && ref.getDate() < d.getDate())) age--;
+      return age;
+    };
     for (let i = 0; i < forms.length; i++) {
       const f = forms[i];
       for (const k of required) {
@@ -161,7 +175,16 @@ export default function PassengerDetails() {
       if (f.phone.replace(/\D/g, "").length < 7) {
         nextInvalid[`${i}-phone`] = true;
       }
-      if (!f.dob) nextInvalid[`${i}-dob`] = true;
+      if (f.dob) {
+        if (Number.isNaN(new Date(f.dob).getTime())) {
+          nextInvalid[`${i}-dob`] = true;
+        } else if (ageAt(f.dob) < 12) {
+          nextInvalid[`${i}-dob`] = true;
+          underage = true;
+        }
+      } else {
+        nextInvalid[`${i}-dob`] = true;
+      }
       // Duffel caps names at 20 characters per part.
       if (f.first.trim().length > 20) nextInvalid[`${i}-first`] = true;
       if (f.last.trim().length > 20) nextInvalid[`${i}-last`] = true;
@@ -170,8 +193,10 @@ export default function PassengerDetails() {
       setInvalid(nextInvalid);
       toast(
         "error",
-        dupEmail
-          ? "Each passenger needs a different email address."
+        underage
+          ? "Passengers must be at least 12 years old on this flight."
+          : dupEmail
+            ? "Each passenger needs a different email address."
           : "Please fill in all required fields for every passenger before continuing.",
       );
       return;

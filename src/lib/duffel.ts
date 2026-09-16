@@ -302,6 +302,9 @@ export async function createFlightOrder({
       // Duffel requires the passenger id to reference the offer request's
       // passenger record (pas_…), not an arbitrary UUID.
       id: offerPassengerIds[i] ?? crypto.randomUUID(),
+      // Flights are searched as adult passengers — keep the type explicit so
+      // Duffel's DOB/type validation stays consistent.
+      type: "adult",
       // Each passenger gets its OWN customer user id — Duffel rejects
       // duplicate user ids across passengers.
       ...(userIds?.[i] ? { user_id: userIds[i] } : {}),
