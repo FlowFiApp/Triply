@@ -271,15 +271,22 @@ export async function redeemPoints({
 }): Promise<{ ok: boolean; recordId?: string; error?: string }> {
   const db = await getDb();
   const user = await getUser(userKey);
-  if (!user || user.points.available < amount) {
+  // Points accumulate via $inc on decimals, so tolerate float drift (e.g.
+  // 4.299999999999999 should count as 4.3) when comparing.
+  const EPSILON = 1e-9;
+  if (!user || user.points.available + EPSILON < amount) {
     return { ok: false, error: "Not enough points available." };
   }
   await db.collection<UserDoc>("users").updateOne(
     { key: userKey },
-    {
-      $inc: { "points.available": -amount },
-      $set: { updatedAt: new Date() },
-    },
+    [
+      {
+        $set: {
+          "points.available": { $max: [{ $subtract: ["$points.available", amount] }, 0] },
+          updatedAt: new Date(),
+        },
+      },
+    ],
   );
   const inserted = await db.collection<RewardDoc>("rewards").insertOne({
     userId: userKey,
