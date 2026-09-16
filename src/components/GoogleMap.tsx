@@ -38,6 +38,8 @@ export default function GoogleMap({
   useEffect(() => {
     if (!key) return;
     let cancelled = false;
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+
     loadGoogleMaps(key)
       .then(() => {
         if (cancelled || !ref.current) return;
@@ -54,8 +56,15 @@ export default function GoogleMap({
       .catch(() => {
         if (!cancelled) setStatus("fallback");
       });
+
+    // Fallback timeout: if the map doesn't become ready in 6 s, show iframe.
+    timeout = setTimeout(() => {
+      if (!cancelled && !mapRef.current) setStatus("fallback");
+    }, 6000);
+
     return () => {
       cancelled = true;
+      if (timeout) clearTimeout(timeout);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
