@@ -40,6 +40,7 @@ import { useCarSearch } from "@/lib/api/hooks";
 import { useToast } from "@/lib/toast";
 import { getStoredIdentity } from "@/lib/identity";
 import { share } from "@/lib/share";
+import { usePoints } from "@/lib/points";
 import { downloadIcs } from "@/lib/calendar";
 import { copyText } from "@/lib/nimiq";
 import { haptic } from "@/lib/haptics";
@@ -379,6 +380,7 @@ export function CarDetails() {
   const [car] = useState<CarOffer | null>(() => readFlow().car ?? null);
   const [booking, setBooking] = useState(false);
   const [error, setError] = useState("");
+  const { refresh: refreshPoints } = usePoints();
 
   if (!car) {
     return (
@@ -426,6 +428,7 @@ export function CarDetails() {
       const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Booking failed");
       writeFlow({ carBooking: d.booking as CarBooking });
+      void refreshPoints();
       router.push("/car/confirmed");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Booking failed");

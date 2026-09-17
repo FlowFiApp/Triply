@@ -152,12 +152,13 @@ export async function POST(request: Request) {
     }
 
     // 2 NIM per 1 USDT, credited once per booking.
-    if (userKey && order.booking_ref) {
+    const bookingRef = order.booking_reference ?? order.booking_ref ?? order.id;
+    if (userKey && bookingRef) {
       try {
         await earnPoints({
           userKey,
           amountUsd: body.amount ?? 0,
-          bookingRef: order.booking_ref,
+          bookingRef,
           bookingKind: "flight",
           orderId: order.id,
         });
@@ -173,10 +174,10 @@ export async function POST(request: Request) {
         const { sendEmail, bookingEmailHtml } = await import("@/lib/resend");
         await sendEmail({
           to: p0.email,
-          subject: `Triply — flight booked (${order.booking_ref})`,
+          subject: `Triply — flight booked (${order.booking_reference ?? order.booking_ref ?? ""})`,
           html: bookingEmailHtml({
             brand: "Triply",
-            reference: order.booking_ref,
+            reference: order.booking_reference ?? order.booking_ref ?? "",
             title: "Flight",
             subtitle: `${order.slices?.[0]?.segments?.[0]?.origin?.iata_code ?? ""} → ${order.slices?.[0]?.segments?.[0]?.destination?.iata_code ?? ""}`,
             amount: String(order.total_amount ?? 0),

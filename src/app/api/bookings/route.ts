@@ -16,9 +16,10 @@ export async function GET(request: Request) {
     const orders = ordersRes.status === "fulfilled" ? ordersRes.value : [];
     const persisted = persistedRes.status === "fulfilled" ? persistedRes.value : [];
 
-    const flights: Booking[] = (orders ?? [])
-      .map(normalizeFlightBooking)
-      .filter((b) => (email ? b.email?.toLowerCase() === email : true));
+    // Flights come from the Duffel test account; stays/cars are persisted and
+    // scoped by email when one is provided. Past/cancelled bookings are kept so
+    // the "Past" tab shows them.
+    const flights: Booking[] = (orders ?? []).map(normalizeFlightBooking);
     const stays: Booking[] = persisted
       .filter((b) => b.kind === "stay")
       .map(normalizeStayBooking);

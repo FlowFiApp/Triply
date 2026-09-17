@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Check, Copy, ExternalLink } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { useFlow } from "@/lib/flow-context";
+import { usePoints } from "@/lib/points";
 import { useToast } from "@/lib/toast";
 import { useWalletState } from "@/lib/wallet-state";
 import { CHAINS } from "@/lib/wallet";
@@ -43,6 +44,7 @@ export default function Processing() {
   const tx = flow.txHash ?? "";
   const chain = CHAINS.polygon;
   const { state } = useWalletState();
+  const { refresh: refreshPoints } = usePoints();
 
   const [current, setCurrent] = useState<Step>("verify");
   const [sub, setSub] = useState("In Progress...");
@@ -125,6 +127,7 @@ export default function Processing() {
         txHash: tx,
         chain: chain.id,
       });
+      void refreshPoints();
       toast(
         "success",
         `Booking confirmed · ${(data.order as OrderRecord)?.bookingRef}`,
@@ -140,7 +143,7 @@ export default function Processing() {
             : "Booking could not be issued.",
       );
     }
-  }, [tx, amount, chain.id, offerId, payer, state.nimiqAddress, flow, setFlow, toast, router]);
+  }, [tx, amount, chain.id, offerId, payer, state.nimiqAddress, flow, setFlow, toast, router, refreshPoints]);
 
   useEffect(() => {
     if (ran.current) return;

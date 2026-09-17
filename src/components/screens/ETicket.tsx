@@ -2,7 +2,15 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BedDouble, Calendar, Car, Check, ChevronRight, Download, Share2 } from "lucide-react";
+import {
+  BedDouble,
+  Calendar,
+  Car,
+  Check,
+  ChevronRight,
+  Download,
+  Share2,
+} from "lucide-react";
 import { BottomTabBar, MobileShell } from "@/components/shell";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import BookingQR from "@/components/ui/booking-qr";
@@ -54,7 +62,7 @@ export default function ETicket() {
     );
   };
 
-useEffect(() => {
+  useEffect(() => {
     if (order || !flow.orderId) return;
     let ignore = false;
     fetch("/api/orders")
@@ -79,7 +87,8 @@ useEffect(() => {
         <div className="flex min-h-full flex-col items-center justify-center gap-3 px-10 text-center">
           <p className="text-[16px] font-bold text-foreground">E-Ticket</p>
           <p className="text-[13px] text-muted">
-            {error || "No issued ticket yet. Complete a booking to generate one."}
+            {error ||
+              "No issued ticket yet. Complete a booking to generate one."}
           </p>
           <Link
             href="/search"
@@ -93,7 +102,10 @@ useEffect(() => {
   }
 
   return (
-    <MobileShell header={<><div className="flex h-[60px] items-center gap-3 bg-background px-4 py-3">
+    <MobileShell
+      header={
+        <>
+          <div className="flex h-[60px] items-center gap-3 bg-background px-4 py-3">
             <Link
               href="/trips"
               className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground"
@@ -108,12 +120,17 @@ useEffect(() => {
                 />
               </svg>
             </Link>
-            <h1 className="text-[18px] font-extrabold text-foreground">E-Ticket</h1>
-          </div></>}>
+            <h1 className="text-[18px] font-extrabold text-foreground">
+              E-Ticket
+            </h1>
+          </div>
+        </>
+      }
+    >
       <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
-                 <div className="flex flex-col gap-4 px-4 py-5">
-<div
+          <div className="flex flex-col gap-4 px-4 py-5">
+            <div
               className={`flex items-center gap-3 rounded-xl px-3 py-3 ${
                 cancelled
                   ? "bg-red-500/15"
@@ -124,13 +141,19 @@ useEffect(() => {
             >
               <span
                 className={`flex h-6 w-6 items-center justify-center rounded-lg ${
-                  cancelled ? "bg-red-500" : awaiting ? "bg-amber-500" : "bg-[#22c55e]"
+                  cancelled
+                    ? "bg-red-500"
+                    : awaiting
+                      ? "bg-amber-500"
+                      : "bg-[#22c55e]"
                 }`}
               >
                 <Check
                   size={14}
                   strokeWidth={3}
-                  className={cancelled || awaiting ? "text-white" : "text-white"}
+                  className={
+                    cancelled || awaiting ? "text-white" : "text-white"
+                  }
                 />
               </span>
               <div className="flex flex-col">
@@ -162,7 +185,7 @@ useEffect(() => {
             <div className="flex flex-col rounded-2xl border border-border bg-card">
               <div className="flex flex-col gap-4 p-[18px]">
                 <div className="flex items-center justify-between">
-<div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
                     {order.airlineLogo ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -171,7 +194,10 @@ useEffect(() => {
                         className="h-6 w-6 shrink-0 object-contain"
                       />
                     ) : (
-                      <Identicon seed={`${order.airlineCode}${order.flightNumber}`} size={24} />
+                      <Identicon
+                        seed={`${order.airlineCode}${order.flightNumber}`}
+                        size={24}
+                      />
                     )}
                     <span className="text-[14px] font-bold text-foreground">
                       {order.airline}
@@ -183,7 +209,7 @@ useEffect(() => {
                 </div>
 
                 <div className="flex items-center justify-between">
-<div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1">
                     <span className="text-[28px] font-extrabold leading-[37px] text-foreground">
                       {order.depCode}
                     </span>
@@ -203,9 +229,11 @@ useEffect(() => {
                         className="text-accent-fg"
                       />
                     </svg>
-                    <span className="text-[10px] text-muted">{order.duration}</span>
+                    <span className="text-[10px] text-muted">
+                      {order.duration}
+                    </span>
                   </div>
-<div className="flex flex-col items-end gap-1">
+                  <div className="flex flex-col items-end gap-1">
                     <span className="text-[28px] font-extrabold leading-[37px] text-foreground">
                       {order.arrCode}
                     </span>
@@ -256,7 +284,7 @@ useEffect(() => {
                 </span>
                 <div className="flex justify-between">
                   <span className="text-[12px] text-muted">Amount paid</span>
-<span className="text-[12px] font-semibold text-foreground">
+                  <span className="text-[12px] font-semibold text-foreground">
                     <UsdtAmount value={order.amountUsd} />
                   </span>
                 </div>
@@ -269,24 +297,28 @@ useEffect(() => {
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[12px] text-muted">Transaction</span>
                   <Link
-                    href={chain?.explorer ? `${chain.explorer}/tx/${txHash}` : "#"}
+                    href={
+                      chain?.explorer ? `${chain.explorer}/tx/${txHash}` : "#"
+                    }
                     target="_blank"
                     className="truncate text-[12px] font-semibold text-accent-fg"
                   >
-{shortHash(txHash)}
+                    {shortHash(txHash)}
                   </Link>
                 </div>
               </div>
             ) : null}
 
-<div className="flex gap-2">
+            <div className="flex gap-2">
               <button
                 onClick={() =>
                   downloadIcs({
                     title: `${order?.airline ?? "Flight"} ${order?.flightNumber ?? ""}`,
                     location: `${order?.depCity ?? ""} (${order?.depCode ?? ""})`,
                     description: `Booking ${order?.bookingRef ?? ""} — ${order?.arrCity ?? ""} (${order?.arrCode ?? ""})`,
-                    start: order?.departureDate ?? new Date().toISOString().slice(0, 10),
+                    start:
+                      order?.departureDate ??
+                      new Date().toISOString().slice(0, 10),
                   })
                 }
                 className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-card text-[12px] font-semibold text-foreground"
@@ -302,7 +334,7 @@ useEffect(() => {
                 className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-card text-[12px] font-semibold text-foreground"
               >
                 <Download size={14} className="text-accent-fg" />
-                Download PDF
+                Save PDF
               </button>
               <ProgressButton
                 onAction={handleShare}

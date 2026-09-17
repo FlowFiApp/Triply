@@ -74,6 +74,7 @@ export function normalizeFlightBooking(o: any): Booking {
     dep: seg.origin?.iata_code ?? "",
     arr: seg.destination?.iata_code ?? "",
     amount: testPrice(Number(o?.total_amount ?? 0)),
+    date: (seg.departing_at ?? "").slice(0, 10) || undefined,
   };
 }
 
@@ -93,6 +94,7 @@ export function normalizeStayBooking(b: any): Booking {
     dep: "Check-in",
     arr: "Check-out",
     amount: testPrice(Number(b?.totalAmount ?? 0)),
+    date: b?.checkIn ?? undefined,
   };
 }
 
@@ -112,6 +114,7 @@ export function normalizeCarBooking(b: any): Booking {
     dep: "Pickup",
     arr: "Return",
     amount: testPrice(Number(b?.totalAmount ?? 0)),
+    date: b?.pickupDate ?? undefined,
   };
 }
 

@@ -16,7 +16,6 @@ import { useFlow } from "@/lib/flow-context";
 import { useBookings } from "@/lib/api/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/lib/toast";
-import { readFlow } from "@/lib/store";
 
 type BookingItem = {
   kind: "flight" | "stay" | "car";
@@ -32,6 +31,7 @@ type BookingItem = {
   amount: number;
   airlineLogo?: string;
   actions?: string[];
+  date?: string;
 };
 
 const ACTIVE = /confirm|issued|paid|delivered|booked/i;
@@ -252,9 +252,8 @@ function BookingActionsSheet({
 export default function MyTrips() {
   const router = useRouter();
   const { setFlow } = useFlow();
-  const email = readFlow().passenger?.email ?? "";
   const qc = useQueryClient();
-  const { data, isLoading, error } = useBookings(email);
+  const { data, isLoading, error } = useBookings();
   const [tab, setTab] = useState<"Upcoming" | "Past">("Upcoming");
   const [ref, setRef] = useState("");
   const [lookedUp, setLookedUp] = useState<BookingItem | null>(null);
@@ -283,11 +282,18 @@ export default function MyTrips() {
   const loading = isLoading;
   const errorMessage = error instanceof Error ? error.message : "";
 
+  // A booking is "past" when cancelled or when its travel date has passed.
+  const isPast = (b: BookingItem) => {
+    if (!ACTIVE.test(b.status)) return true;
+    if (b.date && b.date < new Date().toISOString().slice(0, 10)) return true;
+    return false;
+  };
+
   const upcoming = useMemo(
-    () => bookings.filter((b) => ACTIVE.test(b.status)),
+    () => bookings.filter((b) => !isPast(b)),
     [bookings],
   );
-  const past = useMemo(() => bookings.filter((b) => !ACTIVE.test(b.status)), [bookings]);
+  const past = useMemo(() => bookings.filter((b) => isPast(b)), [bookings]);
 
   const lookup = () => {
     const q = ref.trim().toUpperCase();

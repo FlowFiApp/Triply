@@ -39,6 +39,7 @@ import { useStaySearch } from "@/lib/api/hooks";
 import { useToast } from "@/lib/toast";
 import { getStoredIdentity } from "@/lib/identity";
 import { share } from "@/lib/share";
+import { usePoints } from "@/lib/points";
 import { downloadIcs } from "@/lib/calendar";
 import { haptic } from "@/lib/haptics";
 import type { StayOffer, StayBooking } from "@/lib/types";
@@ -426,6 +427,7 @@ export function AccDetails() {
     { reviewer_name: string; score: number; text: string }[]
   >([]);
   const { toast } = useToast();
+  const { refresh: refreshPoints } = usePoints();
   const similar = (readFlow().stays ?? [])
     .filter((s) => s.id !== stay?.id)
     .slice(0, 6);
@@ -519,6 +521,7 @@ export function AccDetails() {
       const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Booking failed");
       writeFlow({ stayBooking: d.booking as StayBooking });
+      void refreshPoints();
       router.push("/stay/confirmed");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Booking failed";
