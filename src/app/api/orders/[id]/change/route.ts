@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createOrderChangeRequest, listOrderChangeOffers } from "@/lib/duffel";
 import { requireUser, unauthorized } from "@/lib/auth";
 
@@ -12,15 +11,12 @@ export async function POST(
   try {
     const body = await request.json();
     const changeRequest = await createOrderChangeRequest(id, body.slices ?? []);
-    const offers = await listOrderChangeOffers();
-    const relevant = (offers ?? []).filter(
-      (o: any) => o.order_change_request_id === changeRequest?.id,
-    );
+    const offers = await listOrderChangeOffers(changeRequest?.id);
     return Response.json({
       live: true,
       changeRequest,
       changeRequestId: changeRequest?.id ?? "",
-      offers: relevant,
+      offers,
     });
   } catch (err) {
     const e = err as {

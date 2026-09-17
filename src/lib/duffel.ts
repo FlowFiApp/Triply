@@ -518,10 +518,13 @@ export async function createOrderChangeRequest(
   return data as any;
 }
 
-export async function listOrderChangeOffers() {
+export async function listOrderChangeOffers(orderChangeRequestId?: string) {
   if (!duffelEnabled()) return [];
   const duffel = getDuffel();
-  const { data } = await duffel.orderChangeOffers.list({ limit: 50 } as any);
+  const { data } = await duffel.orderChangeOffers.list({
+    limit: 50,
+    order_change_request_id: orderChangeRequestId,
+  } as any);
   return (data ?? []) as any[];
 }
 
@@ -582,7 +585,7 @@ export async function createComponentClientKey(
     headers: {
       Authorization: `Bearer ${TOKEN}`,
       "Content-Type": "application/json",
-      "Duffel-Version": "v1",
+      "Duffel-Version": "v2",
       Accept: "application/json",
     },
     body: JSON.stringify({ data: body }),
