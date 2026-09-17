@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plane, SlidersHorizontal } from "lucide-react";
+import { ArrowUpRight, Plane, SlidersHorizontal } from "lucide-react";
 import {
   BottomTabBar,
   MobileShell,
@@ -61,38 +61,50 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
         </div>
       </div>
 
-<div className="flex items-stretch justify-between">
-        <div className="flex min-w-0 flex-col text-left">
-          <span className="text-[18px] font-bold leading-6 text-foreground">
-            {offer.depTime}
-          </span>
-          <span className="text-[12px] text-muted">
-            {offer.origin}
-            {offer.originAirport ? ` · ${offer.originAirport}` : ""}
-          </span>
-        </div>
-        <div className="flex flex-1 flex-col items-center gap-1 px-3">
-          <span className="text-[11px] text-muted">{offer.duration}</span>
-          <div className="flex w-full items-center">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted" />
-            <span className="h-px flex-1 bg-border" />
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-2/20">
-              <Plane size={12} className="rotate-90 text-accent-fg" />
+<div className="flex flex-col gap-1.5">
+        <div className="flex items-stretch justify-between gap-2">
+          <div className="flex min-w-0 flex-col text-left">
+            <span className="block text-[20px] font-extrabold leading-6 text-foreground">
+              {offer.depTime}
             </span>
-            <span className="h-px flex-1 bg-border" />
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted" />
+            <span className="block text-[13px] font-semibold text-muted">
+              {offer.origin}
+            </span>
           </div>
-          <span className="text-[10px] font-semibold text-accent-fg">
-            {offer.stops}
-          </span>
+
+          <div className="flex flex-1 flex-col items-center justify-center gap-1 px-2">
+            <span className="text-[11px] text-muted">{offer.duration}</span>
+            <div className="flex w-full items-center">
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent-2" />
+              <span className="h-px flex-1 bg-border" />
+              <span className="flex h-[14px] w-[14px] shrink-0 items-center justify-center text-accent-2">
+                <ArrowUpRight size={13} strokeWidth={2.5} />
+              </span>
+              <span className="h-px flex-1 bg-border" />
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted" />
+            </div>
+            <span className="text-[11px] font-semibold text-accent-2">
+              {offer.stops}
+            </span>
+          </div>
+
+          <div className="flex min-w-0 flex-col items-end text-right">
+            <span className="block text-[20px] font-extrabold leading-6 text-foreground">
+              {offer.arrTime}
+            </span>
+            <span className="block text-[13px] font-semibold text-muted">
+              {offer.destination}
+            </span>
+          </div>
         </div>
-        <div className="flex min-w-0 flex-col items-end text-right">
-          <span className="text-[18px] font-bold leading-6 text-foreground">
-            {offer.arrTime}
+
+        {/* Airport names on their own row — cannot affect the connector above */}
+        <div className="flex items-start justify-between gap-2">
+          <span className="w-[45%] line-clamp-2 text-[10px] leading-3 text-muted">
+            {offer.originAirport ?? offer.originCity ?? ""}
           </span>
-          <span className="text-[12px] text-muted">
-            {offer.destination}
-            {offer.destinationAirport ? ` · ${offer.destinationAirport}` : ""}
+          <span className="w-[45%] line-clamp-2 text-right text-[10px] leading-3 text-muted">
+            {offer.destinationAirport ?? offer.destinationCity ?? ""}
           </span>
         </div>
       </div>

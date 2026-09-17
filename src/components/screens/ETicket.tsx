@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
+  ArrowUpRight,
   BedDouble,
   Calendar,
   Car,
@@ -208,36 +209,49 @@ export default function ETicket() {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[28px] font-extrabold leading-[37px] text-foreground">
-                      {order.depCode}
-                    </span>
-                    <span className="text-[12px] text-muted">
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-stretch justify-between gap-2">
+                    <div className="flex min-w-0 flex-col text-left">
+                      <span className="text-[28px] font-extrabold leading-[37px] text-foreground">
+                        {order.depCode}
+                      </span>
+                      <span className="text-[12px] font-semibold text-muted">
+                        {order.depTime}
+                      </span>
+                    </div>
+                    <div className="flex flex-1 flex-col items-center justify-center gap-1 px-3">
+                      <span className="text-[11px] text-muted">
+                        {order.duration}
+                      </span>
+                      <div className="flex w-full items-center">
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent-2" />
+                        <span className="h-px flex-1 bg-border" />
+                        <ArrowUpRight
+                          size={13}
+                          strokeWidth={2.5}
+                          className="shrink-0 text-accent-2"
+                        />
+                        <span className="h-px flex-1 bg-border" />
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted" />
+                      </div>
+                    </div>
+                    <div className="flex min-w-0 flex-col items-end text-right">
+                      <span className="text-[28px] font-extrabold leading-[37px] text-foreground">
+                        {order.arrCode}
+                      </span>
+                      <span className="text-[12px] font-semibold text-muted">
+                        {order.arrTime}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Airport names — own row so they don't affect the connector */}
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="w-[45%] line-clamp-2 text-[11px] leading-3 text-muted">
                       {order.depCity}
                       {order.depAirport ? ` · ${order.depAirport}` : ""}
                     </span>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M2 14l20-8-5 10-4-3-3 4-1-8-7-3z"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinejoin="round"
-                        className="text-accent-fg"
-                      />
-                    </svg>
-                    <span className="text-[10px] text-muted">
-                      {order.duration}
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <span className="text-[28px] font-extrabold leading-[37px] text-foreground">
-                      {order.arrCode}
-                    </span>
-                    <span className="text-[12px] text-muted">
+                    <span className="w-[45%] line-clamp-2 text-right text-[11px] leading-3 text-muted">
                       {order.arrCity}
                       {order.arrAirport ? ` · ${order.arrAirport}` : ""}
                     </span>

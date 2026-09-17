@@ -510,23 +510,15 @@ export async function listOrderChangeOffers() {
 }
 
 export async function createOrderChange({
-  orderChangeRequestId,
   orderChangeOfferId,
-  selectedOffers,
-  slices,
 }: {
-  orderChangeRequestId: string;
   orderChangeOfferId: string;
-  selectedOffers: string[];
-  slices: string[];
 }) {
   if (!duffelEnabled()) return null;
   const duffel = getDuffel();
+  // Duffel's create order change only needs the selected order change offer.
   const { data } = await duffel.orderChanges.create({
-    order_change_request_id: orderChangeRequestId,
     selected_order_change_offer: orderChangeOfferId,
-    selected_offers: selectedOffers,
-    slices,
   } as any);
   return data as any;
 }

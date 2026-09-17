@@ -10,19 +10,14 @@ export async function POST(
   if (!user) return unauthorized();
   try {
     const body = await request.json();
-    const orderChangeRequestId = String(body.orderChangeRequestId ?? "");
-    if (!orderChangeRequestId) {
+    const orderChangeOfferId = String(body.orderChangeOfferId ?? "");
+    if (!orderChangeOfferId) {
       return Response.json(
-        { error: "Missing orderChangeRequestId." },
+        { error: "Missing orderChangeOfferId." },
         { status: 400 },
       );
     }
-    const orderChange = await createOrderChange({
-      orderChangeRequestId,
-      orderChangeOfferId: String(body.orderChangeOfferId ?? ""),
-      selectedOffers: body.selectedOffers ?? [],
-      slices: body.slices ?? [],
-    });
+    const orderChange = await createOrderChange({ orderChangeOfferId });
     if (!orderChange) {
       return Response.json({
         live: false,

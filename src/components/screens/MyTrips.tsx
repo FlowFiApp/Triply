@@ -119,22 +119,28 @@ function BookingCard({
         </button>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col">
-          <span className="text-[15px] font-bold text-foreground">
+      <div className="flex items-stretch justify-between gap-2">
+        <div className="flex min-w-0 flex-col text-left">
+          <span className="text-[20px] font-extrabold leading-6 text-foreground">
             {item.dep || "—"}
           </span>
-          <span className="text-[11px] text-muted">{item.depTime}</span>
+          <span className="text-[12px] text-muted">{item.depTime}</span>
         </div>
-        <div className="flex flex-col items-center">
-          <span className="text-[10px] text-muted">{item.kind}</span>
-          <span className="mt-1 h-px w-12 bg-border" />
+
+        <div className="flex flex-1 flex-col items-center justify-center gap-1.5 px-2">
+          <span className="text-[11px] font-medium text-muted">{meta.label}</span>
+          <div className="flex w-full items-center">
+            <span className="h-[5px] w-[5px] shrink-0 rounded-full bg-accent-2" />
+            <span className="h-px flex-1 bg-border" />
+            <span className="h-[5px] w-[5px] shrink-0 rounded-full bg-accent-2" />
+          </div>
         </div>
-        <div className="flex flex-col items-end">
-          <span className="text-[15px] font-bold text-foreground">
+
+        <div className="flex min-w-0 flex-col items-end text-right">
+          <span className="text-[20px] font-extrabold leading-6 text-foreground">
             {item.arr || "—"}
           </span>
-          <span className="text-[11px] text-muted">{item.arrTime}</span>
+          <span className="text-[12px] text-muted">{item.arrTime}</span>
         </div>
       </div>
 

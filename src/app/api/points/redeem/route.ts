@@ -1,4 +1,4 @@
-import { redeemPoints, restoreRedeemPoints, updateRewardStatus } from "@/lib/db";
+import { redeemPoints, restoreRedeemPoints, updateRewardStatus, dbErrorMessage } from "@/lib/db";
 import { sendNimReward } from "@/lib/nimiq-payout";
 import { requireUser, unauthorized } from "@/lib/auth";
 import { ValidationUtils } from "@nimiq/utils/validation-utils";
@@ -69,10 +69,16 @@ export async function POST(request: Request) {
     }
 
     return Response.json({ ok: true, amount, txHash, status });
-  } catch {
+  } catch (err) {
+    console.error("POST /api/points/redeem failed", {
+      message: err instanceof Error ? err.message : err,
+    });
     return Response.json(
-      { ok: false, error: "Redeem failed. Please try again." },
-      { status: 500 },
+      {
+        ok: false,
+        error: dbErrorMessage(err),
+      },
+      { status: 503 },
     );
   }
 }

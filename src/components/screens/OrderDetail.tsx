@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Calendar, Check, Pencil, Plane, Plus, Trash2 } from "lucide-react";
+import { ArrowUpRight, Calendar, Check, Pencil, Plane, Plus, Trash2 } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { Sheet } from "@/components/ui";
 import { ProgressButton } from "@/components/ui/progress-button";
@@ -174,50 +174,66 @@ export default function OrderDetail() {
 
           {order.slices.map((slice, i) => (
             <div key={slice.id || i} className="flex flex-col gap-2">
-              <div className="flex items-stretch justify-between">
-                <div className="flex min-w-0 flex-col gap-0.5 text-left">
-                  <span className="text-[20px] font-extrabold text-foreground">
-                    {slice.origin.code}
-                  </span>
+              <div className="flex flex-col gap-1.5">
+                  <div className="flex items-stretch justify-between gap-2">
+                    <div className="flex min-w-0 flex-col text-left">
+                      <span className="text-[20px] font-extrabold text-foreground">
+                        {slice.origin.code}
+                      </span>
+                      <span className="text-[13px] font-semibold text-foreground">
+                        {slice.depTime} · {slice.depDate}
+                      </span>
+                    </div>
+                    <div className="flex flex-1 flex-col items-center justify-center gap-1 px-3">
+                      <span className="text-[10px] text-muted">
+                        {slice.stops > 0
+                          ? `${slice.stops} stop${slice.stops > 1 ? "s" : ""}`
+                          : "Direct"}{" "}
+                        · {slice.duration}
+                      </span>
+                      <div className="flex w-full items-center">
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent-2" />
+                        <span className="h-px flex-1 bg-border" />
+                        <ArrowUpRight
+                          size={13}
+                          strokeWidth={2.5}
+                          className="shrink-0 text-accent-2"
+                        />
+                        <span className="h-px flex-1 bg-border" />
+                        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-muted" />
+                      </div>
+                    </div>
+                    <div className="flex min-w-0 flex-col items-end text-right">
+                      <span className="text-[20px] font-extrabold text-foreground">
+                        {slice.destination.code}
+                      </span>
+                      <span className="text-[13px] font-semibold text-foreground">
+                        {slice.arrTime} · {slice.arrDate}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Airport names — own row so they don't affect the connector */}
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="w-[45%] line-clamp-2 text-[11px] leading-3 text-muted">
+                      {slice.origin.city}
+                      {slice.origin.name ? ` · ${slice.origin.name}` : ""}
+                      {slice.origin.terminal ? ` · T${slice.origin.terminal}` : ""}
+                    </span>
+                    <span className="w-[45%] line-clamp-2 text-right text-[11px] leading-3 text-muted">
+                      {slice.destination.city}
+                      {slice.destination.name ? ` · ${slice.destination.name}` : ""}
+                      {slice.destination.terminal
+                        ? ` · T${slice.destination.terminal}`
+                        : ""}
+                    </span>
+                  </div>
                   <span className="text-[11px] text-muted">
-                    {slice.origin.city}
-                    {slice.origin.name ? ` · ${slice.origin.name}` : ""}
-                    {slice.origin.terminal ? ` · T${slice.origin.terminal}` : ""}
-                  </span>
-                  <span className="text-[13px] font-semibold text-foreground">
-                    {slice.depTime} · {slice.depDate}
+                    {slice.carrier} · {slice.carrierCode}
+                    {slice.flightNumber}
+                    {slice.aircraft ? ` · ${slice.aircraft}` : ""}
                   </span>
                 </div>
-                <div className="flex flex-col items-center gap-1 px-3">
-                  <Plane size={14} className="rotate-90 text-accent-fg" />
-                  <span className="text-[10px] text-muted">
-                    {slice.stops > 0
-                      ? `${slice.stops} stop${slice.stops > 1 ? "s" : ""}`
-                      : "Direct"}{" "}
-                    · {slice.duration}
-                  </span>
-                </div>
-                <div className="flex min-w-0 flex-col items-end gap-0.5 text-right">
-                  <span className="text-[20px] font-extrabold text-foreground">
-                    {slice.destination.code}
-                  </span>
-                  <span className="text-[11px] text-muted">
-                    {slice.destination.city}
-                    {slice.destination.name ? ` · ${slice.destination.name}` : ""}
-                    {slice.destination.terminal
-                      ? ` · T${slice.destination.terminal}`
-                      : ""}
-                  </span>
-                  <span className="text-[13px] font-semibold text-foreground">
-                    {slice.arrTime} · {slice.arrDate}
-                  </span>
-                </div>
-              </div>
-              <span className="text-[11px] text-muted">
-                {slice.carrier} · {slice.carrierCode}
-                {slice.flightNumber}
-                {slice.aircraft ? ` · ${slice.aircraft}` : ""}
-              </span>
             </div>
           ))}
         </div>

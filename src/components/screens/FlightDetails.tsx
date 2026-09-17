@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { ElementType } from "react";
 import { useRouter } from "next/navigation";
-import { Luggage, MonitorPlay } from "lucide-react";
+import { ArrowUpRight, Luggage, MonitorPlay } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { FareRulesSheet } from "@/components/screens/sheets";
 import SeatMapSheet from "@/components/screens/SeatMapSheet";
@@ -359,9 +359,26 @@ export default function FlightDetails() {
                       )}
                       {s.airline} · {s.flightNumber}
                     </span>
-                    <span className="text-[11px] text-muted">
-                      {s.depTime} → {s.arrTime} · {s.duration}
+                    <span className="flex w-full items-center justify-between gap-1 text-[11px] text-muted">
+                      <span className="font-semibold text-foreground">
+                        {s.depTime}
+                      </span>
+                      <span className="flex min-w-0 flex-1 items-center px-0.5">
+                        <span className="h-1 w-1 shrink-0 rounded-full bg-accent-2" />
+                        <span className="h-px flex-1 bg-border" />
+                        <ArrowUpRight
+                          size={9}
+                          strokeWidth={2.5}
+                          className="shrink-0 text-accent-2"
+                        />
+                        <span className="h-px flex-1 bg-border" />
+                        <span className="h-1 w-1 shrink-0 rounded-full bg-muted" />
+                      </span>
+                      <span className="font-semibold text-foreground">
+                        {s.arrTime}
+                      </span>
                     </span>
+                    <span className="text-[10px] text-muted">{s.duration}</span>
                     <span className="text-[14px] font-bold text-accent-fg">
                       <UsdtAmount value={s.price} />
                     </span>
