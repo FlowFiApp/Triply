@@ -93,10 +93,10 @@ export default function Web3Checkout() {
   const [connecting, setConnecting] = useState(false);
   const [seconds, setSeconds] = useState(14 * 60 + 59);
   const [gasPol, setGasPol] = useState<number | null>(null);
+  const { flow, setFlow } = useFlow();
   const [hold, setHold] = useState(() => Boolean(flow.hold));
   const { toast } = useToast();
   const { state, connectEvm, disconnect, pay } = useWalletState();
-  const { flow, setFlow } = useFlow();
   const treasuryOk = clientConfig().find(
     (c) => c.key === "NEXT_PUBLIC_TREASURY_WALLET_ADDRESS",
   )?.ok;
