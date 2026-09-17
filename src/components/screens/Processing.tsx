@@ -98,7 +98,6 @@ export default function Processing() {
         txHash: tx,
         chain: chain.id,
         from: payer,
-        nimiqAddress: state.nimiqAddress,
         type: isHold ? "hold" : "instant",
         selectedServiceIds: flow.selectedServiceIds ?? [],
         serviceQuantities: flow.serviceQuantities ?? {},
@@ -152,7 +151,7 @@ export default function Processing() {
             : "Booking could not be issued.",
       );
     }
-  }, [tx, amount, chain.id, offerId, payer, state.nimiqAddress, flow, setFlow, toast, router, refreshPoints]);
+  }, [tx, amount, chain.id, offerId, payer, flow, setFlow, toast, router, refreshPoints]);
 
   useEffect(() => {
     if (ran.current) return;

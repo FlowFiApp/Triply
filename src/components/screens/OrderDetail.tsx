@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowUpRight, Calendar, Check, Pencil, Plane, Plus, Trash2 } from "lucide-react";
+import { ArrowUpRight, Calendar, Check, LifeBuoy, Pencil, Plane, Plus, Trash2 } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { Sheet } from "@/components/ui";
 import { ProgressButton } from "@/components/ui/progress-button";
 import { HiveSpinner } from "@/components/ui/hive-spinner";
 import BookingQR from "@/components/ui/booking-qr";
+import { useDuffelAssistant } from "@/components/DuffelAssistant";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import { useToast } from "@/lib/toast";
 import { useFlow } from "@/lib/flow-context";
@@ -39,6 +40,7 @@ type ChangeOffer = {
 export default function OrderDetail() {
   const router = useRouter();
   const { setFlow } = useFlow();
+  const { open: openAssistant } = useDuffelAssistant();
   const params = useParams<{ id: string }>();
   const id = params?.id ?? "";
   const { toast } = useToast();
@@ -402,6 +404,13 @@ export default function OrderDetail() {
                 Cancel booking
               </ProgressButton>
             ) : null}
+            <button
+              onClick={() => void openAssistant({ orderId: order.id })}
+              className="tap flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card-2 text-[14px] font-semibold text-foreground"
+            >
+              <LifeBuoy size={15} className="text-accent-fg" />
+              Get support
+            </button>
           </div>
         </div>
       </div>

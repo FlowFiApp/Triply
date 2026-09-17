@@ -4,12 +4,13 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { BedDouble, Car, Loader2, MoreHorizontal, Plane, Search, Trash2 } from "lucide-react";
+import { BedDouble, Car, LifeBuoy, Loader2, MoreHorizontal, Plane, Search, Trash2 } from "lucide-react";
 import { BottomTabBar, MobileShell } from "@/components/shell";
 import { EmptyState, SkeletonRows, Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import { Sheet } from "@/components/ui";
 import { ProgressButton } from "@/components/ui/progress-button";
+import { useDuffelAssistant } from "@/components/DuffelAssistant";
 import AnimatedTabs from "@/components/ui/animated-tabs";
 import PointsChip from "@/components/ui/points-chip";
 import { useFlow } from "@/lib/flow-context";
@@ -258,6 +259,7 @@ function BookingActionsSheet({
 export default function MyTrips() {
   const router = useRouter();
   const { setFlow } = useFlow();
+  const { open: openAssistant } = useDuffelAssistant();
   const qc = useQueryClient();
   const { data, isLoading, error } = useBookings();
   const [tab, setTab] = useState<"Upcoming" | "Past">("Upcoming");
@@ -445,7 +447,16 @@ export default function MyTrips() {
             <h1 className="text-[18px] font-extrabold text-foreground">
               My Bookings
             </h1>
-            <PointsChip />
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => void openAssistant()}
+                className="flex h-8 items-center gap-1 rounded-full border border-border bg-card-2 px-3 text-[12px] font-semibold text-foreground"
+              >
+                <LifeBuoy size={14} className="text-accent-fg" />
+                Manage travel
+              </button>
+              <PointsChip />
+            </div>
           </div></>}>
       <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">

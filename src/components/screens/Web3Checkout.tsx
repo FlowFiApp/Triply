@@ -15,7 +15,7 @@ import { useWalletState } from "@/lib/wallet-state";
 import { useFlow } from "@/lib/flow-context";
 import { CHAINS, estimateGasInPol } from "@/lib/wallet";
 import { clientConfig } from "@/lib/config";
-import { copyNimiqAddress, copyText } from "@/lib/nimiq";
+import { copyText } from "@/lib/nimiq";
 
 function BreakdownRow({
   label,
@@ -51,21 +51,19 @@ function BreakdownRow({
 }
 
 function WalletStatusBar({
-  nimiqAddress,
   evmAddress,
   onDisconnect,
 }: {
-  nimiqAddress?: string;
   evmAddress?: string;
   onDisconnect: () => void;
 }) {
   const { toast } = useToast();
-  const show = evmAddress ?? nimiqAddress ?? "";
+  const show = evmAddress ?? "";
   const short = show ? `${show.slice(0, 6)}…${show.slice(-4)}` : "";
 
   const copy = () => {
     if (!show) return;
-    const ok = nimiqAddress ? copyNimiqAddress(nimiqAddress) : copyText(show);
+    const ok = copyText(show);
     toast(ok ? "success" : "error", ok ? "Address copied." : "Copy failed.");
   };
 
@@ -95,7 +93,7 @@ export default function Web3Checkout() {
   const [connecting, setConnecting] = useState(false);
   const [seconds, setSeconds] = useState(14 * 60 + 59);
   const [gasPol, setGasPol] = useState<number | null>(null);
-  const [hold, setHold] = useState(false);
+  const [hold, setHold] = useState(() => Boolean(flow.hold));
   const { toast } = useToast();
   const { state, connectEvm, disconnect, pay } = useWalletState();
   const { flow, setFlow } = useFlow();
@@ -151,6 +149,7 @@ export default function Web3Checkout() {
         router.push("/processing");
         return;
       }
+      setFlow({ hold: false });
       // Polygon/EVM is only requested here, at checkout.
       const evmAddress = await connectEvm();
       if (!evmAddress) {
@@ -262,35 +261,46 @@ export default function Web3Checkout() {
               Payment Method
             </h2>
 
-            <div className="flex flex-col gap-3 rounded-xl border-2 border-accent-2 bg-card p-4">
-              <span className="flex items-center justify-between">
-                <span className="flex items-center gap-2.5">
-                  <RadioReceiver size={18} className="text-accent-fg" />
-                  <span className="text-[14px] font-bold text-foreground">
-                    Pay with Crypto Wallet
-                  </span>
-                </span>
-                <span className="flex h-[21px] items-center rounded-md border border-border bg-card-2 px-2 text-[10px] font-semibold text-accent-fg">
-                  Polygon
-                </span>
-              </span>
-              <span className="flex items-center gap-2 pl-7">
-                {state.evmAddress && gasPol !== null ? (
-                  <span className="text-[11px] text-muted">
-                    Network fee ≈{" "}
-                    <span className="font-semibold text-foreground">
-                      {gasPol.toFixed(5)} POL
+            {!hold ? (
+              <div className="flex flex-col gap-3 rounded-xl border-2 border-accent-2 bg-card p-4">
+                <span className="flex items-center justify-between">
+                  <span className="flex items-center gap-2.5">
+                    <RadioReceiver size={18} className="text-accent-fg" />
+                    <span className="text-[14px] font-bold text-foreground">
+                      Pay with Crypto Wallet
                     </span>
                   </span>
-                ) : state.evmAddress ? (
-                  <span className="text-[11px] text-muted">
-                    Estimating network fee…
+                  <span className="flex h-[21px] items-center rounded-md border border-border bg-card-2 px-2 text-[10px] font-semibold text-accent-fg">
+                    Polygon
                   </span>
-                ) : null}
-              </span>
-            </div>
+                </span>
+                <span className="flex items-center gap-2 pl-7">
+                  {state.evmAddress && gasPol !== null ? (
+                    <span className="text-[11px] text-muted">
+                      Network fee ≈{" "}
+                      <span className="font-semibold text-foreground">
+                        {gasPol.toFixed(5)} POL
+                      </span>
+                    </span>
+                  ) : state.evmAddress ? (
+                    <span className="text-[11px] text-muted">
+                      Estimating network fee…
+                    </span>
+                  ) : null}
+                </span>
+              </div>
+            ) : (
+              <div className="rounded-xl border border-accent-2/40 bg-accent-2/10 p-4">
+                <span className="text-[13px] font-bold text-foreground">
+                  No payment now — fare is held
+                </span>
+                <p className="mt-0.5 text-[12px] text-muted">
+                  You&apos;ll pay on Polygon later from the booking.
+                </p>
+              </div>
+            )}
 
-            {!treasuryOk ? (
+            {!hold && !treasuryOk ? (
               <p className="rounded-lg bg-red-500/10 px-3 py-2 text-[12px] font-semibold text-red-500">
                 Payment is disabled: NEXT_PUBLIC_TREASURY_WALLET_ADDRESS is not
                 configured.
@@ -322,9 +332,8 @@ export default function Web3Checkout() {
               </div>
             ) : null}
 
-            {state.connected ? (
+            {!hold && state.connected ? (
               <WalletStatusBar
-                nimiqAddress={state.nimiqAddress}
                 evmAddress={state.evmAddress}
                 onDisconnect={disconnect}
               />
@@ -332,7 +341,7 @@ export default function Web3Checkout() {
           </div>
         </div>
 
-        <div aria-hidden className="h-[84px] w-full shrink-0" />
+        <div aria-hidden className="h-[150px] w-full shrink-0" />
         <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-4 pb-[calc(30px+env(safe-area-inset-bottom))] pt-3">
           <div className="mb-3 flex flex-col items-center gap-0.5">
             <span className="text-[12px] text-muted">Total</span>

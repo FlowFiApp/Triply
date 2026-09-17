@@ -102,11 +102,52 @@ export default function PassengerDetails() {
     setInvalid((prev) => ({ ...prev, [`${i}-${k}`]: false }));
   };
 
-  const removePassenger = (i: number) => {
+  const removePassenger = async (i: number) => {
     if (forms.length <= 1) return; // keep at least one passenger
+    const nextLen = forms.length - 1;
     setForms((fs) => fs.filter((_, idx) => idx !== i));
-    setFlow({ passengers: forms.length - 1 });
     setInvalid({});
+    toast("info", "Recalculating fare for the updated traveller count…");
+    try {
+      // The offer was searched for the original passenger count — re-search so
+      // Duffel's order passenger count and the price stay consistent.
+      const search = flow.search;
+      if (search) {
+        const res = await fetch("/api/flights/search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            origin: search.origin,
+            destination: search.destination,
+            departureDate: search.date,
+            returnDate: search.returnDate,
+            passengers: nextLen,
+            cabinClass: search.cabin,
+            slices: search.slices,
+          }),
+        });
+        const d = await res.json();
+        const offers = d.offers ?? [];
+        if (offers.length) {
+          const preferred =
+            offers.find((o: { id: string; price: number }) => o.id === flow.offer?.id) ??
+            offers[0];
+          setFlow({
+            offers,
+            offer: preferred,
+            amount: preferred.price,
+            passengers: nextLen,
+            selectedServiceIds: [],
+            serviceQuantities: {},
+            seat: undefined,
+          });
+          return;
+        }
+      }
+      setFlow({ passengers: nextLen });
+    } catch {
+      setFlow({ passengers: nextLen });
+    }
   };
 
   const applySaved = (i: number, p: SavedPassenger) => {

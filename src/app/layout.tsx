@@ -8,6 +8,7 @@ import { PointsProvider } from "@/lib/points";
 import { FlowProvider } from "@/lib/flow-context";
 import { QueryProvider } from "@/lib/query-client";
 import DesktopFrame from "@/components/DesktopFrame";
+import { DuffelAssistantProvider } from "@/components/DuffelAssistant";
 import { OfflineBanner } from "@/components/ui/feedback";
 import OnboardingGate from "@/components/OnboardingGate";
 import ConfigBanner from "@/components/ConfigBanner";
@@ -41,11 +42,13 @@ export default function RootLayout({
                   <FlowProvider>
                     <DesktopFrame>
                       <ToastProvider>
-                        <OnboardingGate />
-                        <ConfigBanner />
-                        <SandboxBadge />
-                        <OfflineBanner />
-                        <PageTransition>{children}</PageTransition>
+                        <DuffelAssistantProvider>
+                          <OnboardingGate />
+                          <ConfigBanner />
+                          <SandboxBadge />
+                          <OfflineBanner />
+                          <PageTransition>{children}</PageTransition>
+                        </DuffelAssistantProvider>
                       </ToastProvider>
                     </DesktopFrame>
                   </FlowProvider>

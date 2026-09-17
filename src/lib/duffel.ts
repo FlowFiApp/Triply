@@ -565,6 +565,33 @@ export async function payHeldOrder(
   return data as any;
 }
 
+/**
+ * Creates an ephemeral Duffel Assistant client key for a customer user,
+ * optionally scoped to a resource (order/booking) for resource context.
+ */
+export async function createComponentClientKey(
+  userId: string,
+  resource?: { orderId?: string; bookingId?: string },
+): Promise<string | null> {
+  if (!duffelEnabled() || !userId) return null;
+  const body: Record<string, string> = { user_id: userId };
+  if (resource?.orderId) body.order_id = resource.orderId;
+  if (resource?.bookingId) body.booking_id = resource.bookingId;
+  const res = await fetch("https://api.duffel.com/identity/component_client_keys", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+      "Content-Type": "application/json",
+      "Duffel-Version": "v1",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ data: body }),
+  });
+  if (!res.ok) return null;
+  const json = await res.json();
+  return json?.data?.component_client_key ?? null;
+}
+
 // ---- Places / suggestions ------------------------------------------------
 
 export async function searchCities(query: string, limit = 100): Promise<CityOption[]> {
