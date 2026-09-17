@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { duffelErrorMessage, getOrderAvailableServices } from "@/lib/duffel";
 import { testPrice } from "@/lib/pricing";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const services = await getOrderAvailableServices(id);
     return Response.json({

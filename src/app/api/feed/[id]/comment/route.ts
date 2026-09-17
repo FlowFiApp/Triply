@@ -2,6 +2,7 @@ import {
   addMomentComment,
   dbErrorMessage,
   earnMomentPoints,
+  isValidObjectId,
   MOMENT_COMMENT_REWARD,
 } from "@/lib/db";
 import { requireUser, unauthorized } from "@/lib/auth";
@@ -10,6 +11,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const { id } = await params;
   const user = await requireUser(request);
   if (!user) return unauthorized();
+  if (!isValidObjectId(id)) {
+    return Response.json({ error: "Invalid moment id." }, { status: 400 });
+  }
   try {
     const body = await request.json();
     const key = user.key;

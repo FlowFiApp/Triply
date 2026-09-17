@@ -39,6 +39,7 @@ export type Flow = {
   stay?: StayOffer;
   stays?: StayOffer[];
   stayBooking?: StayBooking;
+  stayGuests?: number;
   car?: CarOffer;
   cars?: CarOffer[];
   carBooking?: CarBooking;

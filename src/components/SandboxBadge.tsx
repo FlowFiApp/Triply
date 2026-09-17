@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { FlaskConical, X } from "lucide-react";
 import { Sheet } from "@/components/ui";
+import { NimiqIcon } from "@/components/ui/Nimiq";
+import { UsdtIcon } from "@/components/ui/Usdt";
 import { TEST_PRICE_DIVISOR } from "@/lib/pricing";
 
 const HIDE_KEY = "triply-sandbox-badge-hidden";
@@ -14,7 +16,9 @@ export default function SandboxBadge() {
 
   useEffect(() => {
     try {
-      setHidden(localStorage.getItem(HIDE_KEY) === "1");
+      const value = localStorage.getItem(HIDE_KEY) === "1";
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setHidden(value);
     } catch {}
   }, []);
 
@@ -56,6 +60,24 @@ export default function SandboxBadge() {
             Prices shown are <span className="font-bold">{fraction}</span> of the
             actual price.
           </p>
+          <div className="mb-5 flex flex-col gap-2 rounded-xl border border-border bg-card-2 p-3">
+            <p className="flex items-center gap-2 text-[12px] font-semibold text-foreground">
+              <UsdtIcon size={16} /> USDT
+              <span className="ml-auto font-normal text-muted">
+                real Polygon mainnet
+              </span>
+            </p>
+            <p className="flex items-center gap-2 text-[12px] font-semibold text-foreground">
+              <NimiqIcon size={16} /> NIM
+              <span className="ml-auto font-normal text-muted">
+                real Nimiq mainnet
+              </span>
+            </p>
+            <p className="text-[11px] leading-4 text-muted">
+              Payments and rewards use live mainnet balances — only the Duffel
+              inventory and displayed prices are sandboxed.
+            </p>
+          </div>
           <p className="mb-5 text-[13px] leading-5 text-muted">
             After the competition, Triply moves to Duffel production and real
             pricing goes live.

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { ChevronDown, ShieldCheck, UserRound } from "lucide-react";
 import { MobileShell } from "@/components/shell";
-import { PassengerClassSheet } from "@/components/screens/sheets";
 import PhoneInput from "@/components/ui/phone-input";
 import { AuthActionButton } from "@/components/ui/auth-action";
 import { Sheet } from "@/components/ui";
@@ -88,7 +87,6 @@ const empty: PassengerInfo = {
 export default function PassengerDetails() {
   const router = useRouter();
   const { flow, setFlow } = useFlow();
-  const [classOpen, setClassOpen] = useState(false);
   const next = flow.next ?? "";
   const passengerCount = flow.passengers ?? 1;
   const [forms, setForms] = useState<PassengerInfo[]>(() =>
@@ -201,7 +199,7 @@ export default function PassengerDetails() {
       );
       return;
     }
-    setFlow({ passenger: forms[0], passengersList: forms });
+    setFlow({ passenger: forms[0], passengersList: forms, next: undefined });
     router.push(next || "/checkout");
   };
 
@@ -327,7 +325,6 @@ export default function PassengerDetails() {
                         </option>
                         <option value="Female">Female</option>
                         <option value="Male">Male</option>
-                        <option value="Other">Other</option>
                       </select>
                       <ChevronDown size={16} className="shrink-0 text-muted" />
                     </div>
@@ -385,11 +382,6 @@ export default function PassengerDetails() {
           </AuthActionButton>
         </div>
       </div>
-
-      <PassengerClassSheet
-        open={classOpen}
-        onClose={() => setClassOpen(false)}
-      />
 
       {pickerFor !== null ? (
         <Sheet open onClose={() => setPickerFor(null)}>

@@ -1,15 +1,25 @@
 import { confirmOrderChange, createOrderChange, duffelErrorMessage } from "@/lib/duffel";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  void id;
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const body = await request.json();
+    const orderChangeRequestId = String(body.orderChangeRequestId ?? "");
+    if (!orderChangeRequestId) {
+      return Response.json(
+        { error: "Missing orderChangeRequestId." },
+        { status: 400 },
+      );
+    }
     const orderChange = await createOrderChange({
-      orderChangeOfferId: body.orderChangeOfferId,
+      orderChangeRequestId,
+      orderChangeOfferId: String(body.orderChangeOfferId ?? ""),
       selectedOffers: body.selectedOffers ?? [],
       slices: body.slices ?? [],
     });
@@ -27,7 +37,7 @@ export async function POST(
         // some changes are confirmed immediately
       }
     }
-    return Response.json({ live: true, orderChange, confirmed });
+    return Response.json({ live: true, orderId: id, orderChange, confirmed });
   } catch (err) {
     return Response.json(
       { error: duffelErrorMessage(err, "Order change failed") },

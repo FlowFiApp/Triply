@@ -1,56 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { listOrders } from "@/lib/duffel";
-import { formatAMPM, formatDuration } from "@/lib/format";
-import { testPrice } from "@/lib/pricing";
-import type { OrderRecord } from "@/lib/types";
 import { requireUser, unauthorized } from "@/lib/auth";
+import { normalizeOrderRecord } from "@/lib/order-normalize";
+import { verifyUsdtPayment } from "@/lib/payments-verify";
 
-function orderStatus(o: any): string {
-  if (o.cancelled_at || o.cancellation) return "cancelled";
-  if (o.payment_status?.awaiting_payment === true) return "awaiting_payment";
-  return "confirmed";
-}
-
-function normalizeOrder(o: any): OrderRecord {
-  const seg = o.slices?.[0]?.segments?.[0] ?? {};
-  const p = o.passengers?.[0] ?? {};
-  const dep = seg.origin ?? {};
-  const arr = seg.destination ?? {};
-  const slice = o.slices?.[0] ?? {};
-  return {
-    id: o.id,
-    bookingRef: o.booking_reference ?? o.booking_ref ?? "",
-    airline: seg.marketing_carrier?.name ?? "",
-    airlineCode: seg.marketing_carrier?.iata_code ?? "",
-    airlineLogo:
-      seg.marketing_carrier?.logo_symbol_url ??
-      seg.marketing_carrier?.logo_lockup_url ??
-      undefined,
-    flightNumber: seg.marketing_carrier_flight_number ?? "",
-    cabin: p.cabin_class_marketing ?? "Economy",
-    status: orderStatus(o),
-    passengerName: `${p.given_name ?? ""} ${p.family_name ?? ""}`.trim(),
-    depTime: formatAMPM(seg.departing_at),
-    arrTime: formatAMPM(seg.arriving_at),
-    depCode: dep.iata_code ?? "",
-    depCity: dep.city_name ?? "",
-    depAirport: dep.name ?? undefined,
-    arrCode: arr.iata_code ?? "",
-    arrCity: arr.city_name ?? "",
-    arrAirport: arr.name ?? undefined,
-    duration: formatDuration(slice.duration),
-    seat: p.seat ?? "—",
-    gate: seg.gate ?? "—",
-    terminal: seg.departing_terminal ?? "—",
-    departureDate: (seg.departing_at ?? "").slice(0, 10),
-    amountUsd: testPrice(Number(o.total_amount ?? 0)),
-  };
-}
-
-export async function GET() {
+export async function GET(request: Request) {
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const orders = await listOrders();
-    return Response.json({ orders: orders.map(normalizeOrder), live: true });
+    return Response.json({
+      orders: orders.map(normalizeOrderRecord),
+      live: true,
+    });
   } catch (err) {
     return Response.json(
       {
@@ -68,6 +30,49 @@ export async function POST(request: Request) {
   if (!user) return unauthorized();
   try {
     const body = await request.json();
+    const txHash = String(body.txHash ?? "");
+
+    // Server-side payment verification + replay protection: the client must
+    // have actually paid USDT to the treasury, and the hash can only be used
+    // for one order.
+    if (txHash) {
+      const treasury = process.env.NEXT_PUBLIC_TREASURY_WALLET_ADDRESS;
+      if (!treasury) {
+        return Response.json(
+          { error: "Treasury address is not configured." },
+          { status: 400 },
+        );
+      }
+      let verified = false;
+      try {
+        verified = await verifyUsdtPayment(
+          txHash,
+          Number(body.amount ?? 0),
+          treasury,
+        );
+      } catch {
+        verified = false;
+      }
+      if (!verified) {
+        return Response.json(
+          { error: "Payment not verified on-chain." },
+          { status: 400 },
+        );
+      }
+      const { consumeVerifiedPayment } = await import("@/lib/db");
+      const consumed = await consumeVerifiedPayment(
+        txHash,
+        Number(body.amount ?? 0),
+        user.address,
+      );
+      if (!consumed) {
+        return Response.json(
+          { error: "This payment has already been used for an order." },
+          { status: 400 },
+        );
+      }
+    }
+
     const { createFlightOrder, ensureCustomerUser } = await import("@/lib/duffel");
     const { getOrCreateUser, updateUser, earnPoints } = await import("@/lib/db");
     const allPassengers: any[] = Array.isArray(body.passengers) ? body.passengers : [];
@@ -161,7 +166,29 @@ export async function POST(request: Request) {
       }
     }
 
-    return Response.json({ live: true, order: normalizeOrder(order) });
+    // Best-effort booking confirmation email to the lead passenger.
+    try {
+      const p0 = body.passengers?.[0];
+      if (p0?.email) {
+        const { sendEmail, bookingEmailHtml } = await import("@/lib/resend");
+        await sendEmail({
+          to: p0.email,
+          subject: `Triply — flight booked (${order.booking_ref})`,
+          html: bookingEmailHtml({
+            brand: "Triply",
+            reference: order.booking_ref,
+            title: "Flight",
+            subtitle: `${order.slices?.[0]?.segments?.[0]?.origin?.iata_code ?? ""} → ${order.slices?.[0]?.segments?.[0]?.destination?.iata_code ?? ""}`,
+            amount: String(order.total_amount ?? 0),
+            currency: order.total_currency ?? "USD",
+          }),
+        });
+      }
+    } catch {
+      // email is best-effort
+    }
+
+    return Response.json({ live: true, order: normalizeOrderRecord(order) });
   } catch (err) {
     const e = err as {
       message?: string;

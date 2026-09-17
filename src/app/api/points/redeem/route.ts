@@ -1,4 +1,4 @@
-import { redeemPoints, updateRewardStatus } from "@/lib/db";
+import { redeemPoints, restoreRedeemPoints, updateRewardStatus } from "@/lib/db";
 import { sendNimReward } from "@/lib/nimiq-payout";
 import { requireUser, unauthorized } from "@/lib/auth";
 import { ValidationUtils } from "@nimiq/utils/validation-utils";
@@ -23,6 +23,13 @@ export async function POST(request: Request) {
     const recipient = cleanRecipient(String(body.recipient ?? "")); // user's Nimiq address
 
     if (amount <= 0) return Response.json({ ok: false, error: "Invalid amount." }, { status: 400 });
+    // Without a valid payout wallet the points would be burned with no payout.
+    if (!recipient) {
+      return Response.json(
+        { ok: false, error: "Connect a valid Nimiq Pay wallet to redeem." },
+        { status: 400 },
+      );
+    }
 
     const redeemed = await redeemPoints({ userKey: key, amount });
     if (!redeemed.ok || !redeemed.recordId) {
@@ -30,31 +37,35 @@ export async function POST(request: Request) {
     }
     const recordId = redeemed.recordId;
 
-    // Attempt a real NIM payout if configured; otherwise the ledger entry stays pending.
+    // Attempt a real NIM payout; on failure, return the points to the user.
     let txHash: string | undefined;
     let status: "sent" | "pending" = "pending";
-    if (recipient) {
+    try {
+      const result = await sendNimReward({
+        recipient,
+        amountNim: amount,
+      });
+      txHash = result.hash;
+      status = "sent";
+      await updateRewardStatus(recordId, {
+        status: "sent",
+        txHash: result.hash,
+        recipient,
+      });
+    } catch (err) {
+      status = "pending";
       try {
-        const result = await sendNimReward({
-          recipient,
-          amountNim: amount,
-        });
-        txHash = result.hash;
-        status = "sent";
-        await updateRewardStatus(recordId, {
-          status: "sent",
-          txHash: result.hash,
-          recipient,
-        });
-      } catch (err) {
-        // Ledger stays pending; record the failure so it can be retried/refunded.
-        status = "pending";
-        await updateRewardStatus(recordId, {
-          status: "failed",
-          recipient,
-          error: err instanceof Error ? err.message : "send_failed",
-        });
+        await restoreRedeemPoints(recordId, key, amount);
+      } catch {
+        // ledger restore is best-effort
       }
+      return Response.json(
+        {
+          ok: false,
+          error: err instanceof Error ? err.message : "Payout failed — points refunded.",
+        },
+        { status: 502 },
+      );
     }
 
     return Response.json({ ok: true, amount, txHash, status });

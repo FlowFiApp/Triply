@@ -71,7 +71,7 @@ const [range, setRange] = useState({ start: "2026-10-24", end: "2026-11-08" });
 const [destinations, setDestinations] = useState<Destination[]>([]);
   const [destinationsLive, setDestinationsLive] = useState(false);
   const [destLoading, setDestLoading] = useState(true);
-  const [recent] = useState<string[]>(() => getRecentSearches());
+  const [recent, setRecent] = useState<string[]>(() => getRecentSearches());
   const [pickerFor, setPickerFor] = useState<
     | { kind: "main"; side: "from" | "to" }
     | { kind: "leg"; leg: number; side: "from" | "to" }
@@ -105,6 +105,7 @@ const totalPax = pax.Adults + pax.Children + pax.Infants;
       return;
     }
     addRecentSearch(`${origin} → ${destination}`);
+    setRecent(getRecentSearches());
     const intent: SearchIntent = {
       origin,
       destination,

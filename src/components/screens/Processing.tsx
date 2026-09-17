@@ -56,6 +56,12 @@ export default function Processing() {
 
   const runFlow = useCallback(async () => {
     setError("");
+    if (!flow.offer?.id || !tx) {
+      setError(
+        "No booking in progress — go back to checkout to start a booking.",
+      );
+      return;
+    }
     try {
       // Step 1 — confirm the USDT transfer on-chain before creating any order.
       setCurrent("verify");

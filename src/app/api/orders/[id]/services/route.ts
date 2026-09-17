@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { addOrderServices, duffelErrorMessage } from "@/lib/duffel";
 import { testPrice } from "@/lib/pricing";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 // Adds services (baggage, seats, …) to an existing order.
 export async function POST(
@@ -8,6 +9,8 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const body = await request.json();
     const serviceIds: string[] = Array.isArray(body.services)

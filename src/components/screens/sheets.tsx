@@ -152,10 +152,14 @@ export function FilterSortSheet({
   onClose: () => void;
   airlines?: string[];
   priceRange?: [number, number];
-  onApply?: (price: [number, number], selectedAirlines: string[]) => void;
+  onApply?: (
+    price: [number, number],
+    selectedAirlines: string[],
+    stops: string,
+  ) => void;
 }) {
-  const [stops, setStops] = useState("Non-stop");
-  const [checked, setChecked] = useState<string[]>(airlines.slice(0, 2));
+  const [stops, setStops] = useState("Any");
+  const [checked, setChecked] = useState<string[]>(airlines);
   const [range, setRange] = useState<[number, number]>(
     priceRange ?? [200, 3000],
   );
@@ -169,7 +173,7 @@ export function FilterSortSheet({
     setRange((prev) => [prev[0], Math.max(v, prev[0] + 50)]);
 
   const apply = () => {
-    onApply?.(range, checked);
+    onApply?.(range, checked, stops);
     onClose();
   };
 
@@ -228,7 +232,7 @@ export function FilterSortSheet({
       <div className="flex flex-col gap-3 px-4 py-5">
         <span className="text-[14px] font-bold text-muted">Stops</span>
         <div className="flex gap-2">
-          {["Non-stop", "1 Stop", "2+ Stops"].map((s) => (
+          {["Any", "Non-stop", "1 Stop", "2+ Stops"].map((s) => (
             <button
               key={s}
               onClick={() => setStops(s)}

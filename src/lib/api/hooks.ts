@@ -170,15 +170,6 @@ export function useBookings(email?: string) {
   });
 }
 
-// ---- Sender / points ops -------------------------------------------------
-
-export function useSender() {
-  return useQuery({
-    queryKey: ["sender"],
-    queryFn: () => getJson<{ configured: boolean; sender: string }>("/api/points/sender"),
-  });
-}
-
 // ---- Saved passengers ----------------------------------------------------
 
 export function usePassengers() {

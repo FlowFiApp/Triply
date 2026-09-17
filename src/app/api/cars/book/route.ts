@@ -3,71 +3,88 @@ import { duffelErrorMessage } from "@/lib/duffel";
 import type { CarBooking } from "@/lib/types";
 import { testPrice } from "@/lib/pricing";
 import { requireUser, unauthorized } from "@/lib/auth";
+import { upsertBooking, getOrCreateUser, earnPoints } from "@/lib/db";
 import mockData from "@/lib/data.json";
+
+// NOTE: Cars are served from the bundled local dataset (Duffel Cars is not
+// enabled on this token). Bookings are persisted to Mongo so they appear in
+// My Trips and can be cancelled.
 
 export async function POST(request: Request) {
   const user = await requireUser(request);
   if (!user) return unauthorized();
   try {
     const body = await request.json();
+    const email = String(body.driver?.email ?? "").toLowerCase();
+    const pickupDate = String(body.pickupDate ?? "2026-10-24");
+    const dropoffDate = String(body.dropoffDate ?? "2026-10-29");
 
-    // NOTE: Cars are served from the bundled local dataset (Duffel Cars is
-    // not enabled on this token). The live Duffel booking + customer-user calls
-    // are kept below, commented out, for when access is granted.
-    /*
-    const customerUserId = driver?.email
-      ? await ensureCustomerUser({
-          email: driver.email,
-          given_name: driver.given_name ?? "",
-          family_name: driver.family_name ?? "",
-          phone_number: driver.phone_number,
-        })
-      : undefined;
-    const booking = await createCarBooking({
-      rateId: body.rateId,
-      driver,
-      customerUserId: customerUserId ?? undefined,
-    });
-    */
     const carRate = (mockData.cars as unknown as any[]).find(
       (r: any) => r.id === body.rateId,
     );
-    const booking = {
-      id: crypto.randomUUID(),
-      reference: `CAR-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
-      status: "confirmed",
-      pickup_date: body.pickupDate ?? "2026-10-24",
-      dropoff_date: body.dropoffDate ?? "2026-10-29",
-      pickup_location: { name: carRate?.pickup_location?.name ?? "Pickup location" },
-      car: { name: carRate?.car?.name ?? "Car" },
-      total_amount: carRate?.total_amount ?? "0",
-      total_currency: carRate?.total_currency ?? "USD",
-    };
+    const totalAmount = testPrice(Number(carRate?.total_amount ?? 0));
+    const currency = carRate?.total_currency ?? "USD";
+    const carName = carRate?.car?.name ?? "Car";
+    const pickupLocation = carRate?.pickup_location?.name ?? "Pickup location";
 
-    // 2 NIM per 1 USDT, credited once per booking.
+    // Stable id so re-booking the same rate + dates under the same email
+    // updates the same record and never double-earns points.
+    const id = `car:${String(body.rateId ?? "")}:${pickupDate}:${dropoffDate}:${email}`;
+    const reference = `CAR-${String(body.rateId ?? "")
+      .slice(0, 6)
+      .toUpperCase()}-${pickupDate.replace(/-/g, "")}`;
+
     try {
-      const { getOrCreateUser, earnPoints } = await import("@/lib/db");
+      await upsertBooking({
+        kind: "car",
+        id,
+        reference,
+        email,
+        status: "confirmed",
+        carName,
+        pickupLocation,
+        pickupDate,
+        dropoffDate,
+        totalAmount,
+        currency,
+      });
       const created = await getOrCreateUser({ nimiqAddress: user.address });
       await earnPoints({
         userKey: created.key,
-        amountUsd: testPrice(Number(booking.total_amount ?? 0)),
-        bookingRef: booking.reference ?? booking.id,
+        amountUsd: totalAmount,
+        bookingRef: id,
         bookingKind: "car",
-        orderId: booking.id,
+        orderId: id,
       });
+      if (email) {
+        const { sendEmail, bookingEmailHtml } = await import("@/lib/resend");
+        await sendEmail({
+          to: email,
+          subject: `Triply — car booked (${reference})`,
+          html: bookingEmailHtml({
+            brand: "Triply",
+            reference,
+            title: "Car rental",
+            subtitle: `${carName} · ${pickupDate} → ${dropoffDate}`,
+            amount: String(totalAmount),
+            currency,
+          }),
+        });
+      }
     } catch {
-      // ledger failure must not block the booking
+      // ledger/persistence failure must not block the booking
     }
+
     const result: CarBooking = {
-      id: booking.id,
-      reference: booking.reference ?? booking.id,
-      status: booking.status ?? "confirmed",
-      carName: booking.car?.name ?? "",
-      pickupDate: booking.pickup_date ?? "",
-      dropoffDate: booking.dropoff_date ?? "",
-      pickupLocation: booking.pickup_location?.name ?? "",
-      totalAmount: testPrice(Number(booking.total_amount ?? 0)),
-      currency: booking.total_currency ?? "USD",
+      id,
+      reference,
+      status: "confirmed",
+      carName,
+      pickupDate,
+      dropoffDate,
+      pickupLocation,
+      totalAmount,
+      currency,
     };
     return Response.json({ live: true, booking: result });
   } catch (err) {

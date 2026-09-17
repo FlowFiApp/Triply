@@ -102,13 +102,22 @@ export default function Web3Checkout() {
     (c) => c.key === "NEXT_PUBLIC_TREASURY_WALLET_ADDRESS",
   )?.ok;
 
-  useEffect(() => {
-    const t = setInterval(() => setSeconds((s) => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(t);
-  }, []);
-
   const offer = flow.offer;
   const amount = flow.amount ?? offer?.price ?? 0;
+
+  // Use the offer's real expiry when available; otherwise fall back to 15 min.
+  useEffect(() => {
+    const expires = offer?.expiresAt ? new Date(offer.expiresAt).getTime() : 0;
+    const initial =
+      expires > Date.now() ? Math.floor((expires - Date.now()) / 1000) : 14 * 60 + 59;
+    const reset = setTimeout(() => setSeconds(initial), 0);
+    const t = setInterval(() => setSeconds((s) => Math.max(0, s - 1)), 1000);
+    return () => {
+      clearTimeout(reset);
+      clearInterval(t);
+    };
+  }, [offer?.expiresAt]);
+
   const base = offer ? offer.price - offer.taxAmount : amount;
   const taxes = offer?.taxAmount ?? 0;
   const extras = Math.max(0, amount - (offer?.price ?? 0));

@@ -347,7 +347,7 @@ export function CarSearch() {
           </section>
         </div>
 
-        <BottomTabBar active="Home" />
+        <BottomTabBar active="Explore" />
       </div>
 
       <DateRangePicker
@@ -674,6 +674,7 @@ export function CarConfirmed() {
       const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Cancellation failed");
       setBooking(null);
+      writeFlow({ carBooking: undefined, car: undefined });
       toast("success", `Car booking ${booking.reference} cancelled.`);
     } catch (err) {
       toast(

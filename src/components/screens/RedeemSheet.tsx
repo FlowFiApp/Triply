@@ -32,13 +32,18 @@ export default function RedeemSheet({
 
   const onRedeem = async () => {
     haptic();
-    const result = await redeem(available, addrValid ? addr : undefined);
+    if (!addrValid) {
+      toast(
+        "error",
+        "Connect a valid Nimiq Pay wallet to receive the payout.",
+      );
+      return;
+    }
+    const result = await redeem(available, addr);
     if (result.ok) {
       toast(
         "success",
-        addrValid
-          ? `Redeemed ${available} NIM — sending to your wallet.`
-          : `Redeemed ${available} NIM. Connect a valid Nimiq Pay wallet to receive the payout.`,
+        `Redeemed ${available} NIM — sending to your wallet.`,
       );
       onClose();
     } else {

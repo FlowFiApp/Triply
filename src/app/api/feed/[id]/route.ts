@@ -1,4 +1,4 @@
-import { dbErrorMessage, deleteMoment } from "@/lib/db";
+import { dbErrorMessage, deleteMoment, isValidObjectId } from "@/lib/db";
 import { destroyCloudinaryUrl } from "@/lib/cloudinary";
 import { requireUser, unauthorized } from "@/lib/auth";
 
@@ -6,6 +6,9 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
   const { id } = await params;
   const user = await requireUser(request);
   if (!user) return unauthorized();
+  if (!isValidObjectId(id)) {
+    return Response.json({ error: "Invalid moment id." }, { status: 400 });
+  }
   try {
     const result = await deleteMoment(id, user.key);
     if (!result.deleted) {

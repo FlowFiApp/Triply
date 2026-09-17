@@ -47,10 +47,11 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
               {offer.flightNumber}
               {offer.cabin ? ` · ${offer.cabin}` : ""}
             </span>
-            {(offer.aircraft || offer.totalBaggages) ? (
+            {(offer.aircraft || offer.totalBaggages || offer.emissionsKg) ? (
               <span className="text-[10px] text-muted">
                 {offer.aircraft}
                 {offer.totalBaggages ? ` · ${offer.totalBaggages} bag${offer.totalBaggages > 1 ? "s" : ""}` : ""}
+                {offer.emissionsKg ? ` · 🌱 ${offer.emissionsKg}kg CO₂` : ""}
               </span>
             ) : null}
           </div>
@@ -124,6 +125,7 @@ export default function SearchResults() {
   const [filters, setFilters] = useState<{
     price?: [number, number];
     airlines?: string[];
+    stops?: string;
   }>({});
 
   const flightSearch = useFlightSearch();
@@ -170,16 +172,20 @@ export default function SearchResults() {
     [offers],
   );
 
-  const filtered = useMemo(() => {
+const filtered = useMemo(() => {
     const next = offers.filter((o) => {
       if (filters.price && (o.price < filters.price[0] || o.price > filters.price[1]))
         return false;
       if (filters.airlines?.length && !filters.airlines.includes(o.airline))
         return false;
+      if (filters.stops === "Non-stop" && !o.direct) return false;
+      if (filters.stops === "1 Stop" && o.stopsCount !== 1) return false;
+      if (filters.stops === "2+ Stops" && (o.stopsCount ?? 0) < 2) return false;
       return true;
     });
     if (active === "Cheapest") next.sort((a, b) => a.price - b.price);
-    if (active === "Fastest") next.sort((a) => (a.direct ? -1 : 1));
+    if (active === "Fastest")
+      next.sort((a, b) => (a.durationMinutes ?? 0) - (b.durationMinutes ?? 0));
     if (active === "Earliest") next.sort((a, b) => a.depTime.localeCompare(b.depTime));
     return next;
   }, [offers, filters, active]);
@@ -299,7 +305,7 @@ export default function SearchResults() {
           </div>
         </div>
 
-        <BottomTabBar active="Explore" />
+        <BottomTabBar active="Home" />
       </div>
 
       <FilterSortSheet
@@ -307,8 +313,8 @@ export default function SearchResults() {
         onClose={() => setFilterOpen(false)}
         airlines={airlines}
         priceRange={prices[1] > 0 ? (prices as [number, number]) : undefined}
-        onApply={(price, selected) => {
-          setFilters({ price, airlines: selected });
+onApply={(price, selected, stops) => {
+          setFilters({ price, airlines: selected, stops });
         }}
       />
     </MobileShell>

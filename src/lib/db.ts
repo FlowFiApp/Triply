@@ -26,6 +26,9 @@ async function ensureIndexes(db: Db): Promise<void> {
     db.collection("moments").createIndex({ createdAt: -1 }),
     db.collection("moments").createIndex({ likes: 1 }),
     db.collection("passengers").createIndex({ key: 1 }, { unique: true }),
+    db.collection("bookings").createIndex({ id: 1 }, { unique: true }),
+    db.collection("bookings").createIndex({ email: 1 }),
+    db.collection("payments").createIndex({ txHash: 1 }, { unique: true }),
   ]);
   indexesEnsured = true;
 }
@@ -52,6 +55,101 @@ export function dbErrorMessage(err: unknown): string {
     return "Storage is unavailable right now — check the MongoDB connection and Atlas IP allowlist.";
   }
   return message || "Database error";
+}
+
+export type PersistedBooking = {
+  kind: "stay" | "car";
+  id: string;
+  reference: string;
+  email: string;
+  status: "confirmed" | "cancelled";
+  accommodationName?: string;
+  checkIn?: string;
+  checkOut?: string;
+  address?: string;
+  carName?: string;
+  pickupLocation?: string;
+  pickupDate?: string;
+  dropoffDate?: string;
+  totalAmount: number;
+  currency?: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+/** Inserts or updates a persisted stay/car booking (idempotent by `id`). */
+export async function upsertBooking(
+  b: Omit<PersistedBooking, "createdAt" | "updatedAt">,
+): Promise<void> {
+  const db = await getDb();
+  const now = new Date();
+  await db.collection<PersistedBooking>("bookings").updateOne(
+    { id: b.id },
+    {
+      $set: { ...b, updatedAt: now },
+      $setOnInsert: { createdAt: now },
+    },
+    { upsert: true },
+  );
+}
+
+/** Lists persisted stay/car bookings, optionally scoped to an email. */
+export async function listPersistedBookings(
+  email?: string,
+): Promise<PersistedBooking[]> {
+  const db = await getDb();
+  const q = email ? { email: email.toLowerCase() } : {};
+  return db
+    .collection<PersistedBooking>("bookings")
+    .find(q)
+    .sort({ createdAt: -1 })
+    .toArray();
+}
+
+/** Fetches a single persisted booking by id. */
+export async function getPersistedBooking(id: string): Promise<PersistedBooking | null> {
+  const db = await getDb();
+  return db.collection<PersistedBooking>("bookings").findOne({ id });
+}
+
+/** Marks a persisted booking as cancelled. Returns false if not found. */
+export async function cancelPersistedBooking(id: string): Promise<boolean> {
+  const db = await getDb();
+  const res = await db
+    .collection<PersistedBooking>("bookings")
+    .updateOne(
+      { id, status: { $ne: "cancelled" } },
+      { $set: { status: "cancelled", updatedAt: new Date() } },
+    );
+  return res.matchedCount > 0;
+}
+
+export function isValidObjectId(id: string): boolean {
+  return /^[0-9a-fA-F]{24}$/.test(id);
+}
+
+/**
+ * Records an on-chain payment hash as used. Returns true on first use,
+ * false when the hash was already consumed (prevents replaying one payment
+ * for multiple orders).
+ */
+export async function consumeVerifiedPayment(
+  txHash: string,
+  amountUsd: number,
+  userKey?: string,
+): Promise<boolean> {
+  const db = await getDb();
+  try {
+    await db.collection("payments").insertOne({
+      txHash,
+      amountUsd,
+      userKey: userKey ?? null,
+      createdAt: new Date(),
+    });
+    return true;
+  } catch {
+    return false; // duplicate txHash
+  }
 }
 
 export type UserDoc = {
@@ -282,12 +380,20 @@ export async function reversePoints(ref: string): Promise<boolean> {
   const db = await getDb();
   const reward = await findRewardByRef(ref);
   if (!reward || reward.type !== "earn" || reward.status === "reversed") return false;
+  // Clamp both counters at 0 so a redeem-then-cancel can't drive them negative.
   await db.collection<UserDoc>("users").updateOne(
     { key: reward.userId },
-    {
-      $inc: { "points.earned": -reward.amountNim, "points.available": -reward.amountNim },
-      $set: { updatedAt: new Date() },
-    },
+    [
+      {
+        $set: {
+          "points.earned": { $max: [{ $subtract: ["$points.earned", reward.amountNim] }, 0] },
+          "points.available": {
+            $max: [{ $subtract: ["$points.available", reward.amountNim] }, 0],
+          },
+          updatedAt: new Date(),
+        },
+      },
+    ],
   );
   await db.collection<RewardDoc>("rewards").updateOne(
     { _id: reward._id },
@@ -319,6 +425,7 @@ export async function redeemPoints({
       {
         $set: {
           "points.available": { $max: [{ $subtract: ["$points.available", amount] }, 0] },
+          "points.earned": { $max: [{ $subtract: ["$points.earned", amount] }, 0] },
           updatedAt: new Date(),
         },
       },
@@ -347,6 +454,31 @@ export async function updateRewardStatus(
   await db
     .collection<RewardDoc>("rewards")
     .updateOne({ _id: new ObjectId(recordId) }, { $set: { ...patch, updatedAt: new Date() } });
+}
+
+/**
+ * Returns points to the user after a failed redemption payout. Marks the
+ * redeem reward as failed so it can't be paid out again.
+ */
+export async function restoreRedeemPoints(
+  recordId: string,
+  userKey: string,
+  amount: number,
+): Promise<void> {
+  const db = await getDb();
+  await db.collection<UserDoc>("users").updateOne(
+    { key: userKey },
+    {
+      $inc: { "points.earned": amount, "points.available": amount },
+      $set: { updatedAt: new Date() },
+    },
+  );
+  await db
+    .collection<RewardDoc>("rewards")
+    .updateOne(
+      { _id: new ObjectId(recordId) },
+      { $set: { status: "failed", error: "payout_failed_refunded", updatedAt: new Date() } },
+    );
 }
 
 // ---- Travel feed (moments) ----------------------------------------------

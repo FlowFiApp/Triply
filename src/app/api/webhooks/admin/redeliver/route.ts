@@ -1,6 +1,9 @@
 import { duffelErrorMessage, redeliverWebhookEvent } from "@/lib/duffel";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 export async function POST(request: Request) {
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const body = await request.json();
     const result = await redeliverWebhookEvent(body.eventId);

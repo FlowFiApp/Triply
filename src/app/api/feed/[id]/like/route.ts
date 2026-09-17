@@ -1,10 +1,13 @@
-import { dbErrorMessage, earnMomentPoints, MOMENT_LIKE_REWARD, toggleMomentLike } from "@/lib/db";
+import { dbErrorMessage, earnMomentPoints, isValidObjectId, MOMENT_LIKE_REWARD, toggleMomentLike } from "@/lib/db";
 import { requireUser, unauthorized } from "@/lib/auth";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await requireUser(request);
   if (!user) return unauthorized();
+  if (!isValidObjectId(id)) {
+    return Response.json({ error: "Invalid moment id." }, { status: 400 });
+  }
   try {
     const key = user.key;
     const liked = await toggleMomentLike(id, key);

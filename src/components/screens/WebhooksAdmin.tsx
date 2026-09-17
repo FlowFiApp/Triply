@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
+import Link from "next/link";
 import { MobileShell } from "@/components/shell";
 import { EmptyState, SkeletonRows } from "@/components/ui/feedback";
 import { ProgressButton } from "@/components/ui/progress-button";
@@ -61,8 +62,23 @@ export default function WebhooksAdmin() {
   };
 
   return (
-    <MobileShell header={<><div className="flex h-[60px] items-center justify-between bg-background px-4">
-          <h1 className="text-[18px] font-extrabold text-foreground">
+    <MobileShell header={<><div className="flex h-[60px] items-center gap-3 bg-background px-4">
+          <Link
+            href="/profile"
+            aria-label="Back"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M15 18l-6-6 6-6"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Link>
+          <h1 className="flex-1 text-[18px] font-extrabold text-foreground">
             Webhooks
           </h1>
           <button

@@ -192,7 +192,11 @@ export function AccSearch() {
   }, []);
 
   const select = (s: StayOffer) => {
-    writeFlow({ stay: s, stays });
+    writeFlow({
+      stay: s,
+      stays,
+      stayGuests: guestCount.Adults + guestCount.Children,
+    });
     router.push("/stay");
   };
 
@@ -635,7 +639,8 @@ export function AccDetails() {
                 <div className="flex justify-between">
                   <span className="text-[12px] text-muted">Guests</span>
                   <span className="text-[13px] font-semibold text-foreground">
-                    2 Adults
+                    {readFlow().stayGuests ?? 2} Guest
+                    {readFlow().stayGuests !== 1 ? "s" : ""}
                   </span>
                 </div>
               </div>
@@ -804,6 +809,7 @@ export function AccConfirmed() {
       const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Cancellation failed");
       setBooking(null);
+      writeFlow({ stayBooking: undefined, stay: undefined });
       toast("success", `Stay booking ${booking.reference} cancelled.`);
     } catch (err) {
       toast(

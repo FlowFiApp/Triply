@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { duffelErrorMessage, listWebhookDeliveries, listWebhooks } from "@/lib/duffel";
+import { requireUser, unauthorized } from "@/lib/auth";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const webhooks = await listWebhooks();
     const deliveries = await Promise.all(

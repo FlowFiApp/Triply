@@ -72,10 +72,7 @@ export default function OrderDetail() {
     void fetchOrder();
   }, [fetchOrder]);
 
-  const statusActive =
-    order?.status === "confirmed" ||
-    order?.status === "issued" ||
-    order?.status === "paid";
+  const statusActive = order?.status === "confirmed";
   const changeable = order?.availableActions?.includes("change") ?? false;
   const cancellable = order?.availableActions?.includes("cancel") ?? false;
 
@@ -249,6 +246,12 @@ export default function OrderDetail() {
                 <span className="text-[11px] text-muted">
                   {p.email || p.phone || "No contact on file"}
                 </span>
+                {p.bornOn ? (
+                  <span className="text-[10px] text-muted">
+                    DOB {p.bornOn}
+                    {p.gender ? ` · ${p.gender === "f" ? "Female" : p.gender === "m" ? "Male" : p.gender}` : ""}
+                  </span>
+                ) : null}
               </div>
               <span className="text-[11px] font-semibold text-muted">
                 {p.seat ? `Seat ${p.seat}` : p.cabin}
@@ -268,9 +271,30 @@ export default function OrderDetail() {
               >
                 <span className="text-[13px] font-semibold text-foreground">
                   {s.name}
+                  {s.quantity > 1 ? ` ×${s.quantity}` : ""}
                 </span>
                 <span className="text-[13px] font-bold text-accent-fg">
                   <UsdtAmount value={s.totalAmount} />
+                </span>
+              </div>
+            ))}
+          </section>
+        ) : null}
+
+        {/* Documents */}
+        {order.documents && order.documents.length > 0 ? (
+          <section className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-[18px]">
+            <h2 className="text-[15px] font-bold text-foreground">Documents</h2>
+            {order.documents.map((d, i) => (
+              <div
+                key={i}
+                className="flex items-center justify-between rounded-xl border border-border bg-card-2 px-3 py-2.5"
+              >
+                <span className="text-[13px] font-semibold text-foreground capitalize">
+                  {d.type.replace(/_/g, " ")}
+                </span>
+                <span className="text-[12px] font-semibold text-muted">
+                  {d.uniqueIdentifier}
                 </span>
               </div>
             ))}
@@ -287,6 +311,14 @@ export default function OrderDetail() {
               <UsdtAmount value={order.totalAmount} />
             </span>
           </div>
+          {order.createdAt ? (
+            <div className="flex items-center justify-between">
+              <span className="text-[12px] text-muted">Booked</span>
+              <span className="text-[12px] font-semibold text-foreground">
+                {new Date(order.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+          ) : null}
           <div className="h-px w-full bg-border" />
           <div className="flex flex-col gap-1.5">
             {order.conditions.refund ? (
@@ -712,6 +744,7 @@ function ChangeFlightSheet({
   const { toast } = useToast();
   const [date, setDate] = useState("");
   const [offers, setOffers] = useState<ChangeOffer[]>([]);
+  const [changeRequestId, setChangeRequestId] = useState("");
   const [loading, setLoading] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState("");
@@ -721,6 +754,7 @@ function ChangeFlightSheet({
     const reset = setTimeout(() => {
       setDate("");
       setOffers([]);
+      setChangeRequestId("");
       setError("");
       setLoading(false);
       setConfirming(false);
@@ -753,6 +787,7 @@ function ChangeFlightSheet({
       const d = await res.json();
       if (!res.ok || d.error)
         throw new Error(d.error ?? "Change request failed");
+      setChangeRequestId(d.changeRequestId ?? "");
       setOffers(d.offers ?? []);
       if (!(d.offers ?? []).length) {
         toast("info", "No change offers returned yet — try again in a moment.");
@@ -773,6 +808,7 @@ function ChangeFlightSheet({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            orderChangeRequestId: changeRequestId,
             orderChangeOfferId: offerId,
             selectedOffers: [],
             slices: [],

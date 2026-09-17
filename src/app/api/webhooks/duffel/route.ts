@@ -85,7 +85,11 @@ function collectValues(
 
 /** Best-effort booking/order identifier from any webhook payload shape. */
 function extractRef(event: Record<string, unknown>): string {
-  const refs = collectValues(event, ["booking_ref", "reference"]);
+  const refs = collectValues(event, [
+    "booking_reference",
+    "booking_ref",
+    "reference",
+  ]);
   if (refs[0]) return refs[0];
   const ids = collectValues(event, ["order_id", "booking_id"]);
   if (ids[0]) return ids[0];
@@ -97,7 +101,14 @@ export async function POST(request: Request) {
   const raw = await request.text();
   const signature = request.headers.get("x-duffel-signature") ?? "";
 
-  if (signature && !verify(raw, signature)) {
+  if (!SECRET) {
+    console.warn(
+      "duffel webhook: DUFFEL_WEBHOOK_SECRET is not set — accepting unverified payload",
+    );
+  } else if (!signature) {
+    console.error("duffel webhook: missing x-duffel-signature — rejecting payload");
+    return Response.json({ success: false }, { status: 400 });
+  } else if (!verify(raw, signature)) {
     const sig = parseSignature(signature);
     const local = sig?.t ? computeSignature(raw, sig.t) : "";
     console.error("duffel webhook: signature mismatch — rejecting payload", {

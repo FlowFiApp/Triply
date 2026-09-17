@@ -17,7 +17,6 @@ import { useBookings } from "@/lib/api/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/lib/toast";
 import { readFlow } from "@/lib/store";
-import type { CarBooking } from "@/lib/types";
 
 type BookingItem = {
   kind: "flight" | "stay" | "car";
@@ -81,6 +80,7 @@ function BookingCard({
   };
   const openDetails = () => {
     if (isFlight) router.push(`/trip/${item.id}`);
+    else router.push(`/booking/${item.id}`);
   };
 
   return (
@@ -88,7 +88,6 @@ function BookingCard({
       <div className="flex items-center gap-2">
         <button
           onClick={openDetails}
-          disabled={!isFlight}
           className="flex min-w-0 flex-1 items-center gap-2 text-left"
         >
           {isFlight && item.airlineLogo ? (
@@ -226,7 +225,7 @@ function BookingActionsSheet({
               busyLabel="…"
               className="flex items-center gap-3 rounded-xl px-3 py-3.5 text-left text-[15px] font-semibold text-foreground hover:bg-card-2"
             >
-              <Car size={18} className="text-accent-fg" />
+              <Plane size={18} className="rotate-90 text-accent-fg" />
               Change flight
             </ProgressButton>
           ) : null}
@@ -273,33 +272,13 @@ export default function MyTrips() {
   } | null>(null);
   const [changeDate, setChangeDate] = useState("");
   const [changeOffers, setChangeOffers] = useState<any[]>([]);
+  const [changeRequestId, setChangeRequestId] = useState("");
   const [changeLoading, setChangeLoading] = useState(false);
   const { toast } = useToast();
 
-  const localCars = useMemo<BookingItem[]>(() => {
-    const cb = readFlow().carBooking as CarBooking | undefined;
-    return cb
-      ? [
-          {
-            kind: "car",
-            id: cb.id,
-            reference: cb.reference,
-            title: cb.carName,
-            subtitle: cb.pickupLocation,
-            status: cb.status,
-            depTime: cb.pickupDate,
-            arrTime: cb.dropoffDate,
-            dep: "Pickup",
-            arr: "Return",
-            amount: cb.totalAmount,
-          },
-        ]
-      : [];
-  }, []);
-
   const bookings = useMemo<BookingItem[]>(
-    () => [...((data?.bookings as BookingItem[]) ?? []), ...localCars],
-    [data, localCars],
+    () => (data?.bookings as BookingItem[]) ?? [],
+    [data],
   );
   const loading = isLoading;
   const errorMessage = error instanceof Error ? error.message : "";
@@ -390,6 +369,7 @@ export default function MyTrips() {
     setChanging(item);
     setChangeDate("");
     setChangeOffers([]);
+    setChangeRequestId("");
   };
 
   const submitChange = async () => {
@@ -407,6 +387,7 @@ export default function MyTrips() {
       });
       const d = await res.json();
       if (!res.ok || d.error) throw new Error(d.error ?? "Change request failed");
+      setChangeRequestId(d.changeRequestId ?? "");
       setChangeOffers(d.offers ?? []);
       if (!d.offers?.length) toast("info", "No change offers returned.");
     } catch (err) {
@@ -425,7 +406,12 @@ export default function MyTrips() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderChangeOfferId: offerId, selectedOffers: [], slices: [] }),
+          body: JSON.stringify({
+            orderChangeRequestId: changeRequestId,
+            orderChangeOfferId: offerId,
+            selectedOffers: [],
+            slices: [],
+          }),
         },
       );
       const d = await res.json();

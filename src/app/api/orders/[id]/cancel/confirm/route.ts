@@ -1,4 +1,5 @@
 import { confirmOrderCancellation, duffelErrorMessage } from "@/lib/duffel";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 // Confirms a pending order cancellation (created via POST /api/orders/:id/cancel),
 // cancelling the booking and applying the refund.
@@ -7,6 +8,8 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
     const body = await request.json();
     const cancellationId = String(body.cancellationId ?? "");

@@ -40,7 +40,9 @@ export type FlightOffer = {
   depDate: string;
   arrDate: string;
   duration: string;
+  durationMinutes?: number;
   stops: string;
+  stopsCount?: number;
   direct: boolean;
   emissionsKg?: string;
   expiresAt?: string;
@@ -67,6 +69,25 @@ export type PassengerInfo = {
   passport: string;
 };
 
+export type OrderStatus = "confirmed" | "awaiting_payment" | "cancelled";
+
+export type Booking = {
+  kind: "flight" | "stay" | "car";
+  id: string;
+  reference: string;
+  email: string;
+  title: string;
+  subtitle: string;
+  status: OrderStatus | string;
+  depTime: string;
+  arrTime: string;
+  dep: string;
+  arr: string;
+  amount: number;
+  airlineLogo?: string;
+  actions?: string[];
+};
+
 export type OrderRecord = {
   id: string;
   bookingRef: string;
@@ -75,7 +96,7 @@ export type OrderRecord = {
   airlineLogo?: string;
   flightNumber: string;
   cabin: string;
-  status: string;
+  status: OrderStatus;
   passengerName: string;
   depTime: string;
   arrTime: string;
@@ -135,6 +156,7 @@ export type OrderService = {
 
 export type OrderCondition = {
   allowed: boolean;
+  type?: string;
   penaltyAmount?: number;
   penaltyCurrency?: string;
 };
@@ -142,7 +164,7 @@ export type OrderCondition = {
 export type OrderDetail = {
   id: string;
   bookingRef: string;
-  status: string;
+  status: OrderStatus;
   airline: string;
   airlineCode: string;
   airlineLogo?: string;
@@ -152,7 +174,13 @@ export type OrderDetail = {
   slices: OrderSlice[];
   passengers: OrderPassenger[];
   services: OrderService[];
-  conditions: { refund?: OrderCondition; change?: OrderCondition };
+  conditions: {
+    refund?: OrderCondition;
+    change?: OrderCondition;
+    advanceSeatSelection?: boolean;
+    priorityBoarding?: boolean;
+    priorityCheckIn?: boolean;
+  };
   metadata: Record<string, unknown>;
   availableActions: string[];
   documents?: { type: string; uniqueIdentifier: string }[];

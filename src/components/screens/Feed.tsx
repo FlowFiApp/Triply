@@ -4,7 +4,6 @@ import { useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
-  Bookmark,
   Heart,
   Link2,
   Loader2,
@@ -178,9 +177,6 @@ function MomentCard({
             <Send size={20} className="text-foreground" />
           </button>
         </div>
-        <button onClick={() => onShare(moment)} aria-label="Save">
-          <Bookmark size={20} className="text-muted" />
-        </button>
       </div>
 
       <div className="flex flex-col gap-1 px-3.5 pb-3.5">
@@ -314,7 +310,7 @@ function CommentsSheet({
 export default function Feed() {
   const router = useRouter();
   const { toast } = useToast();
-  const { data: moments = [], isLoading, error, refetch, isRefetching } = useFeed();
+  const { data: moments = [], isLoading, error, isRefetching } = useFeed();
   const { data: profile } = useProfile();
   const myAvatar = profile?.avatar;
   const myName = profile?.username;

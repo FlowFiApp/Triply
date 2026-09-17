@@ -1,25 +1,25 @@
-import { cancelStayBooking, duffelErrorMessage } from "@/lib/duffel";
+import { cancelPersistedBooking } from "@/lib/db";
+import { requireUser, unauthorized } from "@/lib/auth";
 
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  const user = await requireUser(request);
+  if (!user) return unauthorized();
   try {
-    const result = await cancelStayBooking(id);
-    if (!result) {
-      return Response.json({
-        live: false,
-        error: "Duffel is not configured. Set DUFFEL_ACCESS_TOKEN to cancel bookings.",
-      });
+    const cancelled = await cancelPersistedBooking(id);
+    if (!cancelled) {
+      return Response.json(
+        { error: "Booking not found or already cancelled." },
+        { status: 404 },
+      );
     }
-    return Response.json({
-      live: true,
-      status: result.status ?? "cancelled",
-    });
+    return Response.json({ live: true, status: "cancelled" });
   } catch (err) {
     return Response.json(
-      { error: duffelErrorMessage(err, "Cancellation failed") },
+      { error: err instanceof Error ? err.message : "Cancellation failed" },
       { status: 502 },
     );
   }

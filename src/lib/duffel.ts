@@ -22,6 +22,13 @@ function getDuffel(): Duffel {
 
 const fmt24 = (iso: string | null) => format24(iso);
 
+/** Parses an ISO-8601 duration (e.g. PT02H26M) into minutes. */
+function parseIsoDuration(iso?: string | null): number {
+  const m = /PT(?:(\d+)H)?(?:(\d+)M)?/.exec(iso ?? "");
+  if (!m) return 0;
+  return (Number(m[1] ?? 0) * 60 + Number(m[2] ?? 0)) || 0;
+}
+
 // ---- Flights ------------------------------------------------------------
 
 export type FlightSlice = {
@@ -61,7 +68,9 @@ export type NormalizedFlight = {
   depDate: string;
   arrDate: string;
   duration: string;
+  durationMinutes: number;
   stops: string;
+  stopsCount: number;
   direct: boolean;
   emissionsKg?: string;
   expiresAt?: string;
@@ -131,7 +140,7 @@ export async function searchFlights(
     const owner = offer.owner ?? seg.marketing_carrier ?? {};
     return {
       id: offer.id,
-      airline: seg.operating_carrier?.name ?? seg.marketing_carrier?.name ?? "",
+      airline: seg.marketing_carrier?.name ?? seg.operating_carrier?.name ?? "",
       airlineCode: seg.marketing_carrier?.iata_code ?? "",
       airlineLogo:
         owner.logo_symbol_url ??
@@ -155,7 +164,9 @@ export async function searchFlights(
       depDate: (seg.departing_at ?? "").slice(0, 10),
       arrDate: (seg.arriving_at ?? "").slice(0, 10),
       duration: formatDuration(slice.duration),
+      durationMinutes: parseIsoDuration(slice.duration),
       stops: stopsCount === 0 ? "Direct" : `${stopsCount} Stop${stopsCount > 1 ? "s" : ""}`,
+      stopsCount,
       direct: stopsCount === 0,
       emissionsKg: offer.total_emissions_kg ?? undefined,
       expiresAt: offer.expires_at ?? undefined,
@@ -311,7 +322,8 @@ export async function createFlightOrder({
       given_name: p.given_name,
       family_name: p.family_name,
       born_on: p.born_on,
-      gender: p.gender === "female" ? "f" : p.gender === "male" ? "m" : "n",
+      // Duffel only accepts f/m for passenger gender.
+      gender: p.gender === "male" ? "m" : "f",
       title: p.title ?? "mr",
       email: p.email,
       phone_number: p.phone_number,
@@ -400,86 +412,6 @@ export async function confirmOrderCancellation(cancellationId: string) {
   return data as any;
 }
 
-// ---- Stays --------------------------------------------------------------
-
-export type StaySearchParams = {
-  checkInDate: string;
-  checkOutDate: string;
-  latitude: number;
-  longitude: number;
-  radiusKm?: number;
-  rooms?: number;
-  guests?: number;
-};
-
-export async function searchStays(params: StaySearchParams) {
-  if (!duffelEnabled()) return [];
-  const duffel = getDuffel();
-  const { data } = await duffel.stays.search({
-    check_in_date: params.checkInDate,
-    check_out_date: params.checkOutDate,
-    rooms: params.rooms ?? 1,
-    guests: Array.from({ length: params.guests ?? 2 }, () => ({ type: "adult" })),
-    location: {
-      radius: params.radiusKm ?? 20,
-      geographic_coordinates: {
-        latitude: params.latitude,
-        longitude: params.longitude,
-      },
-    },
-  } as any);
-  return data.results ?? [];
-}
-
-export async function getStayRates(resultId: string) {
-  if (!duffelEnabled()) return [];
-  const duffel = getDuffel();
-  const { data } = await duffel.stays.searchResults.fetchAllRates(resultId);
-  return (data as any).rates ?? [];
-}
-
-export async function createStayBooking({
-  rateId,
-  guest,
-  customerUserId,
-}: {
-  rateId: string;
-  guest: { given_name: string; family_name: string; email: string; phone_number: string };
-  customerUserId?: string;
-}) {
-  if (!duffelEnabled()) return null;
-  const duffel = getDuffel();
-  const quote = await duffel.stays.quotes.create(rateId);
-  const { data } = await duffel.stays.bookings.create({
-    quote_id: quote.data.id,
-    ...(customerUserId ? { users: [customerUserId] } : {}),
-    guests: [
-      {
-        ...(customerUserId ? { user_id: customerUserId } : {}),
-        given_name: guest.given_name,
-        family_name: guest.family_name,
-      },
-    ],
-    email: guest.email,
-    phone_number: guest.phone_number,
-  } as any);
-  return data as any;
-}
-
-export async function cancelStayBooking(bookingId: string) {
-  if (!duffelEnabled()) return null;
-  const duffel = getDuffel();
-  const { data } = await duffel.stays.bookings.cancel(bookingId);
-  return data as any;
-}
-
-export async function listStayBookings() {
-  if (!duffelEnabled()) return [];
-  const duffel = getDuffel();
-  const { data } = await duffel.stays.bookings.list({ limit: 50 } as any);
-  return data as any[];
-}
-
 export async function searchAccommodationSuggestions(query: string) {
   if (!duffelEnabled() || query.trim().length < 2) return [];
   const duffel = getDuffel();
@@ -497,14 +429,6 @@ export async function searchAccommodationSuggestions(query: string) {
   }));
 }
 
-export async function getAccommodationReviews(accommodationId: string) {
-  if (!duffelEnabled()) return [];
-  const duffel = getDuffel();
-  const { data } = (await duffel.stays.accommodation.reviews(
-    accommodationId,
-  )) as { data: any };
-  return (data?.reviews ?? []) as any[];
-}
 
 // ---- Seat maps ------------------------------------------------------------
 
@@ -515,86 +439,6 @@ export async function getSeatMap(offerId: string) {
   return (data ?? []) as any[];
 }
 
-// ---- Cars ---------------------------------------------------------------
-
-export type CarSearchParams = {
-  pickupDate: string;
-  pickupTime: string;
-  dropoffDate: string;
-  dropoffTime: string;
-  latitude: number;
-  longitude: number;
-  driverAge?: number;
-  radiusKm?: number;
-  residenceCountry?: string;
-};
-
-export async function searchCars(params: CarSearchParams) {
-  if (!duffelEnabled()) return [];
-  const duffel = getDuffel();
-  const radius = params.radiusKm ?? 20;
-  const { data } = await duffel.cars.search({
-    pickup_date: params.pickupDate,
-    pickup_time: params.pickupTime,
-    dropoff_date: params.dropoffDate,
-    dropoff_time: params.dropoffTime,
-    pickup_location: {
-      radius,
-      geographic_coordinates: {
-        latitude: params.latitude,
-        longitude: params.longitude,
-      },
-    },
-    dropoff_location: {
-      radius,
-      geographic_coordinates: {
-        latitude: params.latitude,
-        longitude: params.longitude,
-      },
-    },
-    driver: {
-      age: params.driverAge ?? 25,
-      residence_country_code: params.residenceCountry ?? "NG",
-    },
-  } as any);
-  return (data as any).rates ?? [];
-}
-
-export async function createCarBooking({
-  rateId,
-  driver,
-  customerUserId,
-}: {
-  rateId: string;
-  driver: {
-    given_name: string;
-    family_name: string;
-    date_of_birth: string;
-    email: string;
-    phone_number: string;
-  };
-  customerUserId?: string;
-}) {
-  if (!duffelEnabled()) return null;
-  const duffel = getDuffel();
-  const quote = await duffel.cars.quotes.create(rateId);
-  const { data } = await duffel.cars.bookings.create({
-    quote_id: quote.data.id,
-    ...(customerUserId ? { users: [customerUserId] } : {}),
-    driver: {
-      ...(customerUserId ? { user_id: customerUserId } : {}),
-      ...driver,
-    },
-  } as any);
-  return data as any;
-}
-
-export async function cancelCarBooking(bookingId: string) {
-  if (!duffelEnabled()) return null;
-  const duffel = getDuffel();
-  const { data } = await duffel.cars.bookings.cancel(bookingId);
-  return data as any;
-}
 
 // ---- Webhooks admin -------------------------------------------------------
 
@@ -666,10 +510,12 @@ export async function listOrderChangeOffers() {
 }
 
 export async function createOrderChange({
+  orderChangeRequestId,
   orderChangeOfferId,
   selectedOffers,
   slices,
 }: {
+  orderChangeRequestId: string;
   orderChangeOfferId: string;
   selectedOffers: string[];
   slices: string[];
@@ -677,6 +523,7 @@ export async function createOrderChange({
   if (!duffelEnabled()) return null;
   const duffel = getDuffel();
   const { data } = await duffel.orderChanges.create({
+    order_change_request_id: orderChangeRequestId,
     selected_order_change_offer: orderChangeOfferId,
     selected_offers: selectedOffers,
     slices,
@@ -775,35 +622,6 @@ export async function getDestinations(queries: string[]) {
   return results;
 }
 
-export async function geocode(query: string): Promise<{
-  latitude: number;
-  longitude: number;
-  name: string;
-} | null> {
-  try {
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(
-        query,
-      )}`,
-      { headers: { "User-Agent": "triply-mini-app" } },
-    );
-    if (!res.ok) return null;
-    const rows = (await res.json()) as Array<{
-      lat: string;
-      lon: string;
-      display_name: string;
-    }>;
-    const first = rows[0];
-    if (!first) return null;
-    return {
-      latitude: Number(first.lat),
-      longitude: Number(first.lon),
-      name: first.display_name,
-    };
-  } catch {
-    return null;
-  }
-}
 
 // ---- Fiat -> USDT proxy -------------------------------------------------
 

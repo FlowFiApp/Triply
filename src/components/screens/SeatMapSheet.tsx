@@ -56,6 +56,16 @@ export default function SeatMapSheet({
 
   useEffect(() => {
     if (!open) return;
+    const reset = setTimeout(() => {
+      setLoading(true);
+      setError("");
+      setSeats([]);
+    }, 0);
+    return () => clearTimeout(reset);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
     fetch(`/api/flights/seatmap?offer=${encodeURIComponent(offerId)}`)
       .then((r) => r.json())
       .then((d) => {

@@ -224,7 +224,9 @@ export default function FlightDetails() {
                 offer.cabin ||
                 offer.seatsRemaining ||
                 offer.totalBaggages ||
-                offer.emissionsKg) ? (
+                offer.emissionsKg ||
+                offer.partialRefundable ||
+                offer.partialChangeable) ? (
                 <div className="flex flex-wrap gap-1.5">
                   {offer.aircraft ? (
                     <span className="rounded-full bg-card-2 px-2.5 py-1 text-[11px] font-medium text-foreground">
@@ -234,6 +236,16 @@ export default function FlightDetails() {
                   {offer.emissionsKg ? (
                     <span className="rounded-full bg-card-2 px-2.5 py-1 text-[11px] font-medium text-foreground">
                       🌱 {offer.emissionsKg}kg CO₂
+                    </span>
+                  ) : null}
+                  {offer.partialRefundable ? (
+                    <span className="rounded-full bg-accent-2/20 px-2.5 py-1 text-[11px] font-medium text-accent-fg">
+                      Refundable
+                    </span>
+                  ) : null}
+                  {offer.partialChangeable ? (
+                    <span className="rounded-full bg-accent-2/20 px-2.5 py-1 text-[11px] font-medium text-accent-fg">
+                      Changeable
                     </span>
                   ) : null}
                   {offer.cabin ? (
