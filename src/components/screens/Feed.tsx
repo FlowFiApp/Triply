@@ -390,6 +390,7 @@ export default function Feed() {
               { key: "story", label: "Story", href: "/feed" },
               { key: "stays", label: "Accommodations", href: "/stays" },
               { key: "cars", label: "Cars", href: "/cars" },
+              { key: "loyalty", label: "Loyalty", href: "/loyalty" },
             ].map((tab) => (
               <button
                 key={tab.key}

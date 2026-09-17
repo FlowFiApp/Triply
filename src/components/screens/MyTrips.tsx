@@ -31,6 +31,8 @@ type BookingItem = {
   arr: string;
   amount: number;
   airlineLogo?: string;
+  image?: string;
+  createdAt?: string;
   actions?: string[];
   date?: string;
 };
@@ -91,7 +93,14 @@ function BookingCard({
           onClick={openDetails}
           className="flex min-w-0 flex-1 items-center gap-2 text-left"
         >
-          {isFlight && item.airlineLogo ? (
+          {item.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={item.image}
+              alt={item.title}
+              className="h-9 w-9 shrink-0 rounded-lg object-cover"
+            />
+          ) : isFlight && item.airlineLogo ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={item.airlineLogo}

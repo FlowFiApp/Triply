@@ -568,6 +568,37 @@ export async function payHeldOrder(
   return data as any;
 }
 
+export type LoyaltyProgramme = {
+  id: string;
+  name: string;
+  alliance: string | null;
+  logoUrl: string | null;
+  ownerAirlineId: string;
+};
+
+/** Fetches the airline loyalty programmes Duffel supports (GET /air/loyalty_programmes). */
+export async function listLoyaltyProgrammes(): Promise<LoyaltyProgramme[]> {
+  if (!duffelEnabled()) return [];
+  const res = await fetch("https://api.duffel.com/air/loyalty_programmes?limit=200", {
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+      "Duffel-Version": "v2",
+      Accept: "application/json",
+    },
+    cache: "no-store",
+  });
+  if (!res.ok) return [];
+  const json = await res.json();
+  const rows: any[] = Array.isArray(json?.data) ? json.data : [];
+  return rows.map((r) => ({
+    id: r?.id ?? "",
+    name: r?.name ?? "",
+    alliance: r?.alliance ?? null,
+    logoUrl: r?.logo_url ?? null,
+    ownerAirlineId: r?.owner_airline_id ?? "",
+  }));
+}
+
 /**
  * Creates an ephemeral Duffel Assistant client key for a customer user,
  * optionally scoped to a resource (order/booking) for resource context.

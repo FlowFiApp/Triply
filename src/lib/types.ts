@@ -88,6 +88,8 @@ export type Booking = {
   arr: string;
   amount: number;
   airlineLogo?: string;
+  image?: string;
+  createdAt?: string;
   actions?: string[];
   date?: string;
 };
@@ -230,6 +232,8 @@ export type CarOffer = {
   image: string;
   pickup: string;
   dropoff: string;
+  pickupDate: string;
+  dropoffDate: string;
   pickupTime: string;
   dropoffTime: string;
   pickupLatitude: number;
@@ -258,6 +262,8 @@ export type StayBooking = {
   totalAmount: number;
   currency: string;
   address?: string;
+  image?: string;
+  payment?: { txHash: string; chain: string; amountUsd: number };
 };
 
 export type CarBooking = {
@@ -270,4 +276,6 @@ export type CarBooking = {
   pickupLocation: string;
   totalAmount: number;
   currency: string;
+  image?: string;
+  payment?: { txHash: string; chain: string; amountUsd: number };
 };

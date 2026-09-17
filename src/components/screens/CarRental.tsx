@@ -38,9 +38,7 @@ import { readFlow, writeFlow } from "@/lib/store";
 import { useFlow } from "@/lib/flow-context";
 import { useCarSearch } from "@/lib/api/hooks";
 import { useToast } from "@/lib/toast";
-import { getStoredIdentity } from "@/lib/identity";
 import { share } from "@/lib/share";
-import { usePoints } from "@/lib/points";
 import { downloadIcs } from "@/lib/calendar";
 import { copyText } from "@/lib/nimiq";
 import { haptic } from "@/lib/haptics";
@@ -378,9 +376,7 @@ export function CarDetails() {
   const router = useRouter();
   const { setFlow } = useFlow();
   const [car] = useState<CarOffer | null>(() => readFlow().car ?? null);
-  const [booking, setBooking] = useState(false);
-  const [error, setError] = useState("");
-  const { refresh: refreshPoints } = usePoints();
+  const [error] = useState("");
 
   if (!car) {
     return (
@@ -407,33 +403,16 @@ export function CarDetails() {
       router.push("/passengers");
       return;
     }
-    setBooking(true);
-    setError("");
-    try {
-      const res = await fetch("/api/cars/book", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          rateId: car.id,
-          driver: {
-            given_name: passenger.first,
-            family_name: passenger.last,
-            email: passenger.email,
-            phone_number: `${passenger.dialCode ?? "+234"}${passenger.phone}`,
-            date_of_birth: passenger.dob,
-          },
-          ...getStoredIdentity(),
-        }),
-      });
-      const d = await res.json();
-      if (!res.ok || d.error) throw new Error(d.error ?? "Booking failed");
-      writeFlow({ carBooking: d.booking as CarBooking });
-      void refreshPoints();
-      router.push("/car/confirmed");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Booking failed");
-      setBooking(false);
-    }
+    // Route through the on-chain checkout so the car is paid before booking.
+    writeFlow({
+      car: { ...car },
+      amount: car.totalAmount,
+      carBooking: undefined,
+      txHash: undefined,
+      hold: false,
+      chain: undefined,
+    });
+    router.push("/checkout");
   };
 
   return (
@@ -628,9 +607,6 @@ export function CarDetails() {
               haptic();
               book();
             }}
-            busy={booking}
-            busyLabel="Booking…"
-            disabled={booking}
             className="tap mt-3 flex h-[49px] w-full items-center justify-center gap-2 rounded-xl border border-accent-2 bg-accent text-[16px] font-bold text-accent-2 disabled:opacity-60"
           >
             Book This Car

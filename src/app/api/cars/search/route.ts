@@ -27,6 +27,8 @@ function normalizeCar(r: any): CarOffer {
     image: car.image_url ?? "",
     pickup: r.pickup_location?.name ?? "",
     dropoff: r.dropoff_location?.name ?? "",
+    pickupDate: r.pickup_date ?? "",
+    dropoffDate: r.dropoff_date ?? "",
     pickupTime: r.pickup_time ?? "",
     dropoffTime: r.dropoff_time ?? "",
     pickupLatitude: Number(r.pickup_location?.geographic_coordinates?.latitude ?? 0),

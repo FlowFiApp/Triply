@@ -8,6 +8,7 @@ import { Sheet } from "@/components/ui";
 import { AuthActionButton } from "@/components/ui/auth-action";
 import { ProgressButton } from "@/components/ui/progress-button";
 import PhoneInput from "@/components/ui/phone-input";
+import Identicon from "@/components/ui/identicon";
 import { SkeletonRows } from "@/components/ui/feedback";
 import { useToast } from "@/lib/toast";
 import {
@@ -145,13 +146,19 @@ export default function PassengersManager() {
                 key={p.id}
                 className="flex items-center justify-between rounded-2xl border border-border bg-card p-4"
               >
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-[14px] font-bold text-foreground">
-                    {p.first} {p.last}
-                  </span>
-                  <span className="text-[12px] text-muted">
-                    {p.email || p.phone || "—"}
-                  </span>
+                <div className="flex min-w-0 items-center gap-3">
+                  <Identicon
+                    seed={p.id || p.email || `${p.first}${p.last}`}
+                    size={40}
+                  />
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[14px] font-bold text-foreground">
+                      {p.first} {p.last}
+                    </span>
+                    <span className="text-[12px] text-muted">
+                      {p.email || p.phone || "—"}
+                    </span>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <button

@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { ChevronDown, ShieldCheck, UserRound, X } from "lucide-react";
+import { ChevronDown, ShieldCheck, X } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import PhoneInput from "@/components/ui/phone-input";
+import Identicon from "@/components/ui/identicon";
 import { AuthActionButton } from "@/components/ui/auth-action";
 import { Sheet } from "@/components/ui";
 import { usePassengers, type SavedPassenger } from "@/lib/api/hooks";
@@ -314,7 +315,9 @@ export default function PassengerDetails() {
                       onClick={() => setPickerFor(i)}
                       className="flex items-center gap-1 rounded-full border border-border bg-card-2 px-2.5 py-1 text-[11px] font-semibold text-accent-fg"
                     >
-                      <UserRound size={12} />
+                      <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-card-2">
+                        <ChevronDown size={12} className="text-accent-fg" />
+                      </span>
                       Use saved
                     </button>
                   ) : null}
@@ -453,15 +456,18 @@ export default function PassengerDetails() {
                   onClick={() => applySaved(pickerFor, p)}
                   className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 text-left"
                 >
-                  <span className="flex flex-col">
-                    <span className="text-[14px] font-bold text-foreground">
+                  <span className="flex min-w-0 flex-col">
+                    <span className="truncate text-[14px] font-bold text-foreground">
                       {p.first} {p.last}
                     </span>
-                    <span className="text-[11px] text-muted">
+                    <span className="truncate text-[11px] text-muted">
                       {p.email || p.phone || "—"}
                     </span>
                   </span>
-                  <UserRound size={16} className="text-accent-fg" />
+                  <Identicon
+                    seed={p.id || p.email || `${p.first}${p.last}`}
+                    size={28}
+                  />
                 </button>
               ))}
             </div>

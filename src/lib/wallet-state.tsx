@@ -173,16 +173,23 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     [state.evmAddress],
   );
 
-  // Auto-connect the Nimiq identity and authenticate on app open. Inside
-  // Nimiq Pay this resolves the signer and reuses an existing JWT session
-  // (no signature prompt) or completes a fresh sign-in. Skipped when the user
-  // explicitly signed out, and a no-op in a plain browser (no Nimiq provider).
+  // Auto-connect the Nimiq identity and authenticate on app open so API calls
+  // are never 401 from a stale/unread state. Inside Nimiq Pay this resolves the
+  // signer and reuses an existing JWT session (no signature prompt) or completes
+  // a fresh sign-in. Skipped only when the user explicitly signed out AND there
+  // is no stored session; a no-op in a plain browser (no Nimiq provider).
   useEffect(() => {
     if (typeof window === "undefined") return;
     let cancelled = false;
     (async () => {
+      const stored = getStoredSession();
       try {
-        if (localStorage.getItem(AUTO_SKIP_KEY) === "1") return;
+        if (
+          localStorage.getItem(AUTO_SKIP_KEY) === "1" &&
+          !stored.authenticated
+        ) {
+          return;
+        }
       } catch {}
       const identity = await connectNimiqIdentity();
       if (cancelled || !identity) return;

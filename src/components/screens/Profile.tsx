@@ -10,7 +10,6 @@ import {
   Copy,
   Pencil,
   Plane,
-  RadioTower,
   UserRound,
   Wallet,
 } from "lucide-react";
@@ -230,15 +229,6 @@ export default function Profile() {
                 Saved Passengers
               </span>
               <UserRound size={16} className="text-accent-fg" />
-            </Link>
-            <Link
-              href="/webhooks"
-              className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3.5"
-            >
-              <span className="text-[14px] font-semibold text-foreground">
-                Webhooks
-              </span>
-              <RadioTower size={16} className="text-accent-fg" />
             </Link>
             <Link
               href="/onboarding"

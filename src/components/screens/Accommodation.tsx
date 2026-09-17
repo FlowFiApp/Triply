@@ -37,9 +37,7 @@ import { readFlow, writeFlow } from "@/lib/store";
 import { useFlow } from "@/lib/flow-context";
 import { useStaySearch } from "@/lib/api/hooks";
 import { useToast } from "@/lib/toast";
-import { getStoredIdentity } from "@/lib/identity";
 import { share } from "@/lib/share";
-import { usePoints } from "@/lib/points";
 import { downloadIcs } from "@/lib/calendar";
 import { haptic } from "@/lib/haptics";
 import type { StayOffer, StayBooking } from "@/lib/types";
@@ -421,13 +419,10 @@ export function AccDetails() {
   const [stay, setStay] = useState<StayOffer | null>(
     () => readFlow().stay ?? null,
   );
-  const [booking, setBooking] = useState(false);
   const [error, setError] = useState("");
   const [reviews, setReviews] = useState<
     { reviewer_name: string; score: number; text: string }[]
   >([]);
-  const { toast } = useToast();
-  const { refresh: refreshPoints } = usePoints();
   const similar = (readFlow().stays ?? [])
     .filter((s) => s.id !== stay?.id)
     .slice(0, 6);
@@ -501,34 +496,16 @@ export function AccDetails() {
       setError("This stay has no bookable rate.");
       return;
     }
-    setBooking(true);
-    setError("");
-    try {
-      const res = await fetch("/api/stays/book", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          rateId: stay.rateId,
-          guest: {
-            given_name: passenger.first,
-            family_name: passenger.last,
-            email: passenger.email,
-            phone_number: `${passenger.dialCode ?? "+234"}${passenger.phone}`,
-          },
-          ...getStoredIdentity(),
-        }),
-      });
-      const d = await res.json();
-      if (!res.ok || d.error) throw new Error(d.error ?? "Booking failed");
-      writeFlow({ stayBooking: d.booking as StayBooking });
-      void refreshPoints();
-      router.push("/stay/confirmed");
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Booking failed";
-      setError(msg);
-      toast("error", msg);
-      setBooking(false);
-    }
+    // Route through the on-chain checkout so the stay is paid before booking.
+    writeFlow({
+      stay: { ...stay },
+      amount: stay.totalAmount,
+      stayBooking: undefined,
+      txHash: undefined,
+      hold: false,
+      chain: undefined,
+    });
+    router.push("/checkout");
   };
 
   return (
@@ -760,9 +737,6 @@ export function AccDetails() {
               haptic();
               book();
             }}
-            busy={booking}
-            busyLabel="Booking…"
-            disabled={booking}
             className="tap mt-3 flex h-[49px] w-full items-center justify-center gap-2 rounded-xl border border-accent-2 bg-accent text-[16px] font-bold text-accent-2 disabled:opacity-60"
           >
             Book Now

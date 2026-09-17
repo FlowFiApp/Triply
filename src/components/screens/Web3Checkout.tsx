@@ -102,7 +102,21 @@ export default function Web3Checkout() {
   )?.ok;
 
   const offer = flow.offer;
-  const amount = flow.amount ?? offer?.price ?? 0;
+  const stay = flow.stay;
+  const car = flow.car;
+  const kind: "flight" | "stay" | "car" = offer
+    ? "flight"
+    : stay
+      ? "stay"
+      : car
+        ? "car"
+        : "flight";
+  const amount =
+    flow.amount ??
+    offer?.price ??
+    stay?.totalAmount ??
+    car?.totalAmount ??
+    0;
   // Offers with requires_instant_payment=false can be held and paid later.
   const canHold = offer ? offer.requiresInstantPayment === false : false;
 
@@ -172,29 +186,43 @@ export default function Web3Checkout() {
     }
   };
 
-  if (!offer) {
+  if (!offer && !stay && !car) {
     return (
       <MobileShell>
         <div className="flex min-h-full flex-col items-center justify-center gap-3 px-10 text-center">
           <p className="text-[16px] font-bold text-foreground">Checkout</p>
           <p className="text-[13px] text-muted">
-            No offer selected. Choose a flight first to see your order summary.
+            No selection found. Choose a flight, stay or car first to see your
+            order summary.
           </p>
           <Link
             href="/search"
             className="flex h-10 items-center rounded-xl border border-accent-2 bg-accent px-4 text-[13px] font-bold text-accent-2"
           >
-            Search Flights
+            Browse Trips
           </Link>
         </div>
       </MobileShell>
     );
   }
 
+  const backHref =
+    kind === "stay"
+      ? "/stay"
+      : kind === "car"
+        ? "/car"
+        : "/passengers";
+  const itemLabel =
+    kind === "flight"
+      ? `Flight · ${offer?.origin}→${offer?.destination}`
+      : kind === "stay"
+        ? `Stay · ${stay?.name}`
+        : `Car · ${car?.name}`;
+
   return (
     <MobileShell header={<><div className="flex h-[60px] items-center gap-3 bg-background px-4 py-3">
             <Link
-              href="/passengers"
+              href={backHref}
               className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -213,7 +241,8 @@ export default function Web3Checkout() {
           </div></>}>
       <div className="flex min-h-full flex-col justify-between">
         <div className="w-full">
-                 <div className="px-4 py-3">
+                 {kind === "flight" ? (
+            <div className="px-4 py-3">
             <div className="flex items-center justify-between rounded-xl bg-accent-2 px-3 py-3">
               <span className="flex items-center gap-2.5">
                 <Clock size={20} className="text-accent" />
@@ -226,6 +255,7 @@ export default function Web3Checkout() {
               </span>
             </div>
           </div>
+                 ) : null}
 
           <div className="px-4 py-3">
             <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4">
@@ -233,11 +263,10 @@ export default function Web3Checkout() {
                 Order Summary
               </span>
               <div className="flex flex-col gap-2">
-                <BreakdownRow
-                  label={`Flight Base Fare · ${offer.origin}→${offer.destination}`}
-                  amount={base}
-                />
-                <BreakdownRow label="Taxes & Fees" amount={taxes} />
+                <BreakdownRow label={itemLabel} amount={base} />
+                {taxes > 0 ? (
+                  <BreakdownRow label="Taxes & Fees" amount={taxes} />
+                ) : null}
                 {extras > 0 ? (
                   <BreakdownRow label="Extras & Services" amount={extras} />
                 ) : null}

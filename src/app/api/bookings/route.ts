@@ -27,7 +27,21 @@ export async function GET(request: Request) {
       .filter((b) => b.kind === "car")
       .map(normalizeCarBooking);
 
-    const all: Booking[] = [...flights, ...stays, ...cars];
+    // Merge flights + stays + cars and order by booking time (most recent
+    // first), falling back to the travel date when created_at is unknown.
+    const all: Booking[] = [...flights, ...stays, ...cars].sort((a, b) => {
+      const ta = a.createdAt
+        ? new Date(a.createdAt).getTime()
+        : a.date
+          ? new Date(`${a.date}T00:00:00Z`).getTime()
+          : 0;
+      const tb = b.createdAt
+        ? new Date(b.createdAt).getTime()
+        : b.date
+          ? new Date(`${b.date}T00:00:00Z`).getTime()
+          : 0;
+      return tb - ta;
+    });
     return Response.json({ bookings: all, live: all.length > 0 });
   } catch (err) {
     return Response.json(

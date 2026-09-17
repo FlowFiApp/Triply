@@ -130,6 +130,34 @@ export function useUploadFeedImage() {
   });
 }
 
+// ---- Loyalty Programmes --------------------------------------------------
+
+export type LoyaltyProgramme = {
+  id: string;
+  name: string;
+  alliance: string | null;
+  logoUrl: string | null;
+  ownerAirlineId: string;
+};
+
+export function useLoyaltyProgrammes() {
+  const { state } = useWalletState();
+  const key = state.nimiqAddress ?? "";
+  return useQuery({
+    queryKey: ["loyalty-programmes", key],
+    enabled: true,
+    queryFn: async () => {
+      const d = await getJson<{
+        programmes: LoyaltyProgramme[];
+        live: boolean;
+        error?: string;
+      }>(`/api/loyalty-programmes`);
+      if (d.error) throw new Error(d.error);
+      return d.programmes ?? [];
+    },
+  });
+}
+
 // ---- Profile -------------------------------------------------------------
 
 export function useProfile() {

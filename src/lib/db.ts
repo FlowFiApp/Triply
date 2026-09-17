@@ -71,8 +71,10 @@ export type PersistedBooking = {
   pickupLocation?: string;
   pickupDate?: string;
   dropoffDate?: string;
+  image?: string;
   totalAmount: number;
   currency?: string;
+  payment?: { txHash: string; chain: string; amountUsd: number };
   createdAt: Date;
   updatedAt: Date;
 };

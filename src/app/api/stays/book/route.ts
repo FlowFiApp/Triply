@@ -4,12 +4,13 @@ import type { StayBooking } from "@/lib/types";
 import { seedPrice } from "@/lib/pricing";
 import { requireUser, unauthorized } from "@/lib/auth";
 import { upsertBooking, getOrCreateUser, earnPoints } from "@/lib/db";
+import { verifyUsdtPayment } from "@/lib/payments-verify";
 import mockData from "@/lib/data.json";
 
 // NOTE: Stays are served from the bundled local dataset (Duffel Stays is not
-// enabled on this token). Bookings are persisted to Mongo so they appear in
-// My Trips and can be cancelled; the live Duffel call is kept out until access
-// is granted.
+// enabled on this token). Bookings require a verified on-chain USDT payment,
+// are persisted to Mongo so they appear in My Trips and can be cancelled; the
+// live Duffel call is kept out until access is granted.
 
 export async function POST(request: Request) {
   const user = await requireUser(request);
@@ -27,9 +28,56 @@ export async function POST(request: Request) {
     const totalAmount = seedPrice(Number(stay?.cheapest_rate_total_amount ?? 0));
     const currency = stay?.cheapest_rate_currency ?? "USD";
     const name = stay?.accommodation?.name ?? "Local Stay";
+    const image = stay?.accommodation?.images?.[0]?.url ?? "";
     const address = stay?.accommodation?.address
       ? `${stay.accommodation.address?.line_one ?? ""}, ${stay.accommodation.address?.city_name ?? ""}`
       : "";
+
+    // Require a verified on-chain USDT payment (replay-protected) before a
+    // stay can be confirmed.
+    const txHash = String(body.txHash ?? "");
+    if (!/^0x[0-9a-fA-F]{64}$/.test(txHash)) {
+      return Response.json(
+        { error: "Payment is required before booking a stay." },
+        { status: 400 },
+      );
+    }
+    const treasury = process.env.NEXT_PUBLIC_TREASURY_WALLET_ADDRESS;
+    if (!treasury) {
+      return Response.json(
+        { error: "Treasury address is not configured." },
+        { status: 400 },
+      );
+    }
+    let verified = false;
+    try {
+      verified = await verifyUsdtPayment(txHash, totalAmount, treasury);
+    } catch {
+      verified = false;
+    }
+    if (!verified) {
+      return Response.json(
+        { error: "Payment not verified on-chain." },
+        { status: 400 },
+      );
+    }
+    const { consumeVerifiedPayment } = await import("@/lib/db");
+    const consumed = await consumeVerifiedPayment(
+      txHash,
+      totalAmount,
+      user.address,
+    );
+    if (!consumed) {
+      return Response.json(
+        { error: "This payment has already been used for a booking." },
+        { status: 400 },
+      );
+    }
+    const payment = {
+      txHash,
+      chain: String(body.chain ?? "polygon"),
+      amountUsd: totalAmount,
+    };
 
     // Stable id so re-booking the same stay + dates under the same email
     // updates the same record and never double-earns points.
@@ -47,8 +95,10 @@ export async function POST(request: Request) {
         checkIn,
         checkOut,
         address,
+        image,
         totalAmount,
         currency,
+        payment,
       });
       const created = await getOrCreateUser({ nimiqAddress: user.address });
       await earnPoints({
@@ -87,6 +137,8 @@ export async function POST(request: Request) {
       totalAmount,
       currency,
       address,
+      image,
+      payment,
     };
     return Response.json({ live: true, booking: result });
   } catch (err) {

@@ -11,7 +11,7 @@ import { useToast } from "@/lib/toast";
 import { useWalletState } from "@/lib/wallet-state";
 import { CHAINS } from "@/lib/wallet";
 import { shortHash } from "@/lib/nimiq";
-import type { OrderRecord } from "@/lib/types";
+import type { OrderRecord, StayBooking, CarBooking } from "@/lib/types";
 
 type Step = "verify" | "settle" | "issue";
 
@@ -55,11 +55,18 @@ export default function Processing() {
 
   const offerId = flow.offer?.id ?? "";
   const payer = state.evmAddress ?? "";
+  const kind: "flight" | "stay" | "car" = flow.offer
+    ? "flight"
+    : flow.stay
+      ? "stay"
+      : flow.car
+        ? "car"
+        : "flight";
 
   const runFlow = useCallback(async () => {
     setError("");
     const isHold = Boolean(flow.hold);
-    if (!flow.offer?.id || (!tx && !isHold)) {
+    if ((!flow.offer?.id && !flow.stay && !flow.car) || (!tx && !isHold)) {
       setError(
         "No booking in progress — go back to checkout to start a booking.",
       );
@@ -84,7 +91,8 @@ export default function Processing() {
         }
       }
 
-      // Step 2 — create the airline order (instant or hold).
+      // Step 2 — create the airline order (instant or hold), or book the
+      // stay/car now that the on-chain payment has been confirmed.
       setCurrent("settle");
       setSub(
         isHold
@@ -92,6 +100,94 @@ export default function Processing() {
           : "Settlement confirmed — issuing booking…",
       );
       setBooking(true);
+
+      if (kind === "stay") {
+        const stay = flow.stay;
+        const passenger = flow.passenger;
+        if (!stay || !passenger?.first) {
+          throw new Error("Stay details are missing.");
+        }
+        const stayRes = await fetchJson("/api/stays/book", {
+          rateId: stay.rateId ?? stay.resultId,
+          checkInDate: stay.checkIn,
+          checkOutDate: stay.checkOut,
+          guest: {
+            given_name: passenger.first,
+            family_name: passenger.last,
+            email: passenger.email,
+            phone_number: `${passenger.dialCode ?? "+234"}${passenger.phone}`,
+          },
+          txHash: tx,
+          chain: chain.id,
+          amount,
+        });
+        const sData = stayRes.data;
+        if (!stayRes.ok || sData.error) {
+          throw new Error(
+            typeof sData.error === "string" ? sData.error : "Stay booking failed",
+          );
+        }
+        setCurrent("issue");
+        setSub("Booking confirmed");
+        setBooking(false);
+        setFlow({
+          stayBooking: sData.booking as StayBooking,
+          txHash: tx,
+          chain: chain.id,
+        });
+        void refreshPoints();
+        toast(
+          "success",
+          `Stay confirmed · ${(sData.booking as StayBooking)?.reference}`,
+        );
+        router.push("/stay/confirmed");
+        return;
+      }
+
+      if (kind === "car") {
+        const car = flow.car;
+        const passenger = flow.passenger;
+        if (!car || !passenger?.first) {
+          throw new Error("Car details are missing.");
+        }
+        const carRes = await fetchJson("/api/cars/book", {
+          rateId: car.id,
+          pickupDate: car.pickupDate,
+          dropoffDate: car.dropoffDate,
+          driver: {
+            given_name: passenger.first,
+            family_name: passenger.last,
+            email: passenger.email,
+            phone_number: `${passenger.dialCode ?? "+234"}${passenger.phone}`,
+            date_of_birth: passenger.dob,
+          },
+          txHash: tx,
+          chain: chain.id,
+          amount,
+        });
+        const cData = carRes.data;
+        if (!carRes.ok || cData.error) {
+          throw new Error(
+            typeof cData.error === "string" ? cData.error : "Car booking failed",
+          );
+        }
+        setCurrent("issue");
+        setSub("Booking confirmed");
+        setBooking(false);
+        setFlow({
+          carBooking: cData.booking as CarBooking,
+          txHash: tx,
+          chain: chain.id,
+        });
+        void refreshPoints();
+        toast(
+          "success",
+          `Car confirmed · ${(cData.booking as CarBooking)?.reference}`,
+        );
+        router.push("/car/confirmed");
+        return;
+      }
+
       const orderRes = await fetchJson("/api/orders", {
         offerId,
         amount,
@@ -151,7 +247,7 @@ export default function Processing() {
             : "Booking could not be issued.",
       );
     }
-  }, [tx, amount, chain.id, offerId, payer, flow, setFlow, toast, router, refreshPoints]);
+  }, [tx, amount, chain.id, offerId, payer, flow, setFlow, toast, router, refreshPoints, kind]);
 
   useEffect(() => {
     if (ran.current) return;
@@ -164,7 +260,10 @@ export default function Processing() {
   const steps = [
     { title: "On-Chain Payment Verification", done: "Verified & Secured" },
     { title: "Instant Settlement", done: "Settled" },
-    { title: "Airline Ticket Issuance", done: "Issued" },
+    {
+      title: kind === "flight" ? "Airline Ticket Issuance" : "Booking Confirmation",
+      done: "Confirmed",
+    },
   ];
 
   return (
