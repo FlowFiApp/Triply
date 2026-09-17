@@ -85,6 +85,8 @@ export default function FlightDetails() {
   const addons = offer.services.filter(
     (s) => s.totalAmount > 0 && (s.type === "baggage" || s.type === "seat"),
   );
+  const seatAddon = addons.find((s) => s.type === "seat");
+  const baggageAddons = addons.filter((s) => s.type !== "seat");
   const selectedServices: OfferService[] = addons.filter((a) => selected[a.id]);
   const total =
     offer.price + selectedServices.reduce((sum, s) => sum + s.totalAmount, 0);
@@ -278,57 +280,87 @@ export default function FlightDetails() {
             </div>
           </div>
 
-          {addons.length > 0 ? (
-            <section className="flex flex-col gap-3 px-4 pb-6 pt-3">
+          <section className="flex flex-col gap-3 px-4 pb-6 pt-3">
               <h2 className="text-[16px] font-bold text-foreground">
                 Baggage &amp; Extras
               </h2>
               <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4">
-                {addons.map((a, i) => {
-                  const Icon = SERVICE_ICON[a.type] ?? MonitorPlay;
-                  return (
-                    <div key={a.id}>
-                      {i > 0 ? (
-                        <div className="mb-4 h-px w-full bg-border" />
-                      ) : null}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Icon size={20} className="text-accent-fg" />
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-[13px] font-semibold text-foreground">
-                              {a.name}
-                            </span>
-                            <span className="text-[11px] text-muted">
-                              +<UsdtAmount value={a.totalAmount} />
-                            </span>
+                {baggageAddons.length === 0 ? (
+                  <p className="text-[12px] text-muted">
+                    No additional services available for this flight.
+                  </p>
+                ) : (
+                  baggageAddons.map((a, i) => {
+                    const Icon = SERVICE_ICON[a.type] ?? MonitorPlay;
+                    return (
+                      <div key={a.id}>
+                        {i > 0 ? (
+                          <div className="mb-4 h-px w-full bg-border" />
+                        ) : null}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <Icon size={20} className="text-accent-fg" />
+                            <div className="flex flex-col gap-0.5">
+                              <span className="text-[13px] font-semibold text-foreground">
+                                {a.name}
+                              </span>
+                              <span className="text-[11px] text-muted">
+                                +<UsdtAmount value={a.totalAmount} />
+                              </span>
+                            </div>
                           </div>
+                          <Toggle
+                            on={Boolean(selected[a.id])}
+                            onClick={() =>
+                              setSelected((prev) => ({
+                                ...prev,
+                                [a.id]: !prev[a.id],
+                              }))
+                            }
+                          />
                         </div>
-                        <Toggle
-                          on={Boolean(selected[a.id])}
-                          onClick={() =>
-                            setSelected((prev) => ({
-                              ...prev,
-                              [a.id]: !prev[a.id],
-                            }))
-                          }
-                        />
                       </div>
-                      {a.type === "seat" ? (
-                        <button
-                          onClick={() => setSeatOpen(true)}
-                          className="mt-2 flex h-9 w-full items-center justify-center rounded-lg border border-border bg-card-2 text-[12px] font-semibold text-accent-fg"
-                        >
-                          {chosenSeat
-                            ? `Seat ${chosenSeat} selected — change`
-                            : "Choose seat on the map"}
-                        </button>
-                      ) : null}
+                    );
+                  })
+                )}
+
+                {/* Seat selection — always in the flow; disabled when the fare has no seat map */}
+                <div
+                  className={`${
+                    baggageAddons.length ? "border-t border-border pt-4" : ""
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <MonitorPlay size={20} className="text-accent-fg" />
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[13px] font-semibold text-foreground">
+                        Seat selection
+                      </span>
+                      <span className="text-[11px] text-muted">
+                        {seatAddon ? (
+                          <>
+                            +<UsdtAmount value={seatAddon.totalAmount} />
+                          </>
+                        ) : (
+                          "Not available on this fare"
+                        )}
+                      </span>
                     </div>
-                  );
-                })}
+                  </div>
+                  <button
+                    onClick={() => seatAddon && setSeatOpen(true)}
+                    disabled={!seatAddon}
+                    className="mt-2 flex h-9 w-full items-center justify-center rounded-lg border border-border bg-card-2 text-[12px] font-semibold text-accent-fg disabled:opacity-50"
+                  >
+                    {!seatAddon
+                      ? "Seat map not available for this flight"
+                      : chosenSeat
+                        ? `Seat ${chosenSeat} selected — change`
+                        : "Choose seat on the map"}
+                  </button>
+                </div>
               </div>
             </section>
-          ) : null}
 
           {similar.length > 0 ? (
             <section className="flex flex-col gap-3 px-4 pb-6 pt-3">
@@ -340,7 +372,7 @@ export default function FlightDetails() {
                   <button
                     key={s.id}
                     onClick={() => selectSimilar(s)}
-                    className="animate-fade-up flex w-[150px] shrink-0 flex-col gap-1 rounded-xl border border-border bg-card p-3 text-left"
+                    className="animate-fade-up flex w-[190px] shrink-0 flex-col gap-1 rounded-xl border border-border bg-card p-3 text-left"
                     style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}
                   >
                     <span className="flex items-center gap-2 text-[12px] font-bold text-foreground">

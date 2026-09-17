@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { ChevronDown, ShieldCheck, UserRound } from "lucide-react";
+import { ChevronDown, ShieldCheck, UserRound, X } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import PhoneInput from "@/components/ui/phone-input";
 import { AuthActionButton } from "@/components/ui/auth-action";
@@ -100,6 +100,13 @@ export default function PassengerDetails() {
   const setField = (i: number, k: keyof PassengerInfo) => (v: string) => {
     setForms((fs) => fs.map((f, idx) => (idx === i ? { ...f, [k]: v } : f)));
     setInvalid((prev) => ({ ...prev, [`${i}-${k}`]: false }));
+  };
+
+  const removePassenger = (i: number) => {
+    if (forms.length <= 1) return; // keep at least one passenger
+    setForms((fs) => fs.filter((_, idx) => idx !== i));
+    setFlow({ passengers: forms.length - 1 });
+    setInvalid({});
   };
 
   const applySaved = (i: number, p: SavedPassenger) => {
@@ -264,10 +271,19 @@ export default function PassengerDetails() {
                   {savedPassengers.length > 0 ? (
                     <button
                       onClick={() => setPickerFor(i)}
-                      className="ml-auto flex items-center gap-1 rounded-full border border-border bg-card-2 px-2.5 py-1 text-[11px] font-semibold text-accent-fg"
+                      className="flex items-center gap-1 rounded-full border border-border bg-card-2 px-2.5 py-1 text-[11px] font-semibold text-accent-fg"
                     >
                       <UserRound size={12} />
                       Use saved
+                    </button>
+                  ) : null}
+                  {forms.length > 1 ? (
+                    <button
+                      onClick={() => removePassenger(i)}
+                      aria-label="Remove passenger"
+                      className="ml-auto flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card-2 text-muted"
+                    >
+                      <X size={14} />
                     </button>
                   ) : null}
                 </div>

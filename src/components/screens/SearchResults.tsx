@@ -49,9 +49,15 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
             </span>
             {(offer.aircraft || offer.totalBaggages || offer.emissionsKg) ? (
               <span className="text-[10px] text-muted">
-                {offer.aircraft}
-                {offer.totalBaggages ? ` · ${offer.totalBaggages} bag${offer.totalBaggages > 1 ? "s" : ""}` : ""}
-                {offer.emissionsKg ? ` · 🌱 ${offer.emissionsKg}kg CO₂` : ""}
+                {[
+                  offer.aircraft,
+                  offer.totalBaggages
+                    ? `${offer.totalBaggages} bag${offer.totalBaggages > 1 ? "s" : ""}`
+                    : "",
+                  offer.emissionsKg ? `🌱 ${offer.emissionsKg}kg CO₂` : "",
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
               </span>
             ) : null}
           </div>
