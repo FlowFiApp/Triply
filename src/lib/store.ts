@@ -30,12 +30,14 @@ export type Flow = {
   offers?: FlightOffer[];
   passengers?: number;
   selectedServiceIds?: string[];
+  serviceQuantities?: Record<string, number>;
   seat?: string;
   amount?: number;
   order?: OrderRecord;
   orderId?: string;
   txHash?: string;
   chain?: string;
+  hold?: boolean;
   stay?: StayOffer;
   stays?: StayOffer[];
   stayBooking?: StayBooking;

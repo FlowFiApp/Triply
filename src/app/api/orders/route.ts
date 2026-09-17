@@ -134,7 +134,13 @@ export async function POST(request: Request) {
       txHash: body.txHash,
       chain: body.chain,
       userIds,
-      services: Array.isArray(body.selectedServiceIds) ? body.selectedServiceIds : [],
+      type: body.type === "hold" ? "hold" : "instant",
+      services: (Array.isArray(body.selectedServiceIds) ? body.selectedServiceIds : []).map(
+        (id: string) => ({
+          id,
+          quantity: Number(body.serviceQuantities?.[id] ?? 1) || 1,
+        }),
+      ),
       passengerIds: Array.isArray(body.passengerIds) ? body.passengerIds : [],
     });
     console.log("POST /api/orders created", {

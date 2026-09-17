@@ -95,6 +95,7 @@ export default function Web3Checkout() {
   const [connecting, setConnecting] = useState(false);
   const [seconds, setSeconds] = useState(14 * 60 + 59);
   const [gasPol, setGasPol] = useState<number | null>(null);
+  const [hold, setHold] = useState(false);
   const { toast } = useToast();
   const { state, connectEvm, disconnect, pay } = useWalletState();
   const { flow, setFlow } = useFlow();
@@ -104,6 +105,8 @@ export default function Web3Checkout() {
 
   const offer = flow.offer;
   const amount = flow.amount ?? offer?.price ?? 0;
+  // Offers with requires_instant_payment=false can be held and paid later.
+  const canHold = offer ? offer.requiresInstantPayment === false : false;
 
   // Use the offer's real expiry when available; otherwise fall back to 15 min.
   useEffect(() => {
@@ -142,6 +145,12 @@ export default function Web3Checkout() {
     setSheetOpen(false);
     setConnecting(true);
     try {
+      // Hold orders are booked without payment and settled later.
+      if (hold) {
+        setFlow({ amount, hold: true, txHash: undefined, chain: undefined });
+        router.push("/processing");
+        return;
+      }
       // Polygon/EVM is only requested here, at checkout.
       const evmAddress = await connectEvm();
       if (!evmAddress) {
@@ -288,6 +297,31 @@ export default function Web3Checkout() {
               </p>
             ) : null}
 
+            {canHold ? (
+              <div className="flex items-center justify-between rounded-xl border border-border bg-card-2 px-3 py-2.5">
+                <div className="flex flex-col">
+                  <span className="text-[13px] font-semibold text-foreground">
+                    Hold &amp; pay later
+                  </span>
+                  <span className="text-[11px] text-muted">
+                    Reserve this fare — no payment now
+                  </span>
+                </div>
+                <button
+                  onClick={() => setHold((h) => !h)}
+                  role="switch"
+                  aria-checked={hold}
+                  className={`flex h-6 w-11 items-center rounded-full p-0.5 transition ${
+                    hold ? "justify-end bg-accent-2" : "justify-start bg-card-3"
+                  }`}
+                >
+                  <span
+                    className={`h-5 w-5 rounded-full ${hold ? "bg-accent" : "bg-muted"}`}
+                  />
+                </button>
+              </div>
+            ) : null}
+
             {state.connected ? (
               <WalletStatusBar
                 nimiqAddress={state.nimiqAddress}
@@ -305,13 +339,18 @@ export default function Web3Checkout() {
             <Price usd={amount} className="text-[18px] text-foreground" bold />
           </div>
           <AuthActionButton
-            disabled={connecting || !treasuryOk}
+            disabled={connecting || (!treasuryOk && !hold)}
             busy={connecting}
             busyLabel="Processing…"
-            onAction={() => setSheetOpen(true)}
+            onAction={() => (hold ? void handleSelectWallet() : setSheetOpen(true))}
             className="tap flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-accent-2 bg-accent text-[15px] font-bold text-accent-2 disabled:opacity-60"
           >
-            {state.evmAddress ? (
+            {hold ? (
+              <>
+                <RadioReceiver size={18} />
+                Hold this fare — pay later
+              </>
+            ) : state.evmAddress ? (
               <>
                 <Wallet size={18} />
                 Pay <UsdtAmount value={amount} />

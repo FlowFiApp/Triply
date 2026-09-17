@@ -3,7 +3,7 @@ import "server-only";
 
 import { Duffel } from "@duffel/api";
 import { formatDuration, format24 } from "@/lib/format";
-import { realPrice, testPrice } from "@/lib/pricing";
+import { applyMarkup, realPrice, testPrice } from "@/lib/pricing";
 import type { CityOption } from "@/lib/cities";
 
 const TOKEN = process.env.DUFFEL_ACCESS_TOKEN;
@@ -75,12 +75,15 @@ export type NormalizedFlight = {
   emissionsKg?: string;
   expiresAt?: string;
   passengerIds: string[];
+  requiresInstantPayment?: boolean;
+  paymentRequiredBy?: string;
   services: Array<{
     id: string;
     name: string;
     type: string;
     totalAmount: number;
     currency: string;
+    maximumQuantity?: number;
   }>;
 };
 
@@ -138,6 +141,7 @@ export async function searchFlights(
     const total = testPrice(Number(offer.total_amount ?? 0));
     const stopsCount = (slice.segments?.length ?? 1) - 1;
     const owner = offer.owner ?? seg.marketing_carrier ?? {};
+    const pr = offer.payment_requirements ?? {};
     return {
       id: offer.id,
       airline: seg.marketing_carrier?.name ?? seg.operating_carrier?.name ?? "",
@@ -148,10 +152,10 @@ export async function searchFlights(
         seg.marketing_carrier?.logo_symbol_url ??
         undefined,
       flightNumber: seg.marketing_carrier_flight_number ?? "",
-      price: total,
+      price: applyMarkup(total),
       currency: offer.total_currency ?? "USD",
-      baseAmount: Math.max(0, total - tax),
-      taxAmount: tax,
+      baseAmount: Math.max(0, applyMarkup(total) - applyMarkup(tax)),
+      taxAmount: applyMarkup(tax),
       depTime: fmt24(seg.departing_at),
       arrTime: fmt24(seg.arriving_at),
       origin: seg.origin?.iata_code ?? fallbackOrigin,
@@ -184,9 +188,12 @@ export async function searchFlights(
         id: s.id,
         name: s.name,
         type: s.type,
-        totalAmount: testPrice(Number(s.total_amount ?? 0)),
+        totalAmount: applyMarkup(testPrice(Number(s.total_amount ?? 0))),
         currency: s.total_currency ?? "USD",
+        maximumQuantity: Number(s.maximum_quantity ?? 1),
       })),
+      requiresInstantPayment: pr.requires_instant_payment !== false,
+      paymentRequiredBy: pr.payment_required_by ?? undefined,
       conditions: offer.conditions ?? undefined,
     };
   });
@@ -252,6 +259,7 @@ export async function createFlightOrder({
   userIds,
   services,
   passengerIds,
+  type = "instant",
 }: {
   offerId: string;
   passengers: CreateOrderPassenger[];
@@ -260,8 +268,9 @@ export async function createFlightOrder({
   txHash?: string;
   chain?: string;
   userIds?: (string | undefined)[];
-  services?: string[];
+  services?: Array<{ id: string; quantity: number }>;
   passengerIds?: string[];
+  type?: "instant" | "hold";
 }) {
   if (!duffelEnabled()) return null;
   const duffel = getDuffel();
@@ -277,8 +286,14 @@ export async function createFlightOrder({
     if (offer) {
       const base = Number(offer.total_amount ?? 0);
       const svc = (offer.available_services ?? [])
-        .filter((s: any) => services?.includes(s.id))
-        .reduce((sum: number, s: any) => sum + Number(s.total_amount ?? 0), 0);
+        .filter((s: any) => services?.some((x) => x.id === s.id))
+        .reduce(
+          (sum: number, s: any) =>
+            sum +
+            Number(s.total_amount ?? 0) *
+              (services?.find((x) => x.id === s.id)?.quantity ?? 1),
+          0,
+        );
       if (base > 0) paymentTotal = base + svc;
       const ids = (offer.passengers ?? [])
         .map((p: any) => p.id)
@@ -299,7 +314,7 @@ export async function createFlightOrder({
         },
       ];
   const { data } = await duffel.orders.create({
-    type: "instant",
+    type,
     selected_offers: [offerId],
     // Customer users are attached per-passenger (user_id) — listing them in
     // the top-level `users` array too makes Duffel reject the order
@@ -307,7 +322,7 @@ export async function createFlightOrder({
     // Book the chosen add-ons (baggage, seat) alongside the offer. Only sent
     // when something is actually selected — Duffel rejects an empty array.
     ...(services?.length
-      ? { services: services.map((id) => ({ id, quantity: 1 })) }
+      ? { services: services.map((s) => ({ id: s.id, quantity: s.quantity })) }
       : {}),
     passengers: passengers.map((p, i) => ({
       // Duffel requires the passenger id to reference the offer request's
@@ -328,7 +343,8 @@ export async function createFlightOrder({
       email: p.email,
       phone_number: p.phone_number,
     })),
-    payments,
+    // Hold orders are created without payment and settled later.
+    ...(type === "hold" ? {} : { payments }),
     ...(txHash
       ? { metadata: { onchain_payment_tx: txHash, chain: chain ?? "" } }
       : {}),
@@ -527,6 +543,25 @@ export async function confirmOrderChange(changeId: string) {
   if (!duffelEnabled()) return null;
   const duffel = getDuffel();
   const { data } = await duffel.orderChanges.confirm(changeId, {} as any);
+  return data as any;
+}
+
+/** Pays a held (awaiting_payment) order via Duffel balance. */
+export async function payHeldOrder(
+  orderId: string,
+  amountReal: number,
+  currency = "USD",
+) {
+  if (!duffelEnabled()) return null;
+  const duffel = getDuffel();
+  const { data } = await duffel.payments.create({
+    order_id: orderId,
+    payment: {
+      type: "balance",
+      currency,
+      amount: (Math.round(amountReal * 100) / 100).toFixed(2),
+    },
+  } as any);
   return data as any;
 }
 

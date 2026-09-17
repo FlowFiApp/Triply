@@ -13,6 +13,7 @@ import {
   Share2,
 } from "lucide-react";
 import { BottomTabBar, MobileShell } from "@/components/shell";
+import { useWalletState } from "@/lib/wallet-state";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import BookingQR from "@/components/ui/booking-qr";
 import Identicon from "@/components/ui/identicon";
@@ -35,17 +36,48 @@ function Cell({ label, value }: { label: string; value: string }) {
 }
 
 export default function ETicket() {
-  const { flow } = useFlow();
+  const { flow, setFlow } = useFlow();
+  const { connectEvm, pay } = useWalletState();
   const [order, setOrder] = useState<OrderRecord | null>(
     () => flow.order ?? null,
   );
   const [error, setError] = useState("");
+  const [paying, setPaying] = useState(false);
   const { toast } = useToast();
   const txHash = flow.txHash ?? "";
   const chain = CHAINS.polygon;
 
   const cancelled = order?.status === "cancelled";
   const awaiting = order?.status === "awaiting_payment";
+
+  const payNow = async () => {
+    if (!order) return;
+    setPaying(true);
+    try {
+      const evmAddress = await connectEvm();
+      if (!evmAddress) throw new Error("No Polygon wallet available.");
+      const amount = flow.amount ?? order.amountUsd ?? 0;
+      const result = await pay(amount, evmAddress);
+      const res = await fetch("/api/payments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: order.id,
+          txHash: result.hash,
+          amount,
+        }),
+      });
+      const d = await res.json();
+      if (!res.ok || d.error) throw new Error(d.error ?? "Payment failed");
+      setFlow({ txHash: result.hash, hold: false });
+      toast("success", "Payment complete — ticket issued.");
+      setOrder((o) => (o ? { ...o, status: "confirmed" } : o));
+    } catch (err) {
+      toast("error", err instanceof Error ? err.message : "Payment failed");
+    } finally {
+      setPaying(false);
+    }
+  };
 
   const handleShare = async () => {
     const result = await share({
@@ -180,6 +212,15 @@ export default function ETicket() {
                       ? "Awaiting payment confirmation."
                       : "Your flight ticket is secured on-chain"}
                 </span>
+                {awaiting && !cancelled ? (
+                  <button
+                    onClick={() => void payNow()}
+                    disabled={paying}
+                    className="mt-2 flex h-9 w-full items-center justify-center rounded-lg bg-amber-500 text-[13px] font-bold text-white disabled:opacity-50"
+                  >
+                    {paying ? "Paying…" : "Pay now"}
+                  </button>
+                ) : null}
               </div>
             </div>
 

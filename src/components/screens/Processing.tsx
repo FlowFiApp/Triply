@@ -58,32 +58,39 @@ export default function Processing() {
 
   const runFlow = useCallback(async () => {
     setError("");
-    if (!flow.offer?.id || !tx) {
+    const isHold = Boolean(flow.hold);
+    if (!flow.offer?.id || (!tx && !isHold)) {
       setError(
         "No booking in progress — go back to checkout to start a booking.",
       );
       return;
     }
     try {
-      // Step 1 — confirm the USDT transfer on-chain before creating any order.
-      setCurrent("verify");
-      setSub("Verifying on-chain payment…");
-      const verifyRes = await fetchJson("/api/payments/verify", {
-        tx,
-        amount,
-        chain: chain.id,
-      });
-      if (!verifyRes.ok || !verifyRes.data?.verified) {
-        throw new Error(
-          typeof verifyRes.data?.error === "string"
-            ? verifyRes.data.error
-            : "Payment not verified on-chain.",
-        );
+      if (!isHold) {
+        // Step 1 — confirm the USDT transfer on-chain before creating any order.
+        setCurrent("verify");
+        setSub("Verifying on-chain payment…");
+        const verifyRes = await fetchJson("/api/payments/verify", {
+          tx,
+          amount,
+          chain: chain.id,
+        });
+        if (!verifyRes.ok || !verifyRes.data?.verified) {
+          throw new Error(
+            typeof verifyRes.data?.error === "string"
+              ? verifyRes.data.error
+              : "Payment not verified on-chain.",
+          );
+        }
       }
 
-      // Step 2 — create the airline order.
+      // Step 2 — create the airline order (instant or hold).
       setCurrent("settle");
-      setSub("Settlement confirmed — issuing booking…");
+      setSub(
+        isHold
+          ? "Fare held — no payment taken"
+          : "Settlement confirmed — issuing booking…",
+      );
       setBooking(true);
       const orderRes = await fetchJson("/api/orders", {
         offerId,
@@ -92,7 +99,9 @@ export default function Processing() {
         chain: chain.id,
         from: payer,
         nimiqAddress: state.nimiqAddress,
+        type: isHold ? "hold" : "instant",
         selectedServiceIds: flow.selectedServiceIds ?? [],
+        serviceQuantities: flow.serviceQuantities ?? {},
         passengerIds: flow.offer?.passengerIds ?? [],
         passengers: (
           flow.passengersList ??

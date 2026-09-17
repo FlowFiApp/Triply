@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { ElementType } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowUpRight, Luggage, MonitorPlay } from "lucide-react";
+import { ArrowUpRight, Luggage, Minus, MonitorPlay, Plus } from "lucide-react";
 import { MobileShell } from "@/components/shell";
 import { FareRulesSheet } from "@/components/screens/sheets";
 import SeatMapSheet from "@/components/screens/SeatMapSheet";
@@ -13,27 +13,12 @@ import { Price } from "@/components/ui/feedback";
 import { UsdtAmount } from "@/components/ui/Usdt";
 import { NimiqIcon } from "@/components/ui/Nimiq";
 import { useFlow } from "@/lib/flow-context";
-import type { FlightOffer, OfferService } from "@/lib/types";
+import type { FlightOffer } from "@/lib/types";
 
 const SERVICE_ICON: Record<string, ElementType> = {
   baggage: Luggage,
   seat: MonitorPlay,
 };
-
-function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex h-6 w-11 items-center rounded-full p-0.5 transition ${
-        on ? "justify-end bg-accent-2" : "justify-start bg-card-2"
-      }`}
-    >
-      <span
-        className={`h-5 w-5 rounded-full ${on ? "bg-accent" : "bg-muted"}`}
-      />
-    </button>
-  );
-}
 
 export default function FlightDetails() {
   const router = useRouter();
@@ -47,6 +32,9 @@ export default function FlightDetails() {
     const ids = flow.selectedServiceIds ?? [];
     return Object.fromEntries(ids.map((id) => [id, true]));
   });
+  const [qty, setQty] = useState<Record<string, number>>(
+    () => flow.serviceQuantities ?? {},
+  );
   const [seatOpen, setSeatOpen] = useState(false);
   const [chosenSeat, setChosenSeat] = useState<string | null>(
     () => flow.seat ?? null,
@@ -58,8 +46,15 @@ export default function FlightDetails() {
   const selectSimilar = (o: FlightOffer) => {
     setOffer(o);
     setSelected({});
+    setQty({});
     setChosenSeat(null);
-    setFlow({ offer: o, amount: o.price, selectedServiceIds: [], seat: undefined });
+    setFlow({
+      offer: o,
+      amount: o.price,
+      selectedServiceIds: [],
+      serviceQuantities: {},
+      seat: undefined,
+    });
     window.scrollTo({ top: 0 });
   };
 
@@ -87,17 +82,31 @@ export default function FlightDetails() {
   );
   const seatAddon = addons.find((s) => s.type === "seat");
   const baggageAddons = addons.filter((s) => s.type !== "seat");
-  const selectedServices: OfferService[] = addons.filter((a) => selected[a.id]);
   const total =
-    offer.price + selectedServices.reduce((sum, s) => sum + s.totalAmount, 0);
+    offer.price +
+    addons.reduce(
+      (sum, s) =>
+        sum +
+        (s.type === "seat"
+          ? selected[s.id]
+            ? s.totalAmount
+            : 0
+          : (qty[s.id] ?? 0) * s.totalAmount),
+      0,
+    );
   const passengerCount = flow.passengers ?? 1;
 
   const proceed = () => {
+    const selectedIds = [
+      ...Object.keys(selected).filter((k) => selected[k]),
+      ...Object.keys(qty).filter((k) => (qty[k] ?? 0) > 0),
+    ];
     setFlow({
       offer: { ...offer, services: addons },
       amount: total,
       passengers: passengerCount,
-      selectedServiceIds: Object.keys(selected).filter((k) => selected[k]),
+      selectedServiceIds: selectedIds,
+      serviceQuantities: qty,
       seat: chosenSeat ?? undefined,
     });
     router.push("/passengers");
@@ -306,59 +315,87 @@ export default function FlightDetails() {
                               </span>
                               <span className="text-[11px] text-muted">
                                 +<UsdtAmount value={a.totalAmount} />
+                                {a.maximumQuantity ? ` each · up to ${a.maximumQuantity}` : ""}
                               </span>
                             </div>
                           </div>
-                          <Toggle
-                            on={Boolean(selected[a.id])}
-                            onClick={() =>
-                              setSelected((prev) => ({
-                                ...prev,
-                                [a.id]: !prev[a.id],
-                              }))
-                            }
-                          />
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() =>
+                                setQty((prev) => ({
+                                  ...prev,
+                                  [a.id]: Math.max(0, (prev[a.id] ?? 0) - 1),
+                                }))
+                              }
+                              disabled={(qty[a.id] ?? 0) === 0}
+                              aria-label="Remove bag"
+                              className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card-2 text-muted disabled:opacity-40"
+                            >
+                              <Minus size={14} />
+                            </button>
+                            <span className="w-5 text-center text-[14px] font-bold text-foreground">
+                              {qty[a.id] ?? 0}
+                            </span>
+                            <button
+                              onClick={() =>
+                                setQty((prev) => ({
+                                  ...prev,
+                                  [a.id]: Math.min(
+                                    a.maximumQuantity ?? 1,
+                                    (prev[a.id] ?? 0) + 1,
+                                  ),
+                                }))
+                              }
+                              disabled={(qty[a.id] ?? 0) >= (a.maximumQuantity ?? 1)}
+                              aria-label="Add bag"
+                              className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-accent-2 disabled:opacity-40"
+                            >
+                              <Plus size={14} />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     );
                   })
                 )}
 
-                {/* Seat selection — always in the flow; disabled when the fare has no seat map */}
-                <div
-                  className={`${
-                    baggageAddons.length ? "border-t border-border pt-4" : ""
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <MonitorPlay size={20} className="text-accent-fg" />
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[13px] font-semibold text-foreground">
-                        Seat selection
-                      </span>
-                      <span className="text-[11px] text-muted">
-                        {seatAddon ? (
-                          <>
-                            +<UsdtAmount value={seatAddon.totalAmount} />
-                          </>
-                        ) : (
-                          "Not available on this fare"
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => seatAddon && setSeatOpen(true)}
-                    disabled={!seatAddon}
-                    className="mt-2 flex h-9 w-full items-center justify-center rounded-lg border border-border bg-card-2 text-[12px] font-semibold text-accent-fg disabled:opacity-50"
-                  >
-                    {!seatAddon
-                      ? "Seat map not available for this flight"
-                      : chosenSeat
-                        ? `Seat ${chosenSeat} selected — change`
-                        : "Choose seat on the map"}
-                  </button>
                 </div>
+            </section>
+
+            {/* Seat selection — its own section, always in the flow */}
+            <section className="flex flex-col gap-3 px-4 pb-6 pt-3">
+              <h2 className="text-[16px] font-bold text-foreground">
+                Seat selection
+              </h2>
+              <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4">
+                <div className="flex items-center gap-3">
+                  <MonitorPlay size={20} className="text-accent-fg" />
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[13px] font-semibold text-foreground">
+                      {seatAddon ? "Choose your seat" : "Seat selection"}
+                    </span>
+                    <span className="text-[11px] text-muted">
+                      {seatAddon ? (
+                        <>
+                          From +<UsdtAmount value={seatAddon.totalAmount} />
+                        </>
+                      ) : (
+                        "Not available on this fare"
+                      )}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => seatAddon && setSeatOpen(true)}
+                  disabled={!seatAddon}
+                  className="mt-1 flex h-9 w-full items-center justify-center rounded-lg border border-border bg-card-2 text-[12px] font-semibold text-accent-fg disabled:opacity-50"
+                >
+                  {!seatAddon
+                    ? "Seat map not available for this flight"
+                    : chosenSeat
+                      ? `Seat ${chosenSeat} selected — change`
+                      : "Choose seat on the map"}
+                </button>
               </div>
             </section>
 
@@ -421,7 +458,7 @@ export default function FlightDetails() {
           ) : null}
         </div>
 
-        <div aria-hidden className="h-[84px] w-full shrink-0" />
+        <div aria-hidden className="h-[150px] w-full shrink-0" />
         <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[768px] -translate-x-1/2 border-t border-border bg-card px-4 pb-[calc(30px+env(safe-area-inset-bottom))] pt-3">
           <div className="flex flex-col items-center gap-1">
             <span className="text-[12px] text-muted">

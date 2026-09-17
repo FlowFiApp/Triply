@@ -4,6 +4,7 @@ export type OfferService = {
   type: string;
   totalAmount: number;
   currency: string;
+  maximumQuantity?: number;
 };
 
 export type OfferConditions = {
@@ -47,6 +48,8 @@ export type FlightOffer = {
   emissionsKg?: string;
   expiresAt?: string;
   passengerIds?: string[];
+  requiresInstantPayment?: boolean;
+  paymentRequiredBy?: string;
   services: OfferService[];
   conditions?: OfferConditions;
   aircraft?: string;
