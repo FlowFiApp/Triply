@@ -12,6 +12,10 @@ import type {
 
 const KEY = "triply-flow";
 
+// Dispatched whenever the flow is written, so the FlowProvider context stays
+// in sync with raw writeFlow/readFlow usage (store.ts) used by stays/cars.
+export const FLOW_EVENT = "triply-flow-change";
+
 export type SearchIntent = {
   origin: string;
   destination: string;
@@ -62,11 +66,13 @@ export function writeFlow(patch: Partial<Flow>) {
   if (typeof window === "undefined") return;
   const cur = readFlow();
   sessionStorage.setItem(KEY, JSON.stringify({ ...cur, ...patch }));
+  window.dispatchEvent(new CustomEvent(FLOW_EVENT));
 }
 
 export function clearFlow() {
   if (typeof window === "undefined") return;
   sessionStorage.removeItem(KEY);
+  window.dispatchEvent(new CustomEvent(FLOW_EVENT));
 }
 
 const RECENT_KEY = "triply-recent";

@@ -4,10 +4,11 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
   type ReactNode,
 } from "react";
-import { readFlow, writeFlow, type Flow } from "@/lib/store";
+import { FLOW_EVENT, readFlow, writeFlow, type Flow } from "@/lib/store";
 
 type FlowContextValue = {
   flow: Partial<Flow>;
@@ -21,12 +22,19 @@ export function FlowProvider({ children }: { children: ReactNode }) {
     () => (typeof window === "undefined" ? {} : readFlow()),
   );
 
+  // Keep the context in sync with raw writeFlow/readFlow calls (stays/cars
+  // screens) so every screen reading useFlow() sees the latest selection.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sync = () => setFlowState(readFlow());
+    window.addEventListener(FLOW_EVENT, sync);
+    return () => window.removeEventListener(FLOW_EVENT, sync);
+  }, []);
+
   const setFlow = useCallback((patch: Partial<Flow>) => {
-    setFlowState((prev) => {
-      const next = { ...prev, ...patch };
-      writeFlow(patch);
-      return next;
-    });
+    const next = { ...readFlow(), ...patch };
+    writeFlow(next);
+    setFlowState(next);
   }, []);
 
   return (
