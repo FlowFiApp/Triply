@@ -45,6 +45,14 @@ export async function POST(request: Request) {
         recipient,
         amountNim: amount,
       });
+      // Only report success when the node has actually seen the transaction
+      // (mined or in the mempool) — otherwise the coins never land while the
+      // API claims success.
+      if (!result.confirmed) {
+        throw new Error(
+          "Payout was not accepted by the network — points refunded.",
+        );
+      }
       txHash = result.hash;
       status = "sent";
       await updateRewardStatus(recordId, {

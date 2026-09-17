@@ -46,7 +46,7 @@ export function ProgressButton({
     >
       {isLoading ? (
         <>
-          <HiveSpinner size={22} />
+          <HiveSpinner size={26} />
           {busyLabel ? <span>{busyLabel}</span> : null}
         </>
       ) : (

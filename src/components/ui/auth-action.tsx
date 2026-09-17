@@ -68,7 +68,7 @@ export function AuthActionButton({
     >
       {isLoading ? (
         <>
-          <HiveSpinner size={22} />
+          <HiveSpinner size={26} />
           <span>{busyLabel}</span>
         </>
       ) : !authenticated ? (
