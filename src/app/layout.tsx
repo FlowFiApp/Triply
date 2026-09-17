@@ -7,6 +7,7 @@ import { WalletProvider } from "@/lib/wallet-state";
 import { PointsProvider } from "@/lib/points";
 import { FlowProvider } from "@/lib/flow-context";
 import { QueryProvider } from "@/lib/query-client";
+import DesktopFrame from "@/components/DesktopFrame";
 import { OfflineBanner } from "@/components/ui/feedback";
 import OnboardingGate from "@/components/OnboardingGate";
 import ConfigBanner from "@/components/ConfigBanner";
@@ -34,21 +35,23 @@ export default function RootLayout({
       <body className="min-h-full bg-background text-foreground">
         <ThemeProvider>
           <I18nProvider>
-            <ToastProvider>
-              <QueryProvider>
-                <WalletProvider>
-                  <PointsProvider>
-                    <FlowProvider>
-                      <OnboardingGate />
-                      <ConfigBanner />
-                      <SandboxBadge />
-                      <OfflineBanner />
-                      <PageTransition>{children}</PageTransition>
-                    </FlowProvider>
-                  </PointsProvider>
-                </WalletProvider>
-              </QueryProvider>
-            </ToastProvider>
+            <QueryProvider>
+              <WalletProvider>
+                <PointsProvider>
+                  <FlowProvider>
+                    <DesktopFrame>
+                      <ToastProvider>
+                        <OnboardingGate />
+                        <ConfigBanner />
+                        <SandboxBadge />
+                        <OfflineBanner />
+                        <PageTransition>{children}</PageTransition>
+                      </ToastProvider>
+                    </DesktopFrame>
+                  </FlowProvider>
+                </PointsProvider>
+              </WalletProvider>
+            </QueryProvider>
           </I18nProvider>
         </ThemeProvider>
       </body>
