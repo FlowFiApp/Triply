@@ -7,23 +7,21 @@ export type UserIdentity = {
   evmAddress?: string;
 };
 
+// In-memory only — wallet addresses are never written to localStorage.
+let memoryIdentity: UserIdentity = {};
+
+export function setStoredIdentity(id: UserIdentity) {
+  memoryIdentity = {
+    nimiqAddress: normalizeNimiqAddress(id.nimiqAddress),
+    evmAddress: id.evmAddress,
+  };
+}
+
 export function getStoredIdentity(): UserIdentity {
-  if (typeof window === "undefined") return {};
-  let nimiqAddress: string | undefined;
-  let evmAddress: string | undefined;
-  try {
-    const wallet = JSON.parse(localStorage.getItem("triply-wallet") ?? "null");
-    if (wallet && typeof wallet === "object") {
-      nimiqAddress = normalizeNimiqAddress(wallet.nimiqAddress);
-      evmAddress = wallet.evmAddress;
-    }
-  } catch {
-    // ignore
-  }
-  return { nimiqAddress, evmAddress };
+  return memoryIdentity;
 }
 
 /** The user key is the Nimiq address — nothing else. */
 export function identityKey(): string {
-  return getStoredIdentity().nimiqAddress ?? "";
+  return memoryIdentity.nimiqAddress ?? "";
 }

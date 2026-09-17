@@ -75,6 +75,9 @@ export function normalizeFlightBooking(o: any): Booking {
     arr: seg.destination?.iata_code ?? "",
     amount: testPrice(Number(o?.total_amount ?? 0)),
     date: (seg.departing_at ?? "").slice(0, 10) || undefined,
+    arrDate:
+      (o?.slices?.[0]?.segments?.[o.slices[0].segments.length - 1]
+        ?.arriving_at ?? "").slice(0, 10) || undefined,
     createdAt: o?.created_at ?? undefined,
   };
 }
@@ -96,6 +99,7 @@ export function normalizeStayBooking(b: any): Booking {
     arr: "Check-out",
     amount: testPrice(Number(b?.totalAmount ?? 0)),
     date: b?.checkIn ?? undefined,
+    arrDate: b?.checkOut ?? undefined,
     image: b?.image ?? undefined,
     createdAt: b?.createdAt
       ? new Date(b.createdAt).toISOString()
@@ -120,6 +124,7 @@ export function normalizeCarBooking(b: any): Booking {
     arr: "Return",
     amount: testPrice(Number(b?.totalAmount ?? 0)),
     date: b?.pickupDate ?? undefined,
+    arrDate: b?.dropoffDate ?? undefined,
     image: b?.image ?? undefined,
     createdAt: b?.createdAt
       ? new Date(b.createdAt).toISOString()

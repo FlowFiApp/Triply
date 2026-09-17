@@ -385,16 +385,17 @@ export default function OrderDetail() {
             Add services (baggage, seats)
           </ProgressButton>
 
+          {changeable && statusActive ? (
+            <ProgressButton
+              onAction={() => setChangeOpen(true)}
+              className="tap flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-border bg-card-2 text-[14px] font-semibold text-foreground"
+            >
+              <Calendar size={15} className="text-accent-fg" />
+              Change flight
+            </ProgressButton>
+          ) : null}
+
           <div className="flex gap-2">
-            {changeable && statusActive ? (
-              <ProgressButton
-                onAction={() => setChangeOpen(true)}
-                className="tap flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card-2 text-[14px] font-semibold text-foreground"
-              >
-                <Calendar size={15} className="text-accent-fg" />
-                Change flight
-              </ProgressButton>
-            ) : null}
             {cancellable && statusActive ? (
               <ProgressButton
                 onAction={() => setCancelOpen(true)}

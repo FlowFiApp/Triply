@@ -15,6 +15,7 @@ import AnimatedTabs from "@/components/ui/animated-tabs";
 import PointsChip from "@/components/ui/points-chip";
 import { useFlow } from "@/lib/flow-context";
 import { useBookings } from "@/lib/api/hooks";
+import { formatDate } from "@/lib/format";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/lib/toast";
 
@@ -35,6 +36,7 @@ type BookingItem = {
   createdAt?: string;
   actions?: string[];
   date?: string;
+  arrDate?: string;
 };
 
 const ACTIVE = /confirm|issued|paid|delivered|booked/i;
@@ -135,6 +137,7 @@ function BookingCard({
             {item.dep || "—"}
           </span>
           <span className="text-[12px] text-muted">{item.depTime}</span>
+          <span className="text-[11px] text-muted">{formatDate(item.date)}</span>
         </div>
 
         <div className="flex flex-1 flex-col items-center justify-center gap-1.5 px-2">
@@ -151,6 +154,7 @@ function BookingCard({
             {item.arr || "—"}
           </span>
           <span className="text-[12px] text-muted">{item.arrTime}</span>
+          <span className="text-[11px] text-muted">{formatDate(item.arrDate)}</span>
         </div>
       </div>
 

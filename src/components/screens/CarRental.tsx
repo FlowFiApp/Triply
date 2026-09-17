@@ -795,7 +795,7 @@ export function CarConfirmed() {
                   }
                   className="flex h-[43px] flex-1 items-center justify-center rounded-xl border border-border bg-card text-[14px] font-bold text-foreground"
                 >
-                  Add to Calendar
+                  Calendar
                 </button>
                 <a
                   href={directionsUrl(booking.pickupLocation)}

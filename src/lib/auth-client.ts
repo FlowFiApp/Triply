@@ -8,36 +8,13 @@ export type NimiqSigner = (
   message: string,
 ) => Promise<{ publicKey: string; signature: string }>;
 
-const SESSION_KEY = "triply-session";
-
-type StoredSession = { address: string };
-
-function readLocalSession(): Session {
-  try {
-    const raw = localStorage.getItem(SESSION_KEY);
-    if (!raw) return { authenticated: false, address: null };
-    const parsed = JSON.parse(raw) as StoredSession;
-    if (parsed.address) return { authenticated: true, address: parsed.address };
-  } catch {}
-  return { authenticated: false, address: null };
-}
-
-function writeLocalSession(address: string | null) {
-  try {
-    if (address) {
-      localStorage.setItem(SESSION_KEY, JSON.stringify({ address }));
-    } else {
-      localStorage.removeItem(SESSION_KEY);
-    }
-  } catch {}
-}
-
 let cachedSession: Session | null = null;
 let inflight: Promise<Session> | null = null;
 
+// In-memory only — the wallet address is never written to localStorage. On a
+// fresh page load the address is always obtained by connecting.
 export function getStoredSession(): Session {
-  if (cachedSession) return cachedSession;
-  return readLocalSession();
+  return cachedSession ?? { authenticated: false, address: null };
 }
 
 export async function getSession(force = false): Promise<Session> {
@@ -51,11 +28,10 @@ export async function getSession(force = false): Promise<Session> {
         address: d.address ?? null,
       };
       cachedSession = s;
-      writeLocalSession(s.address);
       return s;
     })
     .catch(() => {
-      const fallback = readLocalSession();
+      const fallback: Session = { authenticated: false, address: null };
       cachedSession = fallback;
       return fallback;
     })
@@ -90,17 +66,12 @@ export async function signInWithNimiq(
       }),
     });
     const ok = res.ok && Boolean((await res.json()).ok);
-    if (ok) {
-      cachedSession = { authenticated: true, address };
-      writeLocalSession(address);
-    } else {
-      cachedSession = { authenticated: false, address: null };
-      writeLocalSession(null);
-    }
+    cachedSession = ok
+      ? { authenticated: true, address }
+      : { authenticated: false, address: null };
     return ok;
   } catch {
     cachedSession = { authenticated: false, address: null };
-    writeLocalSession(null);
     return false;
   }
 }
@@ -112,5 +83,4 @@ export async function signOut(): Promise<void> {
     // ignore
   }
   cachedSession = { authenticated: false, address: null };
-  writeLocalSession(null);
 }

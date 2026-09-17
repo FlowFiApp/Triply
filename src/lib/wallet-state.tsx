@@ -18,6 +18,7 @@ import {
 } from "@/lib/wallet";
 import type { PaymentResult } from "@/lib/wallet";
 import { getSession, getStoredSession, signInWithNimiq, signOut } from "@/lib/auth-client";
+import { setStoredIdentity } from "@/lib/identity";
 
 export type WalletState = {
   connected: boolean;
@@ -50,54 +51,23 @@ export function useWalletState() {
   return ctx;
 }
 
-const STORAGE_KEY = "triply-wallet";
-// Set when the user explicitly signs out so we don't re-prompt on next open.
+// The wallet address is never written to localStorage. On app open we always
+// connect to the Nimiq provider to obtain the address.
 const AUTO_SKIP_KEY = "triply-skip-auth";
 
-function loadState(): WalletState {
-  if (typeof window === "undefined") return { connected: false };
-  try {
-    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
-    if (!stored || typeof stored !== "object") return { connected: false };
-    // The EVM address is session-scoped: it is only requested at checkout.
-    return { ...stored, evmAddress: undefined };
-  } catch {
-    return { connected: false };
-  }
-}
-
 export function WalletProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<WalletState>(() => {
-    const local = loadState();
-    const session = getStoredSession();
-    if (session.authenticated && session.address) {
-      return {
-        ...local,
-        connected: true,
-        nimiqAddress: session.address,
-        source: "Nimiq Pay",
-      };
-    }
-    return local;
-  });
-  const [authState, setAuthState] = useState<AuthState>(() => {
-    const session = getStoredSession();
-    return session.authenticated ? "authenticated" : "idle";
-  });
+  // Start unconnected; the address is always obtained by connecting on load.
+  const [state, setState] = useState<WalletState>({ connected: false });
+  const [authState, setAuthState] = useState<AuthState>("idle");
   const signerRef = useRef<NimiqSigner | null>(null);
 
+  // Keep the in-memory identity in sync with the connected wallet (no storage).
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        connected: state.connected,
-        nimiqAddress: state.nimiqAddress,
-        source: state.source,
-        chain: state.chain,
-      }),
-    );
-  }, [state]);
+    setStoredIdentity({
+      nimiqAddress: state.nimiqAddress,
+      evmAddress: state.evmAddress,
+    });
+  }, [state.nimiqAddress, state.evmAddress]);
 
   const runSignIn = useCallback(async (address: string): Promise<boolean> => {
     const sign = signerRef.current;
@@ -130,7 +100,6 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem(AUTO_SKIP_KEY);
     } catch {}
     const next: WalletState = {
-      ...loadState(),
       connected: true,
       nimiqAddress: identity.address,
       source: "Nimiq Pay",

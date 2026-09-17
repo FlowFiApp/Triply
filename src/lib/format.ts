@@ -26,3 +26,14 @@ export function format24(iso: string | null): string {
     d.getMinutes(),
   ).padStart(2, "0")}`;
 }
+
+/** Formats an ISO date (YYYY-MM-DD or full ISO) as a short friendly date. */
+export function formatDate(iso: string | null | undefined): string {
+  if (!iso) return "";
+  const d = new Date(iso.length === 10 ? `${iso}T00:00:00` : iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}

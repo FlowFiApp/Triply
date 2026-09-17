@@ -90,8 +90,9 @@ export type Booking = {
   airlineLogo?: string;
   image?: string;
   createdAt?: string;
-  actions?: string[];
   date?: string;
+  arrDate?: string;
+  actions?: string[];
 };
 
 export type OrderRecord = {

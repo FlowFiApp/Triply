@@ -379,7 +379,7 @@ export default function ETicket() {
                 className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full border border-border bg-card text-[12px] font-semibold text-foreground"
               >
                 <Calendar size={14} className="text-accent-fg" />
-                Add to Calendar
+                Calendar
               </button>
               <button
                 onClick={() => {
