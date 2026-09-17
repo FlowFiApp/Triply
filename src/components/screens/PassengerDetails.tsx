@@ -248,7 +248,16 @@ export default function PassengerDetails() {
       );
       return;
     }
-    setFlow({ passenger: forms[0], passengersList: forms, next: undefined });
+    setFlow({
+      passenger: forms[0],
+      passengersList: forms,
+      next: undefined,
+      stay: undefined,
+      car: undefined,
+      stayBooking: undefined,
+      carBooking: undefined,
+      stayGuests: undefined,
+    });
     router.push(next || "/checkout");
   };
 

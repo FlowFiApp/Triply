@@ -504,6 +504,16 @@ export function AccDetails() {
       txHash: undefined,
       hold: false,
       chain: undefined,
+      offer: undefined,
+      offers: undefined,
+      car: undefined,
+      carBooking: undefined,
+      order: undefined,
+      orderId: undefined,
+      selectedServiceIds: undefined,
+      serviceQuantities: undefined,
+      passengersList: undefined,
+      seat: undefined,
     });
     router.push("/checkout");
   };

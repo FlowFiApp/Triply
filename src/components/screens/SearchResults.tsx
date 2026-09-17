@@ -21,7 +21,13 @@ function FlightCard({ offer }: { offer: FlightOffer }) {
   const router = useRouter();
   const { setFlow } = useFlow();
   const select = () => {
-    setFlow({ offer });
+    setFlow({
+      offer,
+      stay: undefined,
+      car: undefined,
+      stayBooking: undefined,
+      carBooking: undefined,
+    });
     router.push("/flight");
   };
   return (

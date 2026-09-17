@@ -411,6 +411,16 @@ export function CarDetails() {
       txHash: undefined,
       hold: false,
       chain: undefined,
+      offer: undefined,
+      offers: undefined,
+      stay: undefined,
+      stayBooking: undefined,
+      order: undefined,
+      orderId: undefined,
+      selectedServiceIds: undefined,
+      serviceQuantities: undefined,
+      passengersList: undefined,
+      seat: undefined,
     });
     router.push("/checkout");
   };
