@@ -1,13 +1,13 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { duffelErrorMessage } from "@/lib/duffel";
 import type { StayOffer } from "@/lib/types";
-import { testPrice } from "@/lib/pricing";
+import { seedPrice } from "@/lib/pricing";
 import mockData from "@/lib/data.json";
 
 function normalizeStay(r: any): StayOffer {
   const acc = r.accommodation ?? {};
   const city = acc.location?.city ?? acc.address?.city_name ?? "";
-  const amount = testPrice(Number(r.cheapest_rate_total_amount ?? 0));
+  const amount = seedPrice(Number(r.cheapest_rate_total_amount ?? 0));
   const nights = Math.max(
     1,
     Math.round(

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { duffelErrorMessage } from "@/lib/duffel";
 import type { StayBooking } from "@/lib/types";
-import { testPrice } from "@/lib/pricing";
+import { seedPrice } from "@/lib/pricing";
 import { requireUser, unauthorized } from "@/lib/auth";
 import { upsertBooking, getOrCreateUser, earnPoints } from "@/lib/db";
 import mockData from "@/lib/data.json";
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     const stay = (mockData.accommodations as unknown as any[]).find(
       (r: any) => r.id === resultId,
     );
-    const totalAmount = testPrice(Number(stay?.cheapest_rate_total_amount ?? 0));
+    const totalAmount = seedPrice(Number(stay?.cheapest_rate_total_amount ?? 0));
     const currency = stay?.cheapest_rate_currency ?? "USD";
     const name = stay?.accommodation?.name ?? "Local Stay";
     const address = stay?.accommodation?.address

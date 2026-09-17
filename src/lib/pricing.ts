@@ -17,6 +17,15 @@ export function testPrice(value: number): number {
   return Math.round((value / TEST_PRICE_DIVISOR) * 100) / 100;
 }
 
+// Extra discount applied to bundled (non-Duffel) seed data for stays and cars.
+export const SEED_PRICE_FACTOR = 0.25;
+
+// Applies the test divisor then the seed discount to a raw amount.
+export function seedPrice(value: number): number {
+  const divided = testPrice(value);
+  return Math.round(divided * SEED_PRICE_FACTOR * 100) / 100;
+}
+
 // Applies the configured markup (%) on top of the displayed price. The customer
 // pays this marked-up amount on-chain; the Duffel order is paid at cost.
 export function applyMarkup(value: number): number {

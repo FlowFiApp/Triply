@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { duffelErrorMessage } from "@/lib/duffel";
 import type { CarBooking } from "@/lib/types";
-import { testPrice } from "@/lib/pricing";
+import { seedPrice } from "@/lib/pricing";
 import { requireUser, unauthorized } from "@/lib/auth";
 import { upsertBooking, getOrCreateUser, earnPoints } from "@/lib/db";
 import mockData from "@/lib/data.json";
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const carRate = (mockData.cars as unknown as any[]).find(
       (r: any) => r.id === body.rateId,
     );
-    const totalAmount = testPrice(Number(carRate?.total_amount ?? 0));
+    const totalAmount = seedPrice(Number(carRate?.total_amount ?? 0));
     const currency = carRate?.total_currency ?? "USD";
     const carName = carRate?.car?.name ?? "Car";
     const pickupLocation = carRate?.pickup_location?.name ?? "Pickup location";

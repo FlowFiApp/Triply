@@ -20,7 +20,7 @@ async function ensureIndexes(db: Db): Promise<void> {
   if (indexesEnsured) return;
   await Promise.all([
     db.collection("users").createIndex({ key: 1 }, { unique: true }),
-    db.collection("rewards").createIndex({ bookingRef: 1 }, { unique: true }),
+    db.collection("rewards").createIndex({ bookingRef: 1 }, { unique: true, sparse: true }),
     db.collection("rewards").createIndex({ userId: 1 }),
     db.collection("moments").createIndex({ userId: 1 }),
     db.collection("moments").createIndex({ createdAt: -1 }),

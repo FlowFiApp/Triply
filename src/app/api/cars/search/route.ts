@@ -1,7 +1,7 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { duffelErrorMessage } from "@/lib/duffel";
 import type { CarOffer } from "@/lib/types";
-import { testPrice } from "@/lib/pricing";
+import { seedPrice } from "@/lib/pricing";
 import mockData from "@/lib/data.json";
 
 function normalizeCar(r: any): CarOffer {
@@ -11,7 +11,7 @@ function normalizeCar(r: any): CarOffer {
       new Date(r.pickup_date ?? "").getTime()) /
       86400000,
   ));
-  const total = testPrice(Number(r.total_amount ?? 0));
+  const total = seedPrice(Number(r.total_amount ?? 0));
   const features = Array.isArray(car.features) ? car.features : [];
   return {
     id: r.id ?? r.rate_id,
