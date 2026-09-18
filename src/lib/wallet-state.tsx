@@ -98,9 +98,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }
     return stored;
   });
-  const [authState, setAuthState] = useState<AuthState>(() =>
-    getStoredSession().authenticated ? "authenticated" : "idle",
-  );
+  // Start unverified: API-gated hooks (profile, points, passengers) only fire
+  // once the stored JWT has been validated against the server on load.
+  const [authState, setAuthState] = useState<AuthState>("idle");
   const [onboarded, setOnboarded] = useState(onboardedFlag);
   const signerRef = useRef<NimiqSigner | null>(null);
 

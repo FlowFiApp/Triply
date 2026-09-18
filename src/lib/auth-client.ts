@@ -58,21 +58,31 @@ export function getStoredToken(): string {
 
 /**
  * Auto-reconnect helper: if a JWT is stored locally, re-establish the session
- * cookie from it (no signature prompt). Safe to call on app load.
+ * cookie from it (no signature prompt), then verify the session against the
+ * server. Invalid/expired JWTs are cleared so we never hold a fake session.
+ * Safe to call on app load.
  */
 export async function restoreStoredSession(): Promise<Session> {
   const token = getStoredToken();
-  const stored = getStoredSession();
-  if (!token || !stored.authenticated || !stored.address) return stored;
-  try {
-    await fetch("/api/auth/restore", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-      cache: "no-store",
-    });
-  } catch {
-    // cookie restore is best-effort; the server check below still applies
+  if (token) {
+    try {
+      const res = await fetch("/api/auth/restore", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+        cache: "no-store",
+      });
+      if (!res.ok) {
+        // The stored JWT is invalid or expired — drop the local session so we
+        // stop pretending we're signed in (profile/points would just 401).
+        cachedSession = { authenticated: false, address: null };
+        writeLocalSession(null, null);
+        return cachedSession;
+      }
+    } catch {
+      // Network hiccup — keep the stored session; the server check below
+      // still applies (and falls back to it if the check itself fails).
+    }
   }
   return getSession(true);
 }
