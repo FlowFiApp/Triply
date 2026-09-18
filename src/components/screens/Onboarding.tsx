@@ -39,6 +39,7 @@ export default function Onboarding() {
     haptic();
     if (typeof window !== "undefined") {
       localStorage.setItem("triply-onboarded", "1");
+      window.dispatchEvent(new Event("triply-onboarded"));
     }
     router.push("/");
   };

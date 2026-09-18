@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
     const token = await issueToken(address);
     return Response.json(
-      { ok: true, address },
+      { ok: true, address, token },
       { headers: { "Set-Cookie": authCookieHeader(token) } },
     );
   } catch {

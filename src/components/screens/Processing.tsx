@@ -222,6 +222,15 @@ export default function Processing() {
         throw new Error("Duffel is not configured");
       }
 
+      // Some add-ons may have been dropped server-side because they were no
+      // longer available; the on-chain total was paid for them, so warn.
+      if (Array.isArray(data.droppedServices) && data.droppedServices.length > 0) {
+        toast(
+          "info",
+          "One or more add-ons were unavailable and were not booked — please contact support for a refund.",
+        );
+      }
+
       // Step 3 — ticket issued.
       setCurrent("issue");
       setSub("Ticket issued");

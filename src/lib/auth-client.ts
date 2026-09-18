@@ -8,13 +8,73 @@ export type NimiqSigner = (
   message: string,
 ) => Promise<{ publicKey: string; signature: string }>;
 
+// Persisted locally so the app can auto-reconnect: the address + JWT survive
+// reloads even when the session cookie is cleared (common in embedded webviews).
+const SESSION_KEY = "triply-session";
+const JWT_KEY = "triply-auth-jwt";
+
 let cachedSession: Session | null = null;
 let inflight: Promise<Session> | null = null;
 
-// In-memory only — the wallet address is never written to localStorage. On a
-// fresh page load the address is always obtained by connecting.
+function readLocalSession(): Session {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return { authenticated: false, address: null };
+    const parsed = JSON.parse(raw) as { address?: string };
+    if (parsed.address) return { authenticated: true, address: parsed.address };
+  } catch {}
+  return { authenticated: false, address: null };
+}
+
+function writeLocalSession(address: string | null, token?: string | null) {
+  try {
+    if (address) {
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ address }));
+    } else {
+      localStorage.removeItem(SESSION_KEY);
+    }
+    if (token) {
+      localStorage.setItem(JWT_KEY, token);
+    } else {
+      localStorage.removeItem(JWT_KEY);
+    }
+  } catch {}
+}
+
 export function getStoredSession(): Session {
-  return cachedSession ?? { authenticated: false, address: null };
+  if (cachedSession) return cachedSession;
+  return readLocalSession();
+}
+
+/** The JWT persisted for auto-reconnect, or "" when none. */
+export function getStoredToken(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    return localStorage.getItem(JWT_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Auto-reconnect helper: if a JWT is stored locally, re-establish the session
+ * cookie from it (no signature prompt). Safe to call on app load.
+ */
+export async function restoreStoredSession(): Promise<Session> {
+  const token = getStoredToken();
+  const stored = getStoredSession();
+  if (!token || !stored.authenticated || !stored.address) return stored;
+  try {
+    await fetch("/api/auth/restore", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+      cache: "no-store",
+    });
+  } catch {
+    // cookie restore is best-effort; the server check below still applies
+  }
+  return getSession(true);
 }
 
 export async function getSession(force = false): Promise<Session> {
@@ -28,10 +88,11 @@ export async function getSession(force = false): Promise<Session> {
         address: d.address ?? null,
       };
       cachedSession = s;
+      if (s.authenticated && s.address) writeLocalSession(s.address);
       return s;
     })
     .catch(() => {
-      const fallback: Session = { authenticated: false, address: null };
+      const fallback = readLocalSession();
       cachedSession = fallback;
       return fallback;
     })
@@ -65,13 +126,16 @@ export async function signInWithNimiq(
         signature: signed.signature,
       }),
     });
-    const ok = res.ok && Boolean((await res.json()).ok);
+    const data = (await res.json()) as { ok?: boolean; token?: string };
+    const ok = res.ok && Boolean(data.ok);
     cachedSession = ok
       ? { authenticated: true, address }
       : { authenticated: false, address: null };
+    writeLocalSession(ok ? address : null, ok ? data.token : null);
     return ok;
   } catch {
     cachedSession = { authenticated: false, address: null };
+    writeLocalSession(null, null);
     return false;
   }
 }
@@ -83,4 +147,5 @@ export async function signOut(): Promise<void> {
     // ignore
   }
   cachedSession = { authenticated: false, address: null };
+  writeLocalSession(null, null);
 }

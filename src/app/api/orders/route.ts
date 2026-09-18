@@ -129,7 +129,6 @@ export async function POST(request: Request) {
     const order = await createFlightOrder({
       offerId: body.offerId,
       passengers: allPassengers,
-      amount: body.amount ?? 885,
       currency: body.currency ?? "USD",
       txHash: body.txHash,
       chain: body.chain,
@@ -195,7 +194,13 @@ export async function POST(request: Request) {
       // email is best-effort
     }
 
-    return Response.json({ live: true, order: normalizeOrderRecord(order) });
+    return Response.json({
+      live: true,
+      order: normalizeOrderRecord(order),
+      droppedServices: Array.isArray(order.dropped_services)
+        ? order.dropped_services
+        : [],
+    });
   } catch (err) {
     const e = err as {
       message?: string;

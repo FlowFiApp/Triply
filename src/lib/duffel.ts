@@ -3,7 +3,7 @@ import "server-only";
 
 import { Duffel } from "@duffel/api";
 import { formatDuration, format24 } from "@/lib/format";
-import { applyMarkup, realPrice, testPrice } from "@/lib/pricing";
+import { applyMarkup, testPrice } from "@/lib/pricing";
 import type { CityOption } from "@/lib/cities";
 
 const TOKEN = process.env.DUFFEL_ACCESS_TOKEN;
@@ -252,7 +252,6 @@ export async function ensureCustomerUser(input: {
 export async function createFlightOrder({
   offerId,
   passengers,
-  amount,
   currency = "USD",
   txHash,
   chain,
@@ -263,7 +262,6 @@ export async function createFlightOrder({
 }: {
   offerId: string;
   passengers: CreateOrderPassenger[];
-  amount: number;
   currency?: string;
   txHash?: string;
   chain?: string;
@@ -279,29 +277,43 @@ export async function createFlightOrder({
   // must reference the offer's passenger records (pas_…). Both come from the
   // offer, so read it server-side once — falling back to the client values
   // (which may be stale if the flow predates these fields).
-  let paymentTotal = realPrice(amount);
+  //
+  // Services are priced from the SAME fresh offer snapshot that is booked, so
+  // the balance payment always equals the order total. A selected add-on that
+  // is no longer available in that snapshot is dropped from BOTH the order and
+  // the payment (never booked-but-unpriced, which Duffel rejects).
+  let paymentTotal = 0;
+  const orderServices: Array<{ id: string; quantity: number }> = [];
+  const droppedServices: string[] = [];
   let offerPassengerIds = passengerIds ?? [];
   try {
     const offer = await getFlightOffer(offerId);
     if (offer) {
+      const available = (offer.available_services ?? []) as any[];
       const base = Number(offer.total_amount ?? 0);
-      const svc = (offer.available_services ?? [])
-        .filter((s: any) => services?.some((x) => x.id === s.id))
-        .reduce(
-          (sum: number, s: any) =>
-            sum +
-            Number(s.total_amount ?? 0) *
-              (services?.find((x) => x.id === s.id)?.quantity ?? 1),
-          0,
-        );
-      if (base > 0) paymentTotal = base + svc;
+      for (const s of services ?? []) {
+        const found = available.find((a: any) => a.id === s.id);
+        if (!found) {
+          droppedServices.push(s.id);
+          continue;
+        }
+        const quantity = Number(s.quantity) || 1;
+        paymentTotal += Number(found.total_amount ?? 0) * quantity;
+        orderServices.push({ id: s.id, quantity });
+      }
+      if (base > 0) paymentTotal += base;
       const ids = (offer.passengers ?? [])
         .map((p: any) => p.id)
         .filter(Boolean);
       if (ids.length) offerPassengerIds = ids;
     }
   } catch {
-    // fall back to the client-provided values
+    // fall through to the guarded error below — never guess a payment amount
+  }
+  if (paymentTotal <= 0) {
+    throw new Error(
+      "Could not verify the fare price — please go back and search again.",
+    );
   }
   const payments: any[] = cardId
     ? [{ type: "card", card_id: cardId }]
@@ -321,8 +333,8 @@ export async function createFlightOrder({
     // ("user already associated with passenger").
     // Book the chosen add-ons (baggage, seat) alongside the offer. Only sent
     // when something is actually selected — Duffel rejects an empty array.
-    ...(services?.length
-      ? { services: services.map((s) => ({ id: s.id, quantity: s.quantity })) }
+    ...(orderServices.length
+      ? { services: orderServices }
       : {}),
     passengers: passengers.map((p, i) => ({
       // Duffel requires the passenger id to reference the offer request's
@@ -349,7 +361,11 @@ export async function createFlightOrder({
       ? { metadata: { onchain_payment_tx: txHash, chain: chain ?? "" } }
       : {}),
   } as any);
-  return data as any;
+  const order = data as any;
+  if (droppedServices.length) {
+    order.dropped_services = droppedServices;
+  }
+  return order;
 }
 
 export async function listOrders() {
