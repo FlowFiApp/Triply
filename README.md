@@ -129,3 +129,7 @@ npm run lint     # eslint
 - `designs/` holds the 43 rendered Figma frames used as the visual reference.
 - `DESIGN-REFERENCE.md` is the generated layout/typography/colour spec for every
   node.
+
+## License
+
+[MIT](LICENSE)
