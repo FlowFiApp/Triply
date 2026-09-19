@@ -203,6 +203,16 @@ export async function getUserProfile(key: string) {
     : { username: "", avatar: "", onboarded: false };
 }
 
+/** Lists every registered user (key, username, avatar) for the feed avatar rail. */
+export async function listUsers(): Promise<Array<{ key: string; username?: string; avatar?: string }>> {
+  const db = await getDb();
+  return db
+    .collection<UserDoc>("users")
+    .find({}, { projection: { key: 1, username: 1, avatar: 1 } })
+    .sort({ createdAt: 1 })
+    .toArray();
+}
+
 export async function updateProfile(
   key: string,
   patch: { username?: string; avatar?: string; onboarded?: boolean },

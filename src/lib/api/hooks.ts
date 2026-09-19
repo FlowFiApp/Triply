@@ -56,11 +56,14 @@ export function useFeed() {
     queryKey: ["feed", key],
     enabled: true,
     queryFn: async () => {
-      const d = await getJson<{ moments: FeedMoment[]; live: boolean; error?: string }>(
-        `/api/feed`,
-      );
+      const d = await getJson<{
+        moments: FeedMoment[];
+        users: Array<{ key: string; username?: string; avatar?: string }>;
+        live: boolean;
+        error?: string;
+      }>(`/api/feed`);
       if (!d.live) throw new Error(d.error ?? "Feed is unavailable right now.");
-      return d.moments;
+      return { moments: d.moments, users: d.users ?? [] };
     },
   });
 }

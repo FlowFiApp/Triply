@@ -4,6 +4,7 @@ import {
   earnMomentPoints,
   getUserProfile,
   listMoments,
+  listUsers,
   MOMENT_POST_REWARD,
 } from "@/lib/db";
 import { serializeMoment, type FeedMoment } from "@/lib/feed";
@@ -13,9 +14,10 @@ export async function GET(request: Request) {
   // Public browse; personalizes the "liked" flag when a valid session exists.
   const user = await requireUser(request);
   try {
-    const moments = await listMoments(50);
+    const [moments, users] = await Promise.all([listMoments(50), listUsers()]);
     return Response.json({
       moments: moments.map((m) => serializeMoment(m, user?.key ?? "")),
+      users,
       live: true,
     });
   } catch (err) {

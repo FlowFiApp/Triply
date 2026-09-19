@@ -310,7 +310,12 @@ function CommentsSheet({
 export default function Feed() {
   const router = useRouter();
   const { toast } = useToast();
-  const { data: moments = [], isLoading, error, isRefetching } = useFeed();
+  const {
+    data: { moments = [], users = [] } = {},
+    isLoading,
+    error,
+    isRefetching,
+  } = useFeed();
   const { data: profile } = useProfile();
   const myAvatar = profile?.avatar;
   const myName = profile?.username;
@@ -357,9 +362,7 @@ export default function Feed() {
 
   const errorMessage = error instanceof Error ? error.message : "";
 
-  const storyAuthors = Array.from(
-    new Map(moments.map((m) => [m.userId, m])).values(),
-  ).slice(0, 3);
+  const otherUsers = users.filter((u) => u.key !== feedKey());
 
   return (
     <MobileShell
@@ -433,16 +436,27 @@ export default function Feed() {
               </span>
               <span className="text-[11px] text-muted">{myName || "You"}</span>
             </button>
-            {storyAuthors.map((m) => (
+            {otherUsers.map((u) => (
               <div
-                key={m.userId}
+                key={u.key}
                 className="flex w-[58px] shrink-0 flex-col items-center gap-1.5"
               >
                 <span className="rounded-full">
-                  <Identicon seed={m.userId} size={52} />
+                  {u.avatar ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={u.avatar}
+                      alt=""
+                      width={52}
+                      height={52}
+                      className="h-[52px] w-[52px] rounded-full object-cover"
+                    />
+                  ) : (
+                    <Identicon seed={u.key} size={52} />
+                  )}
                 </span>
                 <span className="w-full truncate text-center text-[11px] text-muted">
-                  {feedHandle(m.userId)}
+                  {u.username || feedHandle(u.key)}
                 </span>
               </div>
             ))}
